@@ -52,3 +52,19 @@ this one matters a lot for you specifically. If you have a small number like −
 
 
 Overflow is what happens when a result doesn't fit in the available bits. Think of an old car odometer: it can only display so many digits, so once you drive past its max mileage, it silently wraps back to a small number — that's unsigned overflow, a carry falling off the leftmost digit and getting lost. Signed (2's complement) overflow is subtler but has a reliable tell: if you add two positive numbers and somehow get a negative result — or add two negatives and get a positive result — you've overflowed. That mismatch between "what the sign should be" and "what the sign actually is" is the giveaway, and it's exactly the kind of bug that causes real, occasionally serious, failures in low-level C code when it goes undetected.
+
+
+## 5. Logical (bitwise) operations 
+These operate on individual bits treated as 0/1 (true/false), and can be applied bit-by-bit across an entire multi-bit pattern at once ("bitwise").
+
+AND — output is 1 only if both inputs are 1. Think "ALL." The killer application is bit masking — isolating specific bits you care about while zeroing out the rest. If you AND an 8-bit value with the mask 00000011, only the bottom two bits survive; everything else becomes 0. This is precisely the mechanism behind reading specific fields out of a hardware register or a bit-field struct in embedded C.
+
+OR — output is 1 if any input is 1. Think "ANY." The main use: setting a bit without disturbing the others. OR-ing a value with 00100000 forces that one bit to 1, leaving every other bit exactly as it was.
+
+NOT — the only unary one (single input). Just flips every bit: 1→0, 0→1.
+
+XOR (exclusive-or) — output is 1 only when the two inputs differ. Two handy consequences: (1) XOR-ing two identical bit patterns together always produces all zeros — so XOR is a quick equality check; (2) this is the same property behind the classic "swap two variables without a temp variable" trick using three XORs, and it's why XOR shows up constantly in checksums and simple encryption.
+
+DeMorgan's Laws — a precise algebraic relationship between AND, OR, and NOT: NOT(A AND B) = NOT(A) OR NOT(B), and its mirror image, NOT(A OR B) = NOT(A) AND NOT(B). In plain English, the first one says: "it is not the case that both are false" means exactly the same thing as "at least one of them is true." This isn't just trivia — it's the tool you use to simplify or rewrite if conditions in code, and it's part of how compilers optimize boolean logic under the hood.
+
+Bit vectors — an m-bit pattern where each individual bit independently represents some yes/no property. A great real-world example: imagine tracking 8 machines in a factory (or 8 taxis in a fleet), where a 1 means "available" and 0 means "busy." One 8-bit pattern, say 11000010, tells you at a glance exactly which units are free — units 7, 6, and 1, reading the bits right to left starting from 0. Assign work to unit 7? AND the vector with a mask that clears just that bit. Unit 5 becomes free again? OR the vector with a mask that sets just that bit. This is not a toy example — it is exactly how hardware status registers and flag registers work in real embedded systems: a single register where each bit independently means "interrupt pending," "buffer full," "device ready," and so on, manipulated with AND to clear flags and OR to set them.

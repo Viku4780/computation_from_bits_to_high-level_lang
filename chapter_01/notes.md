@@ -62,3 +62,15 @@ There's also a distinction worth nailing down here: analog vs. digital.
 - An analog machine represents a value as a continuous physical quantity — think of an old analog watch, where the time is the angle of the hands. A slide rule multiplies by physically sliding one ruler against another and reading a distance.
 
 - A digital machine represents a value as a fixed, finite set of discrete digits or symbols — a digital watch just shows you numbers: 10:35:16. Digital wins on accuracy, because you can always add more digits to get more precision; with analog, you'd need a mechanically absurd (very long) second hand to get that same precision.
+
+
+### The Turing machine — the theoretical proof behind Idea 1
+In 1937, a mathematician named Alan Turing wasn't trying to build a computer — he was trying to answer a philosophical question: what does it even mean to "compute" something? He looked at what a human does when solving a problem with pencil and paper — writing symbols, following rules, erasing, rewriting — and abstracted that into a simple mathematical model, now called a Turing machine.
+
+A Turing machine is often drawn as a "black box": you feed inputs in one side, a description of the operation sits inside the box (add, multiply, whatever), and the correct output comes out the other side. Turing showed you could build a specific Turing machine for addition, another for multiplication, and so on.
+
+Then he made the move that actually matters for us: he described a Universal Turing Machine — a single machine, call it U, that could simulate any other Turing machine. You'd feed U a description of the machine you wanted (say, "the addition machine") along with the input data, and U would produce the correct result — as if it were that machine.
+
+Sit with that for a second, because it's the conceptual seed of every computer you've ever used: a machine that runs based on a description you feed it, rather than being hard-wired for one task, can simulate any other machine. That's precisely what a stored-program computer is. Your laptop isn't "a word processor machine" or "a browser machine" — it's a universal machine that becomes those things by being fed different programs. This is also, not coincidentally, the same core idea behind an interpreter running arbitrary JavaScript, or a virtual machine running arbitrary bytecode — you've been living inside Turing's idea the whole time you've been coding.
+
+Turing's thesis (never mathematically proven, but overwhelmingly supported by evidence) states that anything that can be computed at all can be computed by some Turing machine. Since a real computer with enough memory is computationally equivalent to a universal Turing machine, this is exactly why Idea 1 is true: a cheap computer and an expensive one are both, underneath, universal machines. Money buys speed, screen resolution, sound quality — not the ability to compute something fundamentally new

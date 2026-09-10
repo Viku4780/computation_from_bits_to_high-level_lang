@@ -27,3 +27,14 @@ Why did this specific scheme win, when it seems like an arbitrary extra step (fl
 Check it: if A − B is really just A + (−B), then all you need is a fast way to compute −B, and then subtraction is free — it's just addition. That's precisely what 2's complement gives you: negation is a fixed, cheap operation (flip + add 1), and afterward, plain addition produces the correct answer every time — the ALU doesn't even need to know or care whether the numbers are positive or negative. It just adds bit patterns. This is a genuinely elegant piece of design, and it's why, deep in a modern CPU, there is no dedicated "subtractor" circuit — subtraction rides for free on the adder.
 
 Range: with k bits in 2's complement, you can represent integers from −2^(k−1) to +2^(k−1) − 1. Notice the asymmetry — one more negative number than positive. (With 5 bits, that's −16 to +15, not −15 to +15.) That extra negative slot exists because of how the leftover, unassignable bit pattern gets handed to the "most negative" value rather than being wasted.
+
+
+## 3. Converting between binary and decimal
+Binary → decimal: look at the leftmost bit. If it's 0, the number is positive — just add up the powers of 2 wherever there's a 1. If it's 1, the number is negative — first flip all bits and add 1 to find its positive magnitude, sum the powers of 2 for that, then slap a minus sign on the front.
+
+Worked example: what does 11000111 represent?
+Leftmost bit is 1 → negative. Flip and add 1: flip → 00111000, add 1 → 00111001. That's 32+16+8+1 = 57. So 11000111 represents −57.
+
+Decimal → binary: the cleanest mental version of this is repeated division by 2, keeping the remainders: divide the number by 2, write down the remainder (0 or 1) — that's your next bit, working from the rightmost bit outward. Keep dividing the quotient by 2 until it hits 0.
+
+Fractional binary numbers work the same way but mirrored: to convert a binary fraction like .1011 to decimal, add up 0.5 (for the first bit), 0.125 (third bit), and 0.0625 (fourth bit) → 0.6875. Going the other way (decimal fraction → binary), you repeatedly multiply by 2 and peel off whichever digit lands left of the decimal point each time.

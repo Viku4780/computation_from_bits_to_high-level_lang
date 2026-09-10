@@ -68,3 +68,24 @@ XOR (exclusive-or) — output is 1 only when the two inputs differ. Two handy co
 DeMorgan's Laws — a precise algebraic relationship between AND, OR, and NOT: NOT(A AND B) = NOT(A) OR NOT(B), and its mirror image, NOT(A OR B) = NOT(A) AND NOT(B). In plain English, the first one says: "it is not the case that both are false" means exactly the same thing as "at least one of them is true." This isn't just trivia — it's the tool you use to simplify or rewrite if conditions in code, and it's part of how compilers optimize boolean logic under the hood.
 
 Bit vectors — an m-bit pattern where each individual bit independently represents some yes/no property. A great real-world example: imagine tracking 8 machines in a factory (or 8 taxis in a fleet), where a 1 means "available" and 0 means "busy." One 8-bit pattern, say 11000010, tells you at a glance exactly which units are free — units 7, 6, and 1, reading the bits right to left starting from 0. Assign work to unit 7? AND the vector with a mask that clears just that bit. Unit 5 becomes free again? OR the vector with a mask that sets just that bit. This is not a toy example — it is exactly how hardware status registers and flag registers work in real embedded systems: a single register where each bit independently means "interrupt pending," "buffer full," "device ready," and so on, manipulated with AND to clear flags and OR to set them.
+
+
+## 6. Other useful representations
+Floating point. Integers are precise but have limited range. Sometimes you need the opposite tradeoff — huge range, but you're fine with fewer significant digits (think Avogadro's number, 6.022×10²³ — you need the range to express 10²³, but you only actually care about 4 digits of precision). Floating point solves this by spending some of its bits on range (an exponent) instead of putting everything into precision. The standard 32-bit layout, shown above, splits the word into: 1 sign bit, 8 exponent bits, and 23 fraction bits.
+
+The formula is: N = (−1)^S × 1.fraction × 2^(exponent − 127). Two clever details worth understanding, not memorizing:
+
+- The 127 being subtracted is called the bias — it lets the 8-bit exponent field (which can only naturally hold unsigned values 0–255) represent both large and small exponents, including negative ones.
+
+- Notice the formula has an implicit "1." in front of the fraction that is never actually stored. Because floating point numbers are stored in "normalized" form (exactly one non-zero digit before the binary point), that leading 1 is always there by construction — so instead of wasting a bit storing something you already know is 1, you get it "for free," effectively squeezing 24 bits of precision out of only 23 stored bits.
+
+
+Quick worked example, built from scratch: what does 0 10000010 01000000000000000000000 represent? Sign bit 0 → positive. Exponent field is 10000010 = 130 in unsigned; subtract the bias 127 → actual exponent is +3. Fraction field starts 01000..., so with the implicit leading 1 we get 1.01 in binary. Shifting the binary point 3 places right (because the exponent is +3) gives 1010.0 → decimal 10. So that whole 32-bit pattern represents the number 10.0. (Edge cases exist too — an exponent field of all 1s represents infinity, and an exponent field of all 0s represents very-tiny "subnormal" numbers — but a first course doesn't need more than knowing those exist.)
+
+ASCII is the 8-bit standard code that assigns every keyboard character a fixed bit pattern — so a keyboard from one company, a computer from another, and a monitor from a third can all agree on what a keystroke means. '3' is 00110011, lowercase 'e' is 01100101. One neat detail: uppercase and lowercase letters differ by exactly one bit ('E' = 01000101, 'e' = 01100101) — which is exactly why, in C, toupper/tolower can be implemented as a single cheap bit-flip rather than a lookup table. This is also your confirmation of something you may have half-known already: a C char isn't fundamentally different from a small integer — it's literally just an 8-bit number that we've agreed to interpret via the ASCII table.
+
+Hexadecimal isn't a data type at all — it's purely a convenience for humans, because writing and copying long strings of 0s and 1s is error-prone. The trick: split a binary string into groups of exactly 4 bits (since 4 bits gives exactly 16 possible patterns — 0 through F), and write each group as a single hex digit. 0011 1101 0110 1110 becomes 3D6E — a quarter of the length, far fewer copying mistakes. This is exactly why every memory address, register dump, and hex literal (0xFF, 0x3D6E) you've typed in C exists in that form — it's not a different kind of number, just a friendlier way of writing the same bits down.
+
+
+
+### everything a computer stores is just bits — and a "data type" is nothing more than an agreed-upon way to interpret those bits, plus a fixed set of legal operations on them.

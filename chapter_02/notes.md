@@ -1,0 +1,6 @@
+![alt text](image.png)
+
+## 1. What exactly is a bit, and what's a "data type"?
+A bit (short for binary digit) is the smallest unit of information a computer stores — it's just: is there a voltage on this wire, or isn't there? We write "1" for voltage-present and "0" for voltage-absent. One bit alone can only distinguish between two things. But bits combine: with k bits, you can produce 2^k distinct patterns. Eight bits gives you 256 possible patterns; sixteen bits gives you 65,536. This one fact — 2^k patterns from k bits — underlies almost everything else in this chapter.
+
+a data type is not just a representation — it's a representation plus a defined set of operations the hardware knows how to perform on it. A bit pattern by itself means nothing. The same 8 bits 01000001 could be the number 65, or the letter A, or something else entirely — it's only a specific data type once you've paired that pattern with an agreed interpretation and a set of legal operations. This is exactly why C forces you to declare int x versus char c versus float f for the same-sized chunk of memory — you're not describing different amounts of storage, you're telling the compiler which operations and interpretation apply to those bits.

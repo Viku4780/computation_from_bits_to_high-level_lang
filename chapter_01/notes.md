@@ -41,3 +41,24 @@ You're living this lesson right now, actually — when you learned why embedded 
 The part of the computer that actually does the work — the additions, comparisons, everything the software directs it to do — is called the processor, or more formally the central processing unit (CPU).
 
 A "computer" in the everyday sense is bigger than that: a full computer system includes the CPU plus a keyboard, mouse, monitor, memory, storage (disk/USB), and whatever software you're running. All those extra pieces exist to let a human interact with that tiny sliver of silicon doing the actual computation.
+
+
+## Now — the two ideas the whole chapter is building toward
+
+### Idea 1: All computers can compute exactly the same things
+given enough time and enough memory, every computer — the cheapest and the most expensive, the slowest and the fastest — can compute exactly the same set of things. A faster computer doesn't do anything more than a slower one. It just does it quicker. There is no computation a $50,000 supercomputer can do that your laptop fundamentally can't do — your laptop just might take a lot longer, and might need more memory along the way.
+
+### Idea 2: Human problems have to be translated all the way down to voltages
+We think about problems in English (or whatever language we speak). But the thing that actually solves the problem is electrons moving around inside silicon in response to voltage. Getting from "I want to sort this list of names" to "electrons doing exactly that" requires a long, systematic chain of translations. That chain is the diagram from the top of this lesson
+
+
+# Backing up Idea 1: what makes a computer "universal"?
+Before modern computers, there were single-purpose machines — an adding machine could only add. A machine for alphabetizing punch cards could only do that one thing. If you wanted to multiply and you only owned an adding machine, tough luck — out come the pencil and paper.
+
+Computers are different because they're programmable. You don't buy a new machine for a new kind of computation — you just give the same machine a new set of instructions. That reprogrammability is the whole reason the phrase "universal computational device" applies to computers.
+
+There's also a distinction worth nailing down here: analog vs. digital.
+
+- An analog machine represents a value as a continuous physical quantity — think of an old analog watch, where the time is the angle of the hands. A slide rule multiplies by physically sliding one ruler against another and reading a distance.
+
+- A digital machine represents a value as a fixed, finite set of discrete digits or symbols — a digital watch just shows you numbers: 10:35:16. Digital wins on accuracy, because you can always add more digits to get more precision; with analog, you'd need a mechanically absurd (very long) second hand to get that same precision.

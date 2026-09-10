@@ -38,3 +38,14 @@ Leftmost bit is 1 → negative. Flip and add 1: flip → 00111000, add 1 → 001
 Decimal → binary: the cleanest mental version of this is repeated division by 2, keeping the remainders: divide the number by 2, write down the remainder (0 or 1) — that's your next bit, working from the rightmost bit outward. Keep dividing the quotient by 2 until it hits 0.
 
 Fractional binary numbers work the same way but mirrored: to convert a binary fraction like .1011 to decimal, add up 0.5 (for the first bit), 0.125 (third bit), and 0.0625 (fourth bit) → 0.6875. Going the other way (decimal fraction → binary), you repeatedly multiply by 2 and peel off whichever digit lands left of the decimal point each time.
+
+
+## 4. Doing arithmetic on bits
+Addition works exactly like decimal addition, right to left — except you carry after 1 instead of after 9, since 1 is the largest binary digit. 01011 (11) + 00011 (3) = 01110 (14). Totally mechanical.
+
+Subtraction is free, as we just established — A − B is computed as A + (−B), where −B comes from the flip-and-add-1 trick.
+
+Here's a fun and genuinely useful fact: adding a number to itself is the same as shifting every bit one position to the left. x + x = 2x, and doubling in binary is literally "shift left by one." This is exactly why, in embedded C, you'll see people write x << 1 instead of x * 2 — it's the identical operation at the hardware level, just spelled differently, and shifting tends to be cheaper than a full multiply on constrained hardware.
+
+### Sign-extension (SEXT) — 
+this one matters a lot for you specifically. If you have a small number like −5 stored in 6 bits (111011) and you need to add it to a 16-bit number, you can't just pad the missing bits with zeros — that would silently turn it into a large positive number instead. Instead, you extend the sign bit (repeat the leading 1, or leading 0 for positives) out to fill the extra width. This is exactly what happens automatically in C whenever you assign a smaller signed type into a wider one — int8_t into int32_t — the compiler inserts sign-extension so the value stays correct. Now you know the mechanism, not just the behavior.

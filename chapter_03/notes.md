@@ -412,3 +412,107 @@ activate corresponding control logic
 ```
 
 So a decoder becomes part of the processor's control mechanism.
+
+
+## Second major structure: MUX
+Mux stands for :
+# Multiplexer
+
+Think of mux as:
+   ### a digital selector
+
+suppose you have:
+```
+A ─────┐
+       │
+       ├── MUX ─── OUT
+       │
+B ─────┘
+```
+
+and:
+```
+S = select
+```
+
+Then:
+```
+S = 0 → OUT = A
+S = 1 → OUT = B
+```
+
+the select signal determines which input is connected to the output
+
+
+## Mux mental model
+
+Think of a railway switch:
+```
+Track A ──┐
+          ├──── OUT
+Track B ──┘
+```
+
+The selector decides which track gets connected
+
+so:
+```
+Decoder
+= Which one?
+
+MUX
+= Choose one.
+```
+
+## Why are MUXes important in computers?
+Because a computer constantly has multiple possible sources for data.
+
+For example:
+```
+Should the ALU receive:
+    data from register A?
+
+or:
+    a constant?
+
+or:
+    something from another path?
+```
+
+A MUX can select the correct source.
+
+That's why the LC-3 datapath contains multiple MUXes
+
+
+### Larget muxes
+A 2-to-1 mux:
+```
+2 inputs
+1 select bit
+```
+
+A 4-to-1 mux:
+```
+4 inputs
+2 select bits
+```
+
+Why?
+
+Because:
+```
+2² = 4
+```
+
+The select bits identify one of four inputs.
+
+An 8-to-1 mux would need:
+```
+2³ = 8
+```
+
+so:
+```
+3 select bits
+```
+

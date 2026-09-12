@@ -253,3 +253,21 @@ A	B	AND	NAND
 ```
 
 ### A logical operation is not magic. It is caused by physical connectivity.
+
+
+## Logical design isn't the whole story
+
+It is possible to design a transistor arrangement that looks logically correct but produces unacceptable electrical voltage levels.
+
+For example, directly connecting certain P-type/N-type arrangements can produce intermediate voltages such as roughly 0.7 V or 1.0 V instead of clean logical 0 and 1 levels.
+
+This is a very important engineering lesson:
+
+  ### A circuit must work electrically, not merely look logically correct on paper.
+
+That's why computer engineering exists at the boundary of:
+```
+logic
++
+electronics
+```

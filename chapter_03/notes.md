@@ -228,3 +228,28 @@ IN ───┤ NOT ├─── OUT
 - Input A   -> Connected to Gate of Q1 (PMOS) and Gate of Q3 (NMOS)
 - Input B   -> Connected to Gate of Q2 (PMOS) and Gate of Q4 (NMOS)
 ```
+
+## OR
+```
+NOR
++
+NOT
+```
+
+```
+A ──┐
+    ├── NOR ── NOT ── OUT
+B ──┘
+```
+
+## AND and NAND
+
+```
+A	B	AND	NAND
+0	0	0	1
+0	1	0	1
+1	0	0	1
+1	1	1	0
+```
+
+### A logical operation is not magic. It is caused by physical connectivity.

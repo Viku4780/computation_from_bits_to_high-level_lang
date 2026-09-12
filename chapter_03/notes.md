@@ -324,3 +324,72 @@ The circuit doesn't remember:
 ```
 
 That's combinational logic.
+
+
+## First major combinational structure: Decoder
+A decoder takes a binary pattern and identifies which pattern it is.
+
+for example , 2 input bits:
+```
+AB
+```
+
+have four possibilities
+```
+00
+01
+10
+11
+```
+
+A 2-to-4 decoder produces four outputs:
+```
+D0
+D1
+D2
+D3
+```
+Exactly one is active at a time.
+
+Like this:
+```
+Input 00 → D0 = 1
+Input 01 → D1 = 1
+Input 10 → D2 = 1
+Input 11 → D3 = 1
+```
+
+The book describes the general rule:
+```
+n inputs → 2ⁿ outputs
+```
+with exactly one output asserted for each input pattern.
+
+
+### why decoder is useful?
+Think about address
+
+suppose we have four memory locations:
+```
+Address 00 → location 0
+Address 01 → location 1
+Address 10 → location 2
+Address 11 → location 3
+```
+
+The decoder takes:
+```
+10
+```
+
+and effectively says:
+   Select location 2
+
+
+Only that line becomes active.
+
+That turns out to be exactly what we need when building memory.
+
+So a decoder is essentially:
+
+#### “Which one?”

@@ -393,3 +393,22 @@ That turns out to be exactly what we need when building memory.
 So a decoder is essentially:
 
 #### “Which one?”
+
+
+## Decoder and CPU instructions
+The LC-3 instruction contains a four-bit opcode
+
+A 4-to-16 decoder can examine that opcode and determine which operation is being requested.
+
+Conceptually:
+```
+opcode
+  ↓
+decoder
+  ↓
+"Which instruction is this?"
+  ↓
+activate corresponding control logic
+```
+
+So a decoder becomes part of the processor's control mechanism.

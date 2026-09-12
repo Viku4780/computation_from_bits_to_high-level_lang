@@ -516,3 +516,163 @@ so:
 3 select bits
 ```
 
+
+## Building an adder
+### How do we physically build the circuit that adds binary numbers
+
+Remember:
+```
+  1
++ 1
+---
+ 10
+```
+
+Each column needs to consider:
+```
+A bit
+B bit
+carry from previous column
+```
+
+So there are three inputs:
+```
+A
+B
+Cin
+```
+
+and two outputs:
+```
+Sum
+Cout
+```
+
+The book calls this a one-bit adder, traditionally a full adder.
+
+### 28. Let's understand the full adder intuitively
+
+Suppose:
+```
+A = 0
+B = 0
+Carry in = 0
+```
+
+Then:
+```
+0 + 0 + 0 = 0
+```
+
+So:
+```
+Sum = 0
+Carry = 0
+```
+
+Suppose:
+```
+0 + 1 + 0 = 1
+```
+
+Therefore:
+```
+Sum = 1
+Carry = 0
+```
+
+Suppose:
+```
+1 + 1 + 0 = 2
+```
+
+Binary 2 is:
+```
+10
+```
+
+Therefore:
+```
+Sum = 0
+Carry = 1
+```
+
+Suppose:
+```
+1 + 1 + 1 = 3
+```
+
+Binary 3:
+```
+11
+```
+
+Therefore:
+```
+Sum = 1
+Carry = 1
+```
+
+### 29. Put four one-bit adders together
+
+Suppose we want:
+```
+A = 1011
+B = 0011
+```
+
+We need four one-bit adders:
+```
+bit 0 → adder
+bit 1 → adder
+bit 2 → adder
+bit 3 → adder
+```
+
+The carry from one goes into the next:
+```
+             carry
+              ↓
+       ┌────────────┐
+A0 ────►│ 1-bit     │── Sum0
+B0 ────►│ adder      │
+       └─────┬──────┘
+             │
+             ↓ carry
+
+       ┌────────────┐
+A1 ────►│ 1-bit     │── Sum1
+B1 ────►│ adder      │
+       └─────┬──────┘
+             │
+             ↓
+
+             ...
+```
+
+The book explicitly shows a four-bit adder constructed from four one-bit adders.
+
+And therefore:
+```
+16-bit adder
+=
+16 one-bit adders
+```
+
+#### Large complex systems can be constructed from simple components
+
+```
+transistors
+   ↓
+gates
+   ↓
+one-bit adder
+   ↓
+4-bit adder
+   ↓
+16-bit adder
+   ↓
+ALU
+```
+
+#### Build something big by systematically combining small understandable pieces

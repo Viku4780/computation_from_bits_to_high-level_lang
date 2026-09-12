@@ -271,3 +271,56 @@ logic
 +
 electronics
 ```
+
+
+## Combinational logic
+A combinational circuit has:
+  ### outputs determined only by the inputs that exist right now.
+
+There is no memory of what happened earlier.
+
+```
+INPUT
+  ↓
+┌──────────────┐
+│ combinational│
+│    logic     │
+└──────────────┘
+  ↓
+OUTPUT
+```
+No memory
+No history
+
+
+### Simple example
+
+Suppose:
+```
+A = 1
+B = 0
+```
+
+and circuit is:
+```
+A AND B
+```
+
+output:
+```
+0
+```
+
+If A changes:
+```
+A = 1 → 0
+```
+
+the output changes according to the new inputs.
+
+The circuit doesn't remember:
+```
+“A used to be 1.”
+```
+
+That's combinational logic.

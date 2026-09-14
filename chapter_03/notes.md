@@ -736,3 +736,58 @@ circuit implements function
 ```
 
 ![alt text](image-8.png)
+
+
+
+## 33. Logical completeness
+```
+AND
+OR
+NOT
+```
+are logically complete.
+
+meaning:
+   with enough AND , OR, and NOT gates, you can build a circuit implementing any truth table you want.
+
+it means these basic operations are enough as a function for arbitrary combinational logic
+
+
+## 34. NAND is also logically complete
+
+#### Can we build everything using only NAND?
+yes
+
+Because:
+
+### NOT using NAND
+
+Connect both inputs together:
+```
+A ──┐
+    ├── NAND → NOT A
+A ──┘
+```
+
+Because:
+```
+A NAND A
+=
+NOT(A AND A)
+=
+NOT A
+```
+
+Then using NAND plus the NAND-built NOT function, you can construct AND and OR.
+
+```
+NAND
+   ↓
+NOT
+   ↓
+AND / OR
+   ↓
+anything
+```
+
+This means a single type of gate can serve as a universal building block.

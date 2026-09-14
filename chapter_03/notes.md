@@ -1032,6 +1032,194 @@ combinational
 ```
 
 and:
-``
+```
 storage/sequential
 ```
+
+## PART V — Memory
+
+## 43. What is memory?
+
+At the basic level:
+Memory is a collection of storage locations.
+
+Each location has:
+```
+an address
+```
+
+and:
+```
+a value
+```
+
+the unique identifier of a location as its address, and the number of bits stored in each location as its addressability.
+
+Think of a building:
+```
+Room 0 → value
+Room 1 → value
+Room 2 → value
+Room 3 → value
+```
+
+The room number is analogous to the address.
+
+
+### 44. Address space
+Suppose you have:
+```
+2 address bits
+```
+
+How many unique addresses?
+```
+2² = 4
+```
+
+So:
+```
+00
+01
+10
+11
+```
+
+give:
+```
+4 locations
+```
+```
+n address bits
+→
+2ⁿ unique locations
+```
+
+### 45. Addressability
+Now suppose each location stores:
+```
+3 bits
+```
+
+Then we'd have:
+```
+4 locations
+×
+3 bits/location
+```
+![alt text](image-11.png)
+
+The book's small example is a 2² × 3-bit memory: four locations, each containing three bits.
+
+
+### 46. Address space vs addressability
+Suppose:
+```
+Address space = 4 locations
+Addressability = 3 bits/location
+```
+
+### 47. How do we read memory?
+Let's say:
+```
+Address 00 → 101
+Address 01 → 011
+Address 10 → 110
+Address 11 → 001
+```
+
+Suppose we request:
+```
+10
+```
+How does the hardware find the correct row?
+
+We use a:
+
+# Decoder
+```
+Address
+   ↓
+Decoder
+   ↓
+select one memory row
+```
+
+For:
+```
+10
+```
+the decoder activates exactly one word line.
+
+![alt text](image-12.png)
+
+
+### 48. Then comes the MUX idea
+Once the decoder selects one row, the stored bits from that row need to reach the output.
+
+The book's circuit effectively uses AND/OR structures that work like a multiplexer: only the selected row's value gets through.
+
+So memory uses concepts we've already learned:
+```
+decoder
++
+storage elements
++
+mux-like selection
+```
+
+This is a major theme:
+
+    ### New structures are made from structures you already understand.
+
+
+### 49. How do we write to memory?
+Suppose:
+```
+Address = 10
+Data = 101
+WE = 1
+```
+
+Then:
+```
+address
+   ↓
+decoder
+   ↓
+select row 10
+   ↓
+WE asserted
+   ↓
+write 101 into selected storage elements
+```
+
+### 50. A memory operation now makes sense
+When a CPU says:
+```
+“Read memory location X”
+```
+
+the hardware effectively needs to:
+```
+1. Receive address X.
+2. Decode X.
+3. Select exactly one location.
+4. Route that location's stored bits to the output.
+```
+
+When it says:
+```
+“Write value V to location X”
+```
+
+it needs to:
+```
+1. Receive address X.
+2. Decode X.
+3. Select location X.
+4. Assert write enable.
+5. Store V there.
+```
+
+This will be tremendously useful once we get to actual CPU memory operations.

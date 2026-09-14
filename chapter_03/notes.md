@@ -1577,3 +1577,67 @@ You could get uncontrolled changes.
 ![alt text](image-19.png)
 
 ![alt text](image-20.png)
+
+
+### 65. This is why the flip-flop is needed
+A flip-flop provides controlled state updates.
+
+The basic desired behavior is:
+
+During current cycle:
+    read current state
+
+At controlled clock boundary:
+    update to next state
+
+So conceptually:
+```
+Current State
+     │
+     ▼
+Combinational Logic
+     │
+     ▼
+Next State
+     │
+     │
+     ▼
+  Flip-Flop
+     │
+     │ clock
+     ▼
+New Current State
+```
+
+The book explains the master/slave flip-flop as a way to ensure current state remains stable during the cycle while the next state is prepared and then transferred at the appropriate boundary.
+
+
+### 66. Master/slave flip-flop
+The book constructs it using:
+
+two gated D latches
+
+called:
+```
+Master
+Slave
+```
+
+They respond during opposite phases of the clock.
+
+The mental model is enough for now:
+```
+Master
+   ↓
+temporarily captures new value
+
+Slave
+   ↓
+holds externally visible current value
+```
+
+The clock controls when information passes between them.
+
+This prevents the state from continuously changing during one clock cycle.
+
+![alt text](image-21.png)

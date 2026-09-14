@@ -691,3 +691,48 @@ ALU
 ```
 
 #### Build something big by systematically combining small understandable pieces
+
+
+## 31. PLA — Programmable Logic Array
+
+What if I want to implement arbitrary logical functions?
+
+A PLA gives us a structured way of doing that.
+
+The simplified structure is:
+```
+inputs
+  ↓
+AND array
+  ↓
+OR array
+  ↓
+outputs
+```
+
+The book explains that for n inputs, the AND array can represent the possible input combinations, and connections to the OR array determine which combinations make each output become 1.
+
+“Build the truth table directly into hardware.”
+
+
+## 32. Why is PLA called programmable?
+Not “programmable” in the same sense as writing a C program.
+
+Instead, you determine:
+```
+which AND outputs connect
+to
+which OR inputs
+```
+
+Those connections define the desired logical functions.
+
+```
+truth table
+   ↓
+choose connections
+   ↓
+circuit implements function
+```
+
+![alt text](image-8.png)

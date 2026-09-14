@@ -987,3 +987,51 @@ Q stays the same
 ```
 
 ![D-latch](image-10.png)
+
+
+## 42. Why is this different from combinational logic?
+Consider an AND gate:
+```
+A AND B → output
+```
+
+if inputs change:
+```
+output changes
+```
+
+There is no "Memory"
+
+But D latch:
+```
+D = 1
+WE = 1
+```
+
+stores:
+```
+1
+```
+
+Then:
+```
+D changes to 0
+WE = 0
+```
+
+The output can remain:
+```
+1
+```
+
+The previous value matters.
+
+That's the first big difference between:
+```
+combinational
+```
+
+and:
+``
+storage/sequential
+```

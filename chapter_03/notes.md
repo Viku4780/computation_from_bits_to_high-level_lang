@@ -1223,3 +1223,92 @@ it needs to:
 ```
 
 This will be tremendously useful once we get to actual CPU memory operations.
+
+
+
+## PART VI — Sequential Logic
+
+## 51. Combinational vs sequential
+
+# Combinational
+```
+current inputs
+     ↓
+  circuit
+     ↓
+current outputs
+```
+
+no memory
+no history
+
+examples:
+```
+AND
+OR
+MUX
+decoder
+adder
+```
+The book defines them as structures whose outputs depend only on the current inputs.
+
+---
+
+# Sequential
+```
+current inputs ─────┐
+                    ↓
+                 circuit
+                    ↓
+                 outputs
+                    │
+                    ↓
+               storage
+                    │
+                    └──────→ history/state
+```
+
+now:
+```
+current inputs
++
+previous state
+=
+new behavior
+```
+
+The book explicitly distinguishes sequential logic by its storage elements and dependence on prior history
+
+
+### 52. Real-world example: combination lock
+Suppose the correct sequence is:
+```
+R13
+L22
+R3
+```
+
+The lock cannot simply care about:
+```
+"What is the dial position right now?"
+```
+
+It must know:
+```
+What happened before?
+```
+
+For example, reaching 3 after:
+```
+R13 → L22 → R3
+```
+
+is different from reaching 3 after:
+```
+R22 → L13 → R3
+```
+
+Same final number.
+Different history.
+
+Therefore the lock needs memory.

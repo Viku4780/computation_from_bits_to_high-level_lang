@@ -791,3 +791,86 @@ anything
 ```
 
 This means a single type of gate can serve as a universal building block.
+
+
+## PART IV — Now comes the huge conceptual jump
+Everything so far has been:
+COMBINATIONAL
+
+Remember:
+output depends on current inputs
+
+But a computer needs to remember things.
+
+For example:
+```
+What number was I storing?
+What instruction am I executing?
+What state am I currently in?
+```
+
+So we need:
+# Storage.
+
+
+## 35. How can a circuit remember anything?
+We use feedback.
+
+Instead of:
+```
+Input → Circuit → Output
+```
+
+we make:
+```
+           ┌─────────┐
+Input ────►│ Circuit │─── Output
+           ▲      │
+           └──────┘
+              feedback
+```
+
+The output can help maintain the circuit's current condition.
+
+The result is a circuit that can remain in one of multiple stable states.
+
+
+## 36. R-S latch
+It is made from:
+```
+two NAND gates
+```
+
+whose outputs feed back into each other's inputs.
+
+The latch can store:
+```
+0
+```
+
+or:
+```
+1
+```
+
+that is our first actual memory element
+
+
+## 37. Why is feedback important?
+Imagine the latch is currently storing:
+```
+1
+```
+The internal feedback makes the circuit continue producing the conditions necessary to preserve that 1.
+
+Likewise, if it is storing:
+```
+0
+```
+the feedback maintains the 0.
+
+So the circuit has:
+```
+current state
+```
+rather than merely responding to the current input.

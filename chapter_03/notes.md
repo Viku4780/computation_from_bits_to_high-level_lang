@@ -874,3 +874,60 @@ So the circuit has:
 current state
 ```
 rather than merely responding to the current input.
+
+
+## 38. Set and Reset
+The R-S latch has two control inputs:
+
+![R-S latch](image-9.png)
+
+```
+S = Set
+R = Reset
+```
+
+NAND-latch convention:
+```
+S = 0
+R = 1
+```
+
+causes it to store:
+```
+1
+```
+
+while
+```
+S = 1
+R = 0
+```
+
+causes it to store:
+```
+0
+```
+
+when :
+```
+S = 1
+R = 1
+```
+
+the latch simply keeps its current value
+
+this is quiescent state.
+
+
+## 39. Why can't S and R both be 0?
+That creates an invalid condition for this latch.
+
+Both outputs can temporarily become:
+```
+1
+```
+
+and the eventual state becomes dependent on transistor-level electrical behavior rather than the intended logical operation.
+
+For our purposes:
+Don't activate Set and Reset simultaneously.

@@ -931,3 +931,59 @@ and the eventual state becomes dependent on transistor-level electrical behavior
 
 For our purposes:
 Don't activate Set and Reset simultaneously.
+
+
+## 40. Gated D latch
+The R-S latch isn't convenient enough.
+
+We want something simpler:
+“Store this particular bit when I tell you to.”
+
+So we introduce a D latch with:
+```
+D  = Data
+WE = Write Enable
+```
+
+The important behavior is:
+```
+WE = 0
+→ don't change stored value
+
+WE = 1
+→ store D
+```
+
+## 41. Think of the D latch as a box
+Forget its internal gates for a moment.
+
+Imagine:
+```
+        ┌─────────────┐
+D ─────►│             │
+WE ────►│   D LATCH   │────► Q
+        │             │
+        └─────────────┘
+```
+
+If:
+```
+WE = 1
+```
+
+then:
+```
+Q <- D
+```
+
+if:
+```
+WE = 0
+```
+
+then:
+```
+Q stays the same
+```
+
+![D-latch](image-10.png)

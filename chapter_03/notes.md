@@ -396,6 +396,7 @@ So a decoder is essentially:
 
 #### “Which one?”
 
+![alt text](image-1.png)
 
 ## Decoder and CPU instructions
 The LC-3 instruction contains a four-bit opcode
@@ -488,12 +489,18 @@ That's why the LC-3 datapath contains multiple MUXes
 
 ### Larget muxes
 A 2-to-1 mux:
+
+![alt text](image-3.png)
+
 ```
 2 inputs
 1 select bit
 ```
 
 A 4-to-1 mux:
+
+![alt text](image-4.png)
+
 ```
 4 inputs
 2 select bits
@@ -555,6 +562,9 @@ The book calls this a one-bit adder, traditionally a full adder.
 ### 28. Let's understand the full adder intuitively
 
 Suppose:
+
+![alt text](image-5.png)
+
 ```
 A = 0
 B = 0
@@ -618,6 +628,9 @@ Carry = 1
 ### 29. Put four one-bit adders together
 
 Suppose we want:
+
+![alt text](image-6.png)
+
 ```
 A = 1011
 B = 0011

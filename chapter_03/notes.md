@@ -1446,3 +1446,47 @@ forever
 It has a finite set of situations it needs to understand.
 
 Similarly, a processor has a finite number of internal state variables and storage elements.
+
+
+## PART VII — Asynchronous vs Synchronous
+## 60. Asynchronous system
+Imagine a vending machine.
+
+You insert a coin now.
+
+Then wait:
+```
+10 seconds
+```
+
+Then another coin.
+The machine simply waits.
+There is no global timing signal saying:
+
+    “Exactly 1 millisecond has passed; now you must change state.”
+
+The book calls this kind of behavior asynchronous.
+
+
+### 61. Synchronous system
+Computers generally use synchronized state transitions.
+
+Think:
+```
+tick
+tick
+tick
+tick
+```
+At each clock event, the system moves to its next state.
+
+So:
+```
+Current state
+      ↓
+clock event
+      ↓
+Next state
+```
+
+The book emphasizes that computer state transitions occur at identical fixed time intervals.

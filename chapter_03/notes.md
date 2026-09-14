@@ -244,6 +244,8 @@ B ──┘
 
 ## AND and NAND
 
+![alt text](image.png)
+
 ```
 A	B	AND	NAND
 0	0	0	1

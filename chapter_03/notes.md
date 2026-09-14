@@ -1279,6 +1279,7 @@ new behavior
 
 The book explicitly distinguishes sequential logic by its storage elements and dependence on prior history
 
+![alt text](image-13.png)
 
 ### 52. Real-world example: combination lock
 Suppose the correct sequence is:
@@ -1312,3 +1313,136 @@ Same final number.
 Different history.
 
 Therefore the lock needs memory.
+![alt text](image-14.png)
+
+### 53. The concept of state
+state as a snapshot containing all relevant information about a system at a particular moment.
+
+suppose you ask:
+  what is happening in this game right now?
+
+you might need:
+```
+score
+time remaining
+who has the ball
+fouls
+shot clock
+```
+
+together, those values describe the state
+
+
+### 54. State means “where am I in the process?”
+For a combination lock:
+```
+State A:
+nothing correct yet
+
+State B:
+R13 completed
+
+State C:
+R13 → L22 completed
+
+State D:
+R13 → L22 → R3 completed
+```
+
+Each state captures:
+“Where am I in the process?”
+
+### 55. Another example: vending machine
+Suppose a drink costs:
+```
+15 cents
+```
+
+Machine accepts:
+```
+5-cent
+10-cent
+```
+
+Possible states:
+```
+A → 0 or enough money / open
+B → 5 cents
+C → 10 cents
+```
+
+Then:
+```
+State B + nickel → State C
+```
+
+and:
+```
+State C + nickel → State A
+```
+
+because 15 cents has been inserted.
+
+
+## 56. Finite State Machine
+An FSM — Finite State Machine — consists of:
+
+1. finite number of states
+2. finite number of inputs
+3. finite number of outputs
+4. rules for state transitions
+5. rules determining outputs.
+
+Think:
+```
+FSM =
+states
++
+inputs
++
+rules for moving between states
++
+outputs
+```
+
+That's the core.
+
+
+### State diagram
+
+![alt text](image-15.png)
+
+The circles are states.
+
+The arrows are transitions.
+
+The condition/input on the arrow tells us:
+
+    “When this happens, move here.”
+
+### 58. Current state + input → next state
+```
+Current state = 5 cents
+Input = nickel
+        ↓
+Next state = 10 cents
+```
+
+The book explicitly describes next state as being determined by the current state plus current external input.
+
+
+### 59. Why is it called “finite”?
+Because there are only a finite number of states.
+
+A vending machine doesn't need:
+```
+state 1
+state 2
+state 3
+...
+forever
+```
+
+It has a finite set of situations it needs to understand.
+
+Similarly, a processor has a finite number of internal state variables and storage elements.

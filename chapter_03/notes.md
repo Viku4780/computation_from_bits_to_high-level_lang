@@ -1490,3 +1490,90 @@ Next state
 ```
 
 The book emphasizes that computer state transitions occur at identical fixed time intervals.
+
+
+## 62. What is the clock?
+The clock is simply a periodically changing electrical signal.
+
+Conceptually:
+```
+1 ──────┐      ┌──────┐      ┌──────
+        │      │      │      │
+0 ──────┴──────┴──────┴──────┴──────→ time
+```
+
+Or:
+```
+0 → 1 → 0 → 1 → 0 → 1
+```
+
+Each repeated interval is a:
+
+    clock cycle
+
+
+### 63. What does 2 GHz mean?
+```
+2 GHz
+=
+2 billion clock cycles/second
+```
+
+That's:
+```
+2,000,000,000 cycles/second
+```
+
+The corresponding cycle duration is roughly:
+```
+0.5 nanoseconds
+```
+
+in the example.
+
+But be careful with one beginner misconception:
+
+    One clock cycle does not necessarily mean one complete instruction.
+
+The book is preparing us for computer architecture, where an instruction can require multiple internal steps.
+
+The clock is primarily the synchronization mechanism.
+
+
+### 64. Why do we need the clock?
+Because without synchronized storage, state could change unpredictably during the period in which combinational logic is calculating.
+
+imagine:
+```
+state
+ ↓
+combinational logic
+ ↓
+next state
+ ↓
+state storage
+```
+
+If storage changes immediately whenever its input changes, then:
+```
+new state
+ ↓
+combinational logic recalculates
+ ↓
+another new state
+ ↓
+combinational logic recalculates
+ ↓
+another new state
+...
+
+You could get uncontrolled changes.
+```
+
+![alt text](image-17.png)
+
+![alt text](image-18.png)
+
+![alt text](image-19.png)
+
+![alt text](image-20.png)

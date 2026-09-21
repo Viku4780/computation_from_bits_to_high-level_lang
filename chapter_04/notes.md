@@ -232,3 +232,125 @@ MAR -> where
 MDR -> what
 WE -> write it
 ```
+
+## Component 2 - Processing Unit
+The processing unit contains the :
+
+# ALU
+
+Arithemetic and logic unit.
+
+The ALU performs operations such as:
+```
+ADD
+AND
+NOT
+```
+
+For the LC-3, the ALU operates on 16-bit words.
+
+So conceptually:
+```
+A ──────┐
+        │
+        ▼
+      ┌─────┐
+B ───►│ ALU │───► Result
+      └─────┘
+```
+
+For example:
+```
+A = 5
+B = 3
+
+ALU:
+ADD
+
+Result:
+8
+```
+
+### What is a word?
+
+# Word length
+
+A computer's word length is the size of the data elements normally processed by the ALU.
+
+For the LC-3:
+```
+word length = 16 bits
+```
+
+So a word is:
+```
+16 bits
+```
+
+for the LC-3.
+
+The book explains that different computers can have different word lengths, but the LC-3 is specifically a 16-bit machine.
+
+
+### Registers
+The ALU needs somewhere to get its inputs and somewhere to put temporary results.
+
+That's where registers come in.
+
+The LC-3 has:
+```
+R0
+R1
+R2
+R3
+R4
+R5
+R6
+R7
+```
+
+Eight registers.
+
+Each stores:
+```
+16 bits
+```
+
+The book describes these as temporary storage close to the ALU so that frequently needed values don't have to be repeatedly retrieved from slower memory.
+
+
+### Why don't we just use memory for everything?
+Because registers are much closer to the processor's computation machinery.
+
+Imagine calculating:
+```
+(A + B) × C
+```
+
+You could:
+```
+read A from memory
+read B from memory
+ADD
+write result to memory
+
+read result from memory
+read C
+multiply
+```
+
+That's unnecessary movement.
+
+Instead:
+```
+A → register
+B → register
+      ↓
+     ALU
+      ↓
+result → register
+      ↓
+multiply with C
+```
+
+The book uses essentially this reasoning when explaining why processors have temporary storage in registers.

@@ -375,3 +375,24 @@ keyboard
 as its input device.
 
 The book calls these devices peripherals.
+
+
+## Component 4 — Output
+
+The computer also needs to communicate results to us.
+
+For the LC-3:
+```
+monitor
+```
+
+is the basic output device.
+
+Other examples include:
+```
+printer
+LED
+disk
+```
+
+The book lists these as examples of output device

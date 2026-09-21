@@ -354,3 +354,24 @@ multiply with C
 ```
 
 The book uses essentially this reasoning when explaining why processors have temporary storage in registers.
+
+
+## Component 3 — Input
+
+A computer has to get information from outside.
+
+Examples:
+```
+keyboard
+mouse
+scanner
+```
+
+The LC-3 simplifies things and uses:
+```
+keyboard
+```
+
+as its input device.
+
+The book calls these devices peripherals.

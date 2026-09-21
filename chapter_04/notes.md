@@ -102,3 +102,133 @@ are both just bit patterns in memory.
 The meaning depends on how the processor uses them.
 
 The processor's current activity and control logic determine how those bits are interpreted
+
+
+## Component 1 — Memory
+Memory is essentially:
+```
+many locations
+```
+
+and every location has:
+```
+address
++
+stored bits
+```
+
+For the LC-3:
+```
+Address space = 2^16 locations
+Addressability = 16 bits
+```
+
+Therefore:
+```
+65,536 locations
+```
+
+and:
+```
+each location = 16 bits
+```
+
+So each memory location contains one 16-bit word in the LC-3.
+
+
+### How does the processor talk to memory?
+This is where two important registers enter:
+```
+MAR
+MDR
+```
+
+#### MAR
+Memory Address Register
+
+it contains:
+
+    The address of the memory location we want to access.
+
+#### MDR
+Memory Data Register
+
+it contains:
+
+    the data being transferred to or from memory.
+
+```
+MAR = "WHERE?"
+
+MDR = "WHAT?"
+```
+
+### Reading memory
+suppose:
+```
+MAR = 0101
+```
+
+The processor is essentially saying:
+
+    Memory, give me what's stored at address 0101
+
+Memory looks at:
+```
+MAR
+```
+
+and finds the corresponding location.
+
+suppose that location contains:
+```
+1011001010101010
+```
+
+Memory places that value into:
+```
+MDR
+```
+
+so:
+
+```
+             READ
+
+Processor
+   │
+   │ address
+   ▼
+  MAR
+   │
+   ▼
+ Memory
+   │
+   │ data
+   ▼
+  MDR
+```
+
+### Writing memory
+suppose we want :
+```
+Address = 0101
+Data = 1111000011110000
+```
+
+The processor puts:
+```
+MAR = 0101
+MDR = 1111000011110000
+```
+
+Then activates the memory's write control.
+
+Memory writes the MDR contents into the location specified by MAR
+
+so:
+```
+MAR -> where
+MDR -> what
+WE -> write it
+```

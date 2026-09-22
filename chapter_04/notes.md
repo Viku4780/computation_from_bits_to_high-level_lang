@@ -1291,3 +1291,86 @@ Register
 The control unit decides which component is allowed to put data onto the bus and which component is allowed to receive it.
 
 That's what many of the control signals are doing.
+
+
+## The LD instruction
+
+Let's make memory access concrete.
+
+Suppose:
+```
+R2 = ?
+```
+
+and we want:
+```
+R2 ← M[x3007]
+```
+
+The LC-3 has:
+```
+LD
+```
+
+The book describes LD as:
+
+    go to a particular memory location, read the value, and put it into a register.
+
+Conceptually:
+```
+PC
+ ↓
+calculate address
+ ↓
+MAR
+ ↓
+memory
+ ↓
+MDR
+ ↓
+R2
+```
+
+More specifically:
+```
+address = PC + sign_extended(offset)
+```
+
+Then:
+```
+M[ address ] → R2
+```
+
+
+### Why sign-extend?
+
+Suppose the 9-bit offset is:
+```
+111111001
+```
+
+From Chapter 2 we know this is a negative 2's complement number:
+```
+-7
+```
+
+The processor needs to use it as a 16-bit number.
+
+So:
+```
+111111001
+```
+
+becomes:
+```
+1111111111111001
+```
+
+That's sign extension.
+
+Then:
+```
+PC + (-7)
+```
+
+gives the target address.

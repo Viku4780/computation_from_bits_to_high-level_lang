@@ -1374,3 +1374,93 @@ PC + (-7)
 ```
 
 gives the target address.
+
+
+## TRAP
+
+Suppose a user program wants to:
+```
+print something
+```
+
+or:
+```
+read a key
+```
+
+or:
+```
+halt
+```
+
+The LC-3 uses:
+
+# TRAP
+
+to request certain services from the operating system.
+
+The book describes TRAP as a control instruction/system call and says that the eight-bit trap vector identifies the requested servi
+
+
+### What is an operating system in this model?
+
+The operating system is itself a program.
+
+The book explicitly says that systems such as Linux, DOS, MacOS, and Windows are computer programs, and from the computer's perspective the instruction cycle continues while executing the OS as well as user programs.
+
+That's a powerful concept.
+
+There isn't a magical separate "OS mode of existence."
+
+At the machine level:
+```
+instructions
+```
+
+are being executed.
+
+Some belong to:
+```
+user program
+```
+
+and others belong to:
+```
+operating system
+```
+
+### How does the machine halt?
+
+This is an interesting philosophical problem.
+
+We said:
+```
+FETCH
+DECODE
+EXECUTE
+FETCH
+DECODE
+EXECUTE
+...
+forever
+```
+
+So how does it stop?
+
+The LC-3 uses the operating system mechanism.
+
+The book explains that the clock keeps driving the instruction cycle, and stopping execution requires stopping the clock's effective output by clearing the RUN latch. In the LC-3, the OS handles this through the HALT service requested by TRAP x25.
+
+```
+program
+   ↓
+TRAP x25
+   ↓
+operating system
+   ↓
+clear RUN
+   ↓
+clock output stops
+   ↓
+instruction processing stops
+```

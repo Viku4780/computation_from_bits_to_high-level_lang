@@ -541,3 +541,118 @@ contains:
                     ▼            ▼
                  Keyboard     Monitor
 ```
+
+
+##  What exactly is an instruction?            
+
+    The most basic unit of computer processing is the instruction.
+
+
+An instruction has two main conceptual parts:
+```
+OPCODE
++
+OPERANDS
+```
+
+### Opcode
+
+    What operation should be performed?
+
+For example:
+
+    ADD
+
+or:
+
+    ADD
+
+or:
+
+    LD
+
+or:
+
+    BR
+
+or:
+
+    TRAP
+
+
+### Operands
+
+    What data or locations should the operation work with?
+
+For:
+
+    ADD R1, R2, R3
+
+```
+ADD
+ ↑
+what?
+
+R2
+ ↑
+source
+
+R3
+ ↑
+source
+
+R1
+ ↑
+destination
+```
+
+
+### The three broad instruction categories
+
+#### Operate
+perform computation
+
+example:
+```
+ADD
+AND
+```
+
+#### Data movement
+move data between places
+
+example:
+  
+    LD
+
+#### Control
+change the sequence of instructions
+
+examples:
+```
+BR
+TRAP
+```
+
+### LC-3 instructions are 16 bits
+
+Every LC-3 instruction occupies:
+
+    16 bits
+
+The top four bits:
+
+    bits [15:12]
+
+contain the opcode.
+
+The remaining bits specify operands or other instruction information.
+
+So conceptually:
+```
+15                    0
+┌────────┬────────────────┐
+│ opcode │ other fields   │
+│ 4 bits │    12 bits     │
+└────────┴────────────────┘
+```

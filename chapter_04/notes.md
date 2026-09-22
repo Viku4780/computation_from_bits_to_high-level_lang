@@ -862,3 +862,29 @@ registers
 or possibly encoded directly in the instruction as an immediate value.
 
 So ADD doesn't need to calculate a memory address.
+
+
+## Phase 4 — FETCH OPERANDS
+
+Now the processor obtains the actual values the instruction needs.
+
+For:
+```
+ADD R6, R2, R6
+```
+
+it needs:
+```
+contents of R2
+contents of R6
+```
+
+For:
+```
+LD R2, ...
+```
+
+it needs:
+```
+the value stored in the calculated memory address
+```

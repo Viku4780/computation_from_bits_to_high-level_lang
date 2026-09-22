@@ -1268,3 +1268,26 @@ MAR:
 ```
 
 This is orchestration.
+
+
+### Processor bus
+
+    a shared pathway used to move values between processor components
+
+Conceptually:
+```
+Register
+    │
+    ▼
+  BUS
+    │
+    ├────► another register
+    │
+    ├────► MAR
+    │
+    └────► ALU input
+```
+
+The control unit decides which component is allowed to put data onto the bus and which component is allowed to receive it.
+
+That's what many of the control signals are doing.

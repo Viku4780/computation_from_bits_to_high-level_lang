@@ -767,3 +767,27 @@ IR = 0001000001000011
 Now the processor has the instruction.
 
 Fetch is complete.
+
+
+## Phase 2 — DECODE
+Now the processor asks:
+
+    “What instruction did I just fetch?”
+
+Look at:
+
+    IR
+
+Suppose:
+
+    IR = 0001...
+
+The top four bits:
+
+    0001
+
+are the opcode for:
+
+    ADD
+
+The LC-3 uses a decoder to identify which opcode is represented.

@@ -791,3 +791,74 @@ are the opcode for:
     ADD
 
 The LC-3 uses a decoder to identify which opcode is represented.
+
+
+## Phase 3 — EVALUATE ADDRESS
+Some instructions need memory addresses.
+
+For example:
+
+    LD
+
+means:
+
+    Load a value from memory.
+
+So the processor has to determine:
+
+    “Which memory address should I read?”
+
+The LC-3's LD uses:
+```
+PC + offset
+```
+
+The book explains that the offset is sign-extended to 16 bits and added to the current PC.
+
+
+Example
+
+Suppose:
+```
+PC = x3001
+offset = +6
+```
+
+Then:
+```
+address = x3001 + 6
+        = x3007
+```
+
+So:
+```
+LD R1, ...
+```
+
+will eventually read:
+```
+M[x3007]
+```
+
+and put it in:
+```
+R1
+```
+
+### Does every instruction need EVALUATE ADDRESS?
+
+No.
+
+For:
+```
+ADD
+```
+
+the operands are already in:
+```
+registers
+```
+
+or possibly encoded directly in the instruction as an immediate value.
+
+So ADD doesn't need to calculate a memory address.

@@ -938,3 +938,78 @@ R1
 ```
 
     The six phases are a conceptual framework. A particular instruction may skip some phases.
+
+
+## Example: Let's execute ADD completely
+
+suppose:
+```
+R2 = 5
+R6 = 3
+```
+
+and memory contains:
+```
+M[x3000] = ADD R6, R2, R6
+```
+
+initially:
+```
+PC = x3000
+```
+
+### Fetch
+
+```
+MAR <- x3000
+PC <- x3001
+MDR <- M[x3000]
+IR <- MDR
+```
+
+Now:
+
+```
+IR = ADD R6,R2,R6
+```
+
+### Decode
+Hardware sees:
+
+```
+opcode = ADD
+```
+
+###  Evaluate address
+Not needed.
+
+### Fetch operands
+```
+R2 = 5
+R6 = 3
+```
+
+### Execute
+ALU:
+
+```
+5 + 3 = 8
+```
+
+### Store result
+
+```
+R6 <- 8
+```
+
+Done.
+
+Then:
+```
+PC = x3001
+```
+
+so the next instruction is fetched from:
+```
+M[x3001]
+```

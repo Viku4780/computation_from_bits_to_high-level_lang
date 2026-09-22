@@ -1013,3 +1013,173 @@ so the next instruction is fetched from:
 ```
 M[x3001]
 ```
+
+## But how does a loop happen?
+
+Normally: sequential execution.
+
+```
+instruction 1
+↓
+instruction 2
+↓
+instruction 3
+↓
+instruction 4
+```
+
+But programs need:
+
+```
+if
+while
+for
+function calls
+loops
+```
+
+So sometimes we need:
+
+```
+instruction 1
+instruction 2
+instruction 3
+instruction 2
+instruction 3
+instruction 2
+...
+```
+
+How?
+
+# Change the PC.
+
+The book explains that control instructions change the PC during execution so that the next FETCH retrieves a different instruction than the normal sequential one.
+
+This is one of the most important things to understand about control flow at machine level.
+
+
+### How does a branch create a loop?
+Suppose:
+
+```
+x3003 -> instruction
+x3004 -> instruction
+x3005 -> BR
+```
+
+if BR decides:
+
+    Go back to x3003
+
+it changes:
+```
+PC
+```
+
+from its normal sequential value:
+```
+x3006
+```
+
+to:
+```
+x3003
+```
+
+Then the next instruction FETCH uses:
+```
+PC = x3003
+```
+
+and the processor executes the earlier instructions again.
+
+That's literally how looping works at this level
+
+
+### BR — Branch instruction
+
+The LC-3 branch instruction contains:
+```
+opcode
++
+condition
++
+offset
+```
+
+The book explains that the condition determines whether the branch happens, and the offset is sign-extended and added to the PC to form the target address.
+
+Think:
+```
+BR condition, offset
+```
+
+as:
+
+    “If the specified condition is true, change the PC by this offset. Otherwise, leave the PC alone.”
+
+
+Example
+
+Suppose:
+```
+PC after FETCH = x3006
+offset = -6
+```
+
+Then:
+```
+x3006 + (-6) = x3000
+```
+
+So:
+```
+PC ← x3000
+```
+
+Now the next FETCH starts again at:
+```
+x3000
+```
+
+That's a loop.
+
+```
+ADD
+ ↓
+result
+
+BR
+ ↓
+ask something about result
+
+true  → change PC
+false → continue normally
+```
+
+```
+while (x != 0) {
+    x--;
+}
+```
+
+At a high level:
+```
+while condition
+    ↓
+repeat body
+```
+
+At the machine level, conceptually:
+```
+do body
+
+test x
+
+if x != 0
+    change PC back to body
+
+otherwise
+    continue forward
+```

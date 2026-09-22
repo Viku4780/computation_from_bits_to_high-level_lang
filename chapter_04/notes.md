@@ -703,3 +703,67 @@ One basic timing interval.
 The entire sequence of work needed to process one instruction.
 
 It may require several clock cycles.
+
+### Phase 1 — FETCH
+
+The processor needs to get the next instruction from memory.
+
+Remember:
+
+    PC = address of next instruction
+
+So:
+
+#### Step 1
+
+Copy:
+
+    PC → MAR
+
+and increment PC:
+
+    PC → PC + 1
+
+The book says these happen simultaneously in the first FETCH machine cycle.
+
+
+#### Step 2 of FETCH
+
+Memory is accessed using:
+
+    MAR
+
+Suppose:
+
+    M[x3000] = 0001000001000011
+
+Memory places that value into:
+
+    MDR
+
+So:
+```
+MAR = x3000
+
+Memory:
+x3000 → 0001000001000011
+
+          ↓
+
+MDR = 0001000001000011
+```
+
+### Step 3 of FETCH
+
+Now:
+
+    MDR → IR
+
+So:
+```
+IR = 0001000001000011
+```
+
+Now the processor has the instruction.
+
+Fetch is complete.

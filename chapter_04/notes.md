@@ -1464,3 +1464,301 @@ clock output stops
    ↓
 instruction processing stops
 ```
+
+## Now the best example: multiplication
+
+Suppose the computer doesn't have:
+```
+MUL
+```
+
+instruction.
+
+But it has:
+```
+ADD
+```
+
+Can it multiply?
+
+Yes.
+
+Because:
+```
+5 × 4
+=
+5 + 5 + 5 + 5
+```
+
+### The algorithm
+
+We want:
+```
+5 × 4
+```
+
+Algorithm:
+```
+result = 0
+
+repeat 4 times:
+    result = result + 5
+
+return result
+```
+
+Or:
+```
+R1 = 5
+R2 = 4
+R3 = 0
+
+while R2 != 0:
+    R3 = R3 + R1
+    R2 = R2 - 1
+```
+
+```
+LD
+→ load data
+
+AND
+→ initialize a register to zero
+
+ADD
+→ arithmetic
+
+BR
+→ loop
+
+TRAP
+→ halt through OS
+```
+
+```
+x3000 → LD R1, ...
+x3001 → LD R2, ...
+x3002 → initialize R3
+x3003 → R3 = R3 + R1
+x3004 → R2 = R2 - 1
+x3005 → branch if not zero
+x3006 → HALT
+x3007 → 5
+x3008 → 4
+```
+
+### first instruction
+```
+x3000:
+LD R1, x3007
+```
+
+The processor:
+```
+FETCH
+↓
+DECODE
+↓
+calculate address
+↓
+read M[x3007]
+↓
+put value into R1
+```
+
+So:
+```
+R1 = 5
+```
+
+### Second instruction
+```
+x3001:
+LD R2, x3008
+```
+
+Eventually:
+```
+R2 = 4
+```
+
+Now:
+```
+R1 = 5
+R2 = 4
+```
+
+### Third instruction
+
+We need:
+```
+R3 = 0
+```
+
+The program uses an AND trick.
+
+Conceptually:
+```
+R3 AND 0
+```
+
+always produces:
+```
+0
+```
+
+so:
+```
+R3 = 0
+```
+
+The book explicitly explains this initialization technique
+
+Now:
+```
+R1 = 5
+R2 = 4
+R3 = 0
+```
+
+### Fourth instruction
+```
+R3 = R3 + R1
+```
+
+First time:
+```
+R3 = 0 + 5
+   = 5
+```
+
+### Fifth instruction
+```
+R2 = R2 - 1
+```
+
+Remember, the LC-3 doesn't have a subtraction instruction in this simple set.
+
+So it uses:
+```
+ADD R2, R2, #-1
+```
+
+Conceptually:
+```
+R2 = 4 - 1
+   = 3
+```
+
+### Sixth instruction — branch
+
+Now:
+```
+R2 = 3
+```
+
+Is it zero?
+```
+NO
+```
+
+So:
+```
+BR not-zero
+```
+
+changes the PC back to:
+```
+x3003
+```
+
+Now the loop begins again.
+
+### Second iteration
+```
+R3 = 5 + 5 = 10
+R2 = 3 - 1 = 2
+```
+
+Branch back.
+
+### Third iteration
+```
+R3 = 10 + 5 = 15
+R2 = 2 - 1 = 1
+```
+
+Branch back.
+
+### Fourth iteration
+```
+R3 = 15 + 5 = 20
+R2 = 1 - 1 = 0
+```
+
+Now:
+```
+R2 == 0
+```
+
+The branch condition fails.
+
+So the PC is not changed backward.
+
+The processor proceeds to:
+```
+x3006
+```
+
+### HALT
+
+At:
+```
+x3006
+```
+
+the program executes:
+```
+TRAP x25
+```
+
+which asks the operating system to halt the program/computer processing in the LC-3 model.
+
+Final:
+```
+R3 = 20
+```
+
+```
+                   MEMORY
+                     │
+                     │ instruction
+                     ▼
+                    MDR
+                     │
+                     ▼
+                     IR
+                     │
+                     │ opcode
+                     ▼
+                ┌───────────┐
+                │  CONTROL  │
+                │    FSM    │
+                └─────┬─────┘
+                      │
+              control signals
+                      │
+       ┌──────────────┼───────────────┐
+       ▼              ▼               ▼
+   Registers         ALU            Memory
+       │              │               │
+       └───────┬──────┘               │
+               ▼                      │
+             RESULT                   │
+               │                      │
+               ▼                      │
+           Register /                 │
+           Memory                    │
+                                      │
+PC ─────► MAR ─────► Memory ◄────────┘
+```

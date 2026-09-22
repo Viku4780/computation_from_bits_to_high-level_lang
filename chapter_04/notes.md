@@ -913,3 +913,28 @@ BR
 ```
 
 the processor may calculate a new PC.
+
+
+
+## Phase 6 — STORE RESULT
+
+Finally, the result goes where the instruction says it should go.
+
+For example:
+```
+ADD R1, R2, R3
+```
+
+might conceptually mean:
+```
+R1 ← R2 + R3
+```
+
+So:
+```
+ALU result
+   ↓
+R1
+```
+
+    The six phases are a conceptual framework. A particular instruction may skip some phases.

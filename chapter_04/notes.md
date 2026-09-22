@@ -1183,3 +1183,88 @@ if x != 0
 otherwise
     continue forward
 ```
+
+## The Control Unit is itself an FSM
+
+The LC-3 control unit contains a synchronous finite state machine. Each state represents a unit of processor activity, and the FSM moves from one state to another each clock cycle.
+
+```
+              CONTROL UNIT
+
+        ┌────────────────────┐
+        │      FSM           │
+        │                    │
+        │ State 1 → State 2  │
+        │    ↓          ↓    │
+        │ State 3 → State 4  │
+        └────────────────────┘
+```
+
+Each state says:
+
+    During this clock cycle, perform these control actions.
+
+
+### Example: FETCH as FSM states
+
+#### State 1
+```
+MAR ← PC
+PC ← PC + 1
+```
+
+#### State 2
+```
+MDR ← Memory[MAR]
+```
+
+#### State 3
+```
+IR ← MDR
+```
+
+#### State 4
+Decode.
+
+![State diagram](image-1.png)
+
+
+# CPU:
+
+```
+ALU
++
+registers
++
+memory
++
+control FSM
+```
+
+### Example of control signals
+
+Suppose the FSM wants:
+```
+MAR ← PC
+```
+
+How can it physically make that happen?
+
+The control unit activates signals such as:
+```
+GatePC
+LD.MAR
+```
+
+The book explains that GatePC allows the PC value onto the processor bus and LD.MAR tells the MAR register to capture the bus value at the end of the clock cycle.
+
+So the control unit is effectively saying:
+```
+PC:
+"put your value on the bus."
+
+MAR:
+"capture the bus value."
+```
+
+This is orchestration.

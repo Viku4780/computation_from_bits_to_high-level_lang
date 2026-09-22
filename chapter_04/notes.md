@@ -396,3 +396,148 @@ disk
 ```
 
 The book lists these as examples of output device
+
+
+## Component 5 -- Control unit
+
+The ALU can:
+```
+ADD
+AND
+NOT
+```
+
+Memory can:
+```
+read
+write
+```
+
+Registers can:
+
+    store values
+
+But something has to tell everyone:
+
+    What should happen right now?
+
+That is the :
+
+# Control unit
+
+### What does the control unit actually control?
+
+Suppose we want to perform:
+
+    R1 = R2 + R3
+
+The control unit needs to orchestrate something like:
+```
+1. Get R2
+2. Get R3
+3. Tell ALU to ADD
+4. Store result into R1
+```
+
+The ALU doesn't decide this by itself.
+
+The control unit sends control signals telling the datapath what to do.
+
+The LC-3's control unit contains a finite state machine, and the current instruction in the IR helps determine what actions must be performed.
+
+
+### Two kinds of things moving through the processor
+
+The LC-3 diagram distinguishes between:
+
+#### Data
+
+Actual values being processed.
+
+For example:
+
+    0000000000000101
+
+#### Control signals
+
+Signals telling hardware what to do.
+
+For example, conceptually:
+```
+"perform ADD"
+"load this register"
+"put ALU result on bus"
+```
+
+The book represents these differently in Figure 4.3 and explains that filled arrowheads represent data while unfilled arrowheads represent control signals.
+
+![The LC-3 asan example of the von Neumann model.](image.png)
+
+
+### Two very important control registers: PC and IR
+
+The control unit needs to know:
+
+    What instruction am I executing?
+
+and:
+
+    Where is the next instruction?
+
+So we have:
+```
+IR
+PC
+```
+
+### IR — Instruction Register
+
+The:
+
+### Instruction Register
+
+holds:
+
+    the instruction currently being processed.
+
+
+### PC — Program Counter
+
+The:
+
+### Program Counter
+
+contains:
+
+    the address of the next instruction to be processed.
+
+
+```
+                    ┌──────────────┐
+                    │    MEMORY    │
+                    │              │
+                    │ program/data │
+                    └──────┬───────┘
+                           │
+                       MAR/MDR
+                           │
+                           ▼
+                   ┌───────────────┐
+                   │   PROCESSOR   │
+                   │               │
+                   │ Control Unit  │
+                   │   PC / IR     │
+                   │       │       │
+                   │       ▼       │
+                   │   control     │
+                   │               │
+                   │ Registers     │
+                   │       │       │
+                   │       ▼       │
+                   │      ALU      │
+                   └───────────────┘
+                           │
+                    ┌──────┴─────┐
+                    ▼            ▼
+                 Keyboard     Monitor
+```

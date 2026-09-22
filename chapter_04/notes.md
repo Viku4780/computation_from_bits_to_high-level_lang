@@ -888,3 +888,28 @@ it needs:
 ```
 the value stored in the calculated memory address
 ```
+
+## Phase 5 — EXECUTE
+
+Now we actually perform the requested operation.
+
+For:
+```
+ADD
+```
+
+the ALU adds.
+
+For:
+```
+AND
+```
+
+the ALU performs bitwise AND.
+
+For:
+```
+BR
+```
+
+the processor may calculate a new PC.

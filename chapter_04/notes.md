@@ -656,3 +656,50 @@ So conceptually:
 │ 4 bits │    12 bits     │
 └────────┴────────────────┘
 ```
+
+
+### Let's execute one instruction
+
+Suppose memory contains:
+```
+x3000 -> ADD instruction
+x3001 -> another instruction
+x3002 -> another instruction
+```
+
+And:
+
+    PC = x3000
+
+what happens?
+
+The processor performs an:
+
+# Instruction Cycle
+
+```
+FETCH
+DECODE
+EVALUATE ADDRESS
+FETCH OPERANDS
+EXECUTE
+STORE RESULT
+```
+
+Do not confuse this with a single clock cycle
+
+### Instruction cycle vs clock cycle
+
+This deserves special attention.
+
+#### Clock cycle
+
+One basic timing interval.
+
+    tick
+
+#### Instruction cycle
+
+The entire sequence of work needed to process one instruction.
+
+It may require several clock cycles.

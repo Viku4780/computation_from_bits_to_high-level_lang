@@ -358,3 +358,96 @@ because:
 ```
 
 The book points out that not every integer can therefore be used as an immediate operand.
+
+
+### ADD
+
+Opcode:
+
+0001
+
+Meaning:
+
+destination = source1 + source2
+
+The source operands can be:
+
+register + register
+
+or:
+
+register + immediate
+
+The destination is always a register.
+
+The book gives the ADD format and explains that bit [5] determines where the second source is a register or an immediate value
+
+
+### ADD — register form
+Example:
+```
+ADD R2, R0, R1
+```
+
+means:
+```
+R2 = R0 + R1
+```
+
+Suppose:
+```
+R0 = 7
+R1 = 3
+```
+
+then:
+```
+R2 = 10
+```
+
+The instruction encoding conceptually looks like:
+```
+0001
+ ↓
+ADD opcode
+
+000
+ ↓
+destination R2
+
+000
+ ↓
+source R0
+
+0
+ ↓
+register mode
+
+00
+ ↓
+unused/reserved in this format
+
+001
+ ↓
+source R1
+```
+
+### ADD — immediate form
+Example:
+```
+ADD R2, R0, #5
+```
+
+means:
+```
+R2 = R0 + 5
+```
+
+Now bit [5] is:
+```
+1
+```
+
+which tells the hardware:
+
+    The second operand isn't another register. It's the 5-bit immediate field.

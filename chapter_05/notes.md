@@ -291,3 +291,70 @@ R3 ───┘
 ```
 
 That's register addressing.
+
+
+### Immediate addressing
+Now consider:
+```
+ADD R1, R2, #5
+```
+
+The 5 isn't stored in another register
+
+it's literally encoded inside the instruction.
+
+that's why it's called:
+```
+immediate
+```
+
+or :
+```
+literal
+```
+
+### Why do immediate operands exists?
+Because sometimes you just need a small constant.
+
+Suppose:
+```
+R2 = 10
+```
+
+and you want:
+```
+R2 = R2 + 1
+```
+
+It would be inconvenient to first put 1 somewhere else.
+
+So:
+```
+ADD R2, R2, #1
+```
+
+lets the instruction carry the value.
+
+#### But immediate values are limited
+
+The instruction only has a limited number of bits available for the immediate.
+
+For ADD and AND:
+```
+bits [4:0]
+```
+
+hold a 5-bit immediate.
+
+Five-bit 2's-complement range:
+```
+-16 through +15
+```
+
+because:
+```
+-2^4 = -16
+2^4 - 1 = 15
+```
+
+The book points out that not every integer can therefore be used as an immediate operand.

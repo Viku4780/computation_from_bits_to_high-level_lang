@@ -614,3 +614,70 @@ LEA → give me the ADDRESS
 
 LD  → give me the VALUE at that ADDRESS
 ```
+
+## Data movement
+The LC-3 has six data movement instructions:
+```
+LD
+ST
+LDI
+STI
+LDR
+STR
+```
+
+Their job is moving data:
+```
+memory <-> registers
+```
+
+### Load vs Store
+
+#### Load
+```
+memory → register
+```
+
+#### Store
+```
+register → memory
+```
+
+Think:
+```
+LOAD:
+"bring something to me"
+
+STORE:
+"put something away"
+```
+
+### Basic LD
+
+Suppose:
+```
+M[x4000] = 25
+```
+
+and we want:
+```
+R2 = 25
+```
+
+We use:
+```
+LD R2, ...
+```
+
+The machine:
+```
+calculate memory address
+        ↓
+      MAR
+        ↓
+     memory
+        ↓
+      MDR
+        ↓
+       R2
+```

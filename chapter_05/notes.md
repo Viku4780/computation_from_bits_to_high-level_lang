@@ -163,3 +163,70 @@ R2 = destination
 ```
 
 The book describes an ADD instruction as having two source operands and one destination operand.
+
+
+### The LC-3 instruction families
+The LC-3 has 15 defined opcodes. The book divides them into three broad categories:
+
+#### Operate
+Compute something.
+```
+ADD
+AND
+NOT
+```
+
+#### Data movement
+Move data between memory and registers.
+```
+LD
+ST
+LDI
+STI
+LDR
+STR
+```
+
+#### Control
+Change the normal sequence of execution.
+```
+BR
+JMP
+JSR
+JSRR
+TRAP
+RTI
+```
+
+There is also one reserved opcode:
+```
+1101
+```
+
+The book says the LC-3 has 15 instructions even though 4 opcode bits can encode 16 possibilities, leaving 1101 reserved.
+
+
+### an instruction has both an operation and an interpretation
+Suppose a register contains:
+```
+0011000100110000
+```
+
+Those same 16 bits could have different meanings under different representations.
+
+But suppose you execute:
+```
+ADD R4, R3, #10
+```
+
+The ADD instruction tells the hardware:
+
+    Treat the operands as 16-bit 2's-complement integers.
+
+So the hardware does not say:
+
+“What did the programmer intend these bits to mean?”
+
+It follows the meaning associated with the opcode/data type defined by the ISA.
+
+The book gives precisely this example and explains why a bit pattern intended by a programmer as an ASCII value would nevertheless be processed as a 2's-complement integer by ADD

@@ -681,3 +681,160 @@ calculate memory address
         ↓
        R2
 ```
+
+## PC-relative addressing
+The LC-3's LD and ST use:
+PC-relative addressing
+
+The formula is:
+```
+effective address
+= 
+incremented PC
++
+sign-extended PCoffset9
+```
+
+Notice:
+
+    incremented PC
+
+not the original PC.
+
+The book explicitly explains that the incremented PC is the value after the FETCH phase has incremented PC.
+
+### Why use PC-relative addressing?
+
+Imagine your program and its data are fairly close together.
+
+Instead of writing the full 16-bit memory address inside every instruction, you can say:
+```
+"Go 20 locations forward from the current instruction."
+```
+
+That's what the offset does.
+
+This makes the instruction encoding more efficient.
+
+### Range of LD/ST
+The offset has:
+```
+9 bits
+```
+
+and is a 2's-complement number.
+
+So:
+```
+-256 ... +255
+```
+
+But because the exact interpretation is relative to the incremented PC, the book describes the reachable locations relative to the instruction as approximately:
+```
++256 or -255
+```
+
+The important idea is:
+
+    PC-relative addressing is local.
+
+If your data is very far away, use another addressing mode.
+
+
+### Example
+Suppose the instruction is at:
+```
+x4018
+```
+
+During FETCH:
+```
+PC becomes x4019
+```
+
+Suppose:
+```
+PCoffset9 = -81
+```
+
+Then:
+```
+effective address
+=
+x4019 - 81
+```
+
+and that becomes the memory location to access.
+
+The exact arithmetic can be done in binary/hexadecimal, but the mental model is simply:
+```
+current instruction neighborhood
+            +
+small signed distance
+            ↓
+target memory location
+```
+
+### LD
+Conceptually:
+```
+LD DR, PCoffset9
+```
+
+means:
+```
+address = PC + offset
+DR = M[address]
+```
+
+And the loaded value updates:
+```
+N
+Z
+P
+```
+
+The book explicitly notes that LD sets the condition codes according to whether the loaded value is negative, zero, or positive.
+
+### ST
+ST is the opposite direction.
+
+Conceptually:
+```
+ST SR, PCoffset9
+```
+
+means:
+```
+address = PC + offset
+M[address] = SR
+```
+
+Notice the register field is interpreted as:
+```
+SR
+```
+
+because the register is the source of the value.
+
+For LD, it is:
+```
+DR
+```
+
+because the register is the destination.
+
+### Why do LD and ST use the same offset mechanism?
+
+Because both need to calculate a memory address.
+
+The difference is what happens once the address is known:
+```
+LD:
+memory → register
+
+ST:
+register → memory
+```
+
+That's why their instruction formats are similar.

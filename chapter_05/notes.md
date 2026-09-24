@@ -482,3 +482,45 @@ AND
 -----------
 1000 0001
 ```
+
+### NOT
+Opcode:
+```
+1001
+```
+
+Unlike ADD and AND, NOT only has one actual source operand.
+
+Example:
+```
+NOT R3, R5
+```
+
+means:
+```
+R3 = NOT R5
+```
+
+If:
+```
+R5 = 0101 0000 1111 0000
+```
+
+then:
+```
+R3 = 1010 1111 0000 1111
+```
+
+### Notice something important about NOT
+You might ask:
+
+    “Why are bits [5:0] all 1?”
+
+Because the LC-3 instruction format reserves those bits in NOT, and the ISA specifies that they must be:
+```
+111111
+```
+
+This is a common architectural technique:
+
+    Some bits exist because the instruction encoding has to maintain a fixed format, even when the instruction doesn't need all of them for meaningful operands.

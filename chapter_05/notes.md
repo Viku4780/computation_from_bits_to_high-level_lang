@@ -230,3 +230,64 @@ So the hardware does not say:
 It follows the meaning associated with the opcode/data type defined by the ISA.
 
 The book gives precisely this example and explains why a bit pattern intended by a programmer as an ASCII value would nevertheless be processed as a 2's-complement integer by ADD
+
+
+## Addresing modes
+Suppose an instruction needs an operand.
+
+Where is that operand?
+
+it could be:
+```
+inside a register
+```
+
+or:
+```
+inside the instruction itself
+```
+
+or:
+```
+in memory
+```
+
+the method used to determine where the operand is located is called the:
+Addressing mode
+
+The book identifies five LC-3 addressing modes:
+```
+1. immediate
+2. register
+3. PC-relative
+4. indirect
+5. Base + offset
+```
+
+### Register addressing
+Example:
+```
+ADD R1, R2, R3
+```
+
+The operands are:
+```
+R2
+R3
+```
+
+so the processor doesn't need to search memory.
+
+it simply accesses the registers.
+
+```
+R2 ───┐
+      │
+      ▼
+     ALU
+      ▲
+      │
+R3 ───┘
+```
+
+That's register addressing.

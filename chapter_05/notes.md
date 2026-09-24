@@ -524,3 +524,93 @@ Because the LC-3 instruction format reserves those bits in NOT, and the ISA spec
 This is a common architectural technique:
 
     Some bits exist because the instruction encoding has to maintain a fixed format, even when the instruction doesn't need all of them for meaningful operands.
+
+
+## LEA — Load Effective Address
+
+Opcode:
+```
+1110
+```
+
+LEA does not read memory.
+
+It calculates an address and places that address into a register.
+
+The book even notes that CEA (“Compute Effective Address”) would arguably be a clearer name, but LEA is the industry-established name
+
+### LEA example
+Suppose:
+```
+PC after increment = x4019
+offset = -3
+```
+
+Then:
+```
+x4019 + (-3)
+=
+x4016
+```
+
+So:
+```
+LEA R5, #-3
+```
+
+produces:
+```
+R5 = x4016
+```
+
+No memory is accessed.
+
+
+### Why is LEA useful?
+Suppose you want:
+```
+R3 = address of some data
+```
+
+rather than:
+```
+R3 = contents of that data
+```
+
+LEA gives you the address.
+
+That's extremely important for:
+```
+arrays
+strings
+tables
+data structures
+pointers
+```
+
+### LEA vs LD
+Suppose:
+```
+M[x5000] = 25
+```
+
+and suppose an instruction refers to x5000.
+
+#### LEA
+gives you:
+```
+R1 = x5000
+```
+
+#### LD
+gives you:
+```
+R1 = 25
+```
+
+So:
+```
+LEA → give me the ADDRESS
+
+LD  → give me the VALUE at that ADDRESS
+```

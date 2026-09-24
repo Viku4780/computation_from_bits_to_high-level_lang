@@ -98,3 +98,68 @@ immediate value?
 memory offset?
 branch condition?
 ```
+
+### What is an opcode?
+
+Think of an opcode as a verb.
+
+For example:
+```
+ADD
+```
+
+means:
+
+    add
+
+```
+AND
+```
+
+means:
+
+    bitwise AND
+
+```
+LD
+```
+
+means:
+
+    load from memory
+
+```
+BR
+```
+
+means:
+
+    maybe change where execution goes
+
+So:
+```
+opcode = WHAT SHOULD THE COMPUTER DO?
+```
+
+### What are operands?
+
+Operands are the things the operation works on.
+
+For example:
+```
+ADD R2, R0, R1
+```
+
+means conceptually:
+```
+R2 ← R0 + R1
+```
+
+So:
+```
+R0 = source
+R1 = source
+R2 = destination
+```
+
+The book describes an ADD instruction as having two source operands and one destination operand.

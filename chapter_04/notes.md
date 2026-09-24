@@ -1729,6 +1729,29 @@ Final:
 R3 = 20
 ```
 
+
+## LC-3 Instruction Interpretation (Von Neumann Model)
+
+suppose:
+
+If Location 0 (0001 1110 0100 0011) is treated as an instruction in the standard educational LC-3 ISA architecture:
+
+- ### Bits [15:12] (Opcode): 0001 \[\rightarrow \] ADD instruction.
+
+- ### Bits [11:9] (Destination Register, DR): 111 \[\rightarrow \] R7
+
+- ### Bits [8:6] (Source Register 1, SR1): 100 \[\rightarrow \] R4
+
+- ### Bit (Steering Bit): 0 \[\rightarrow \] The second operand comes from a register.
+
+- ### Bits [4:3] (Zero padding): 00
+
+- ### Bits [2:0] (Source Register 2, SR2): 011 \[\rightarrow \] R3
+
+
+Instruction: ADD R7, R4, R3 (Adds the values of R4 and R3 together, then stores the sum in R7).
+
+
 ```
                    MEMORY
                      │

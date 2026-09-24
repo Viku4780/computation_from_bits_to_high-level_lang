@@ -451,3 +451,34 @@ Now bit [5] is:
 which tells the hardware:
 
     The second operand isn't another register. It's the 5-bit immediate field.
+
+
+### AND
+Opcode:
+```
+0101
+```
+
+The instruction structure is almost identical to ADD.
+
+The difference is:
+```
+ADD → arithmetic addition
+
+AND → bit-by-bit logical AND
+```
+
+Example:
+```
+R0 = 1100 0011
+R1 = 1010 0101
+```
+
+Then:
+```
+1100 0011
+AND
+1010 0101
+-----------
+1000 0001
+```

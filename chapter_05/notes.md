@@ -2260,3 +2260,88 @@ It makes the phrase:
 
 concrete.
 
+## What "machine language" really means
+At this point you should start seeing what machine language is.
+
+Suppose:
+```
+ADD R2, R0, R1
+```
+
+is represented as:
+```
+0001 0 010 000 0 00 001
+```
+
+The processor sees:
+```
+0001
+```
+
+and says:
+```
+ADD.
+```
+
+Then:
+```
+010
+```
+
+and says:
+```
+destination = R2.
+```
+
+Then:
+```
+000
+```
+
+and says:
+```
+first source = R0.
+```
+
+Then:
+```
+001
+```
+
+and says:
+
+    second source = R1.
+
+So machine language isn't some mystical binary language.
+
+It is:
+
+    a precisely defined arrangement of bits that the hardware's decoder understands.
+
+That's the ISA.
+
+### Why instruction formats are fixed
+The LC-3 always uses:
+```
+16 bits
+```
+
+per instruction.
+
+This makes instruction fetching predictable.
+
+The processor knows:
+```
+one instruction = one 16-bit word
+```
+
+and therefore:
+```
+next sequential instruction
+=
+next memory location
+```
+
+unless a control instruction changes the PC.
+
+

@@ -1507,3 +1507,191 @@ PC changes
    ↓
 loop
 ```
+
+# A complete example
+Suppose:
+
+    The user enters a charecter, and the program counts how many times that charecter occurs in a file.
+
+## Assign jobs to registers
+The program uses:
+```
+R0 = charecter typed by user
+R1 = current charecter from file
+R2 = count
+R3 = pointer to current location in file
+```
+
+this is an excellent example of a machine level programmer deciding:
+
+    What role should each register play?
+
+### Initialization
+first
+```
+R2 = 0
+```
+using
+```
+AND R2, R2, #0
+```
+Then:
+```
+R3 = starting address of file
+```
+then:
+```
+TRAP x23
+```
+
+to get the users charecter into:
+```
+R0
+```
+Now we have:
+```
+R0 = charecter to count
+R1 = not yet loaded
+R2 = 0
+R3 = file pointer
+```
+
+### Get the first file character
+Use:
+```
+LDR R1, R3, #0
+```
+
+Meaning:
+```
+address = R3 + 0
+R1 = memory[address]
+```
+
+Now:
+```
+R1 = current file character
+```
+
+### Check the sentinel
+The file ends with EOT:
+```
+00000100
+```
+
+which is:
+```
+4
+```
+
+So the program effectively computes:
+```
+R1 - 4
+```
+
+using:
+```
+NOT
+ADD #1
+ADD
+```
+
+Then:
+```
+BRz DONE
+```
+
+If result is zero:
+```
+R1 == EOT
+```
+
+and the file is finished.
+
+
+### Compare the characters
+Now we want:
+```
+R1 == R0 ?
+```
+
+Again there is no direct CMP instruction.
+
+Instead:
+```
+R0 - R1
+```
+
+If equal:
+```
+0
+```
+
+So:
+```
+Z = 1
+```
+
+Then the program can branch accordingly.
+
+This is a powerful lesson:
+
+    An ISA doesn't need an instruction for every high-level concept.
+
+A small instruction set can combine existing operations to achieve a larger operation.
+
+### Increment the count
+If the characters match:
+```
+ADD R2, R2, #1
+```
+
+So:
+```
+R2 = R2 + 1
+```
+
+### Move to the next character
+Increment pointer:
+```
+ADD R3, R3, #1
+```
+
+Then:
+```
+LDR R1, R3, #0
+```
+
+Then:
+```
+BRnzp LOOP
+```
+
+So the PC jumps back and the process repeats.
+
+```
+             ┌──────────────────┐
+             │                  │
+             ▼                  │
+          load char             │
+             │                  │
+             ▼                  │
+       is it EOT?               │
+          /    \                │
+        yes     no              │
+         │       │              │
+         ▼       ▼              │
+       DONE   compare           │
+                 │              │
+             match?             │
+              /   \             │
+            yes    no           │
+             │      │           │
+          count++    │           │
+             │       │           │
+             └───┬───┘           │
+                 ▼               │
+            pointer++            │
+                 │               │
+                 └── BR ─────────┘
+```

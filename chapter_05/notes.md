@@ -923,3 +923,118 @@ means:
     Find a nearby memory location containing an address, then store SR into that address.
 
 The book groups STI with LDI as the indirect addressing pair.
+
+## Base + offset
+Suppose an address is already stored in a register:
+```
+R2 = x2345
+```
+
+and we want nearby data:
+```
+x2362
+```
+
+The difference is:
+```
+x2362 - x2345 = x1D
+```
+
+So we can use:
+```
+LDR R1, R2, #x1D
+```
+
+This is:
+Base + Offset addressing
+
+
+### Base + Offset formula
+```
+effective address
+=
+contents of BaseR
++
+sign-extended offset6
+```
+
+The base register is specified by
+```
+bits [8:6]
+```
+
+and the offset uses:
+```
+bits [5:0]
+```
+
+### LDR
+LDR means:
+```
+Load Register
+```
+
+Conceptually:
+```
+address = R[BaseR] + SEXT(offset6)
+DR = M[address]
+```
+
+Example:
+```
+R2 = x2345
+offset = x1D
+```
+
+Then:
+```
+address = x2345 + x001D
+        = x2362
+```
+
+Then:
+```
+R1 = M[x2362]
+```
+
+### Why is Base + Offset so important?
+Because it is excellent for structures like:
+```
+arrays
+records
+stack frames
+objects
+```
+
+Imagine:
+```
+R2 = address of array
+```
+
+Then:
+```
+R2 + offset
+```
+
+lets you access things relative to that base.
+
+This is a foundational idea for understanding pointer-based memory access later.
+
+
+### STR
+STR is simply the store version
+```
+STR SR, BaseR, offset6
+```
+
+means:
+```
+address = R[BaseR] + SEXT(offset6)
+M[address] = R[SR]
+```
+
+So:
+```
+LDR -> memory -> register
+STR -> register -> memory
+```

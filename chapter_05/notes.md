@@ -2070,3 +2070,193 @@ PC ─────────► PCMUX ─────────► PC
 
 The control unit tells PCMUX which source to choose.
 
+## One instruction from beginning to end
+Let's trace:
+```
+LDR R3, R2, #4
+```
+
+Suppose:
+```
+PC = x3456
+R2  = x5000
+M[x5004] = 25
+```
+
+The book uses essentially this instruction as its final datapath example.
+
+### Step 1 — FETCH
+Initially:
+```
+PC = x3456
+```
+
+Processor does:
+```
+MAR ← PC
+```
+
+so:
+```
+MAR = x3456
+```
+
+Then:
+```
+PC ← PC + 1
+```
+
+so:
+```
+PC = x3457
+```
+
+Memory reads:
+```
+M[x3456]
+```
+
+and places the instruction into:
+```
+MDR
+```
+
+Then:
+```
+IR ← MDR
+```
+
+Now:
+```
+IR = LDR R3,R2,#4
+```
+
+### Step 2 — DECODE
+The opcode:
+```
+0110
+```
+
+means:
+```
+LDR
+```
+
+The control FSM sees that and prepares the LDR-specific actions.
+
+The book states that the opcode is decoded and the control logic then generates the control signals needed for the rest of the instruction.
+
+### Step 3 — Evaluate address
+LDR uses:
+```
+Base + Offset
+```
+
+So:
+```
+Base = R2 = x5000
+Offset = 4
+```
+
+Therefore:
+```
+effective address
+=
+x5000 + 4
+=
+x5004
+```
+
+So:
+```
+MAR = x5004
+```
+
+### Step 4 — Operand fetch
+Memory:
+```
+M[x5004] = 25
+```
+
+therefore:
+```
+MDR = 25
+```
+
+### Step 5 — Execute
+LDR itself doesn't need a separate ALU execution step beyond address calculation.
+
+The book explicitly says the LDR has zero cycles for a separate EXECUTE phase.
+
+### Step 6 — Store result
+Now:
+```
+R3 ← MDR
+```
+
+so:
+```
+R3 = 25
+```
+
+Condition codes are updated:
+```
+N = 0
+Z = 0
+P = 1
+```
+
+Done.
+
+And then:
+```
+PC = x3457
+```
+
+so the next instruction can be fetched.
+
+### Notice how much is happening underneath one simple instruction
+We say:
+```
+LDR R3, R2, #4
+```
+
+But physically/conceptually it involves:
+```
+PC
+↓
+MAR
+↓
+Memory
+↓
+MDR
+↓
+IR
+↓
+Decoder / control FSM
+↓
+R2
+↓
+SEXT(offset)
+↓
+adder
+↓
+MAR
+↓
+Memory
+↓
+MDR
+↓
+bus
+↓
+R3
+↓
+condition code logic
+```
+
+It makes the phrase:
+
+    “execute an instruction”
+
+concrete.
+

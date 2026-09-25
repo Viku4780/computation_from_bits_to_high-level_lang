@@ -1695,3 +1695,92 @@ So the PC jumps back and the process repeats.
                  │               │
                  └── BR ─────────┘
 ```
+
+
+# Addressing example
+
+## LEA gets an address
+```
+LEA R1, ...
+```
+produces:
+```
+R1 = address
+```
+Suppose:
+```
+R1 = x30F4
+```
+
+## ADD changes that address
+```
+ADD R2, R1, #14
+```
+
+gives:
+```
+R2 = x30F4 + 14
+   = x3102
+```
+
+Now:
+```
+R2
+```
+
+contains an address
+
+### STR stores through base + offset
+Suppose:
+```
+R1 = x30F4
+```
+
+and:
+```
+offset = 14
+```
+
+then:
+```
+address = R1 + 14
+        = x3102
+```
+
+so:
+```
+STR R2, R1, #14
+```
+
+stores:
+```
+R2
+```
+
+into:
+```
+M[x3102]
+```
+
+### LDI follows an address stored in memory
+Suppose:
+```
+M[x30F4] = x3102
+M[x3102] = 5
+```
+
+and we perform LDI such that its first address calculation gives
+```
+x30F4
+```
+
+Then:
+```
+first read:
+M[x30F4] -> x3102
+
+second read:
+M[x3102] -> 5
+
+destination register = 5
+```

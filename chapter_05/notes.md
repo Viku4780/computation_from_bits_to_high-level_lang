@@ -1126,3 +1126,152 @@ can ask:
     “Should I branch based on that previous result?”
 
 This is the bridge between arithmetic and control flow.
+
+
+## Branching
+
+### BR
+Opcode:
+```
+0000
+```
+
+format:
+```
+0000
+n z p
+PCoffset9
+```
+
+The three bits:
+```
+n z p
+```
+
+tell the branch instruction which condition codes to examine
+
+### BRz
+Suppose:
+```
+BRz label
+```
+
+the z means:
+
+    Branch if Z is set
+
+SO conceptaully:
+```
+if z == 1:
+    PC = target
+else:
+    continue normally
+```
+
+### BRn
+```
+BRn LABEL
+```
+
+means:
+```
+if N == 1:
+    branch
+```
+
+### BRp
+```
+BRp LABEL
+```
+
+means:
+```
+if P == 1:
+    branch
+```
+
+You can even combine them
+
+### BRnzp is effectively unconditional
+What if:
+```
+n = 1
+z = 1
+p = 1
+```
+
+?
+
+Then the branch checks:
+```
+N OR Z OR P
+```
+
+At least one must be true.
+
+Therefore:
+```
+BRnzp
+```
+
+always branches.
+
+So:
+BRnzp = unconditional branch
+
+### What if all three bits are zero?
+Then:
+```
+BR
+```
+
+has:
+```
+n = 0
+z = 0
+p = 0
+```
+
+It checks nothing.
+
+Therefore no branch is taken.
+
+This effectively behaves like a no-op in the sense of leaving the normal sequential flow unchanged, although the instruction still goes through its processing.
+
+### How does a branch calculate its target?
+Exactly like PC-relative addressing:
+```
+target
+=
+incremented PC
++
+SEXT(PCoffset9)
+```
+
+The book describes the branch address generation this way.
+
+This is why:
+```
+BR
+```
+
+can only jump a limited distance.
+
+
+### The range problem
+A 9-bit 2's-complement offset gives:
+```
+-256 ... +255
+```
+
+So the branch cannot jump arbitrarily far.
+
+If you need to go thousands of locations away:
+```
+BR
+```
+
+may not be enough.
+
+That's why we have:
+JMP

@@ -1390,3 +1390,120 @@ return to user program
 ```
 
 After the OS services completes, the PC is restored to the instruction  following the TRAP so the program can continue
+
+
+## Loop control
+
+### Counter-controlled loop
+Suppose:
+```
+you want to add 12 numbers
+```
+
+You can put:
+```
+12
+```
+
+in a register.
+
+Then:
+```
+process one number
+decrement counter
+check counter
+repeat
+```
+
+The book's example uses:
+```
+R1 → address of next integer
+R3 → running sum
+R2 → number of integers remaining
+```
+
+and uses condition codes plus branch to stop after all 12 numbers are processed.
+
+
+### The machine-level loop
+
+```
+initialize counter
+
+LOOP:
+    do work
+
+    decrement counter
+
+    if counter != 0
+        branch to LOOP
+
+continue...
+```
+
+in LC-3
+```
+ADD R2, R2, #-1
+BRnp LOOP
+```
+
+because:
+```
+BRnp
+```
+means:
+```
+branch if NOT zero
+```
+
+### Sentinel-controlled loop
+Sometimes you don't know how many values there are.
+
+Instead you put a special value at the end.
+
+For example:
+```
+10
+20
+15
+8
+-1
+```
+
+and define:
+```
+-1 = sentinel
+```
+
+The processor keeps going until it sees:
+```
+-1
+```
+
+```
+while (x != 0)
+{
+    ...
+}
+```
+
+```
+do work
+change x
+set condition codes
+BRnp LOOP
+```
+
+```
+C while
+   ↓
+condition check
+   ↓
+condition codes
+   ↓
+BR
+   ↓
+PC changes
+   ↓
+loop
+```

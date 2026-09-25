@@ -838,3 +838,88 @@ register → memory
 ```
 
 That's why their instruction formats are similar.
+
+
+## Indirect Addressing
+Suppose:
+```
+instruction
+     ↓
+find address A
+     ↓
+memory[A] contains another address B
+     ↓
+go to memory[B]
+```
+
+That is:
+Indirect addressing
+
+
+### LDI
+LDI means:
+
+    load indirectly.
+
+The book describes it this way:
+
+1. Form an address using PC-relative addressing.
+2. Read memory at that address.
+3. Treat the value read as another address.
+4. Read memory at that second address.
+5.Put the final value into the destination register.
+
+So conceptually:
+```
+PC + offset
+     ↓
+    M[A]
+     ↓
+    B
+     ↓
+   M[B]
+     ↓
+    R
+```
+
+### Why is LDI useful?
+Because your final data can be anywhere in memory.
+
+PC-relative LD can only reach a limited nearby region
+
+with LDI, the instruction only needs to reach a nearby pointer.
+
+That pointer can point anywhere
+
+This is conceptually related to:
+```
+pointer
+```
+
+in C
+
+
+### STI
+STI is the store version of indirect addressing.
+
+Conceptually:
+```
+PC + offset
+     ↓
+memory
+     ↓
+ADDRESS
+     ↓
+store register value there
+```
+
+So:
+```
+STI SR, ...
+```
+
+means:
+
+    Find a nearby memory location containing an address, then store SR into that address.
+
+The book groups STI with LDI as the indirect addressing pair.

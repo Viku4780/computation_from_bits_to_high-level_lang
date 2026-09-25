@@ -2345,3 +2345,201 @@ next memory location
 unless a control instruction changes the PC.
 
 
+## The chapter's deeper lesson
+The LC-3 ISA is relatively small.
+
+It doesn't have instructions for every possible thing you might want.
+
+For example:
+```
+no SUB
+no MUL
+no DIV
+no CMP
+no OR
+```
+Instead, you combine existing instructions.
+
+For subtraction:
+```
+NOT
++
+ADD
+```
+
+For loops:
+```
+ADD
++
+BR
+```
+
+For comparisons:
+```
+SUB-like sequence
++
+condition codes
+```
+
+For OR:
+```
+DeMorgan's law
++
+NOT
++
+AND
+```
+
+This demonstrates something very important:
+
+    A small instruction set can still be computationally powerful.
+
+### The difference between "instruction" and "operation"
+You might say:
+```
+"subtract"
+```
+
+is an operation.
+
+But the LC-3 does not have a SUB instruction.
+
+So:
+```
+high-level operation:
+A - B
+```
+
+can be implemented by:
+```
+NOT B
+ADD 1
+ADD A
+```
+
+Therefore:
+```
+operation ≠ necessarily one instruction
+```
+
+This distinction becomes extremely useful when you learn compilers and assembly.
+
+### Now connect Chapter 5 to C
+Suppose you write in C:
+```
+x = x + 1;
+```
+
+Conceptually the compiler may need to produce instructions that:
+```
+read x
++
+1
+→
+store result
+```
+
+At the LC-3 level, if x is already in a register:
+```
+ADD R1, R1, #1
+```
+
+might be enough.
+
+Suppose you write:
+```
+while (x != 0)
+{
+    x--;
+}
+```
+
+You can now see the underlying ingredients:
+```
+x--
+   ↓
+ADD #−1
+
+check x
+   ↓
+condition codes
+
+repeat
+   ↓
+BR
+```
+
+The actual compiler-generated sequence depends on many details, but this is the architectural mental model.
+
+### And pointers?
+Suppose C contains:
+```
+int *p;
+```
+
+At the conceptual machine level:
+```
+p
+↓
+contains an address
+```
+
+Then:
+```
+*p
+```
+
+means:
+```
+use the address contained in p
+↓
+access memory there
+```
+
+Now look at what you've learned:
+
+#### LDR
+
+can do:
+```
+Base register + offset
+→
+memory
+```
+
+and:
+
+#### LDI
+
+can do:
+```
+memory
+→
+address
+→
+memory
+```
+
+So the concepts that seem like "pointer magic" in C already have machine-level foundations.
+
+
+
+                     LC-3 ISA
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+       OPERATE        DATA MOVE      CONTROL
+          │             │             │
+      ┌───┼───┐     ┌───┼────┐    ┌──┼──────┐
+      │   │   │     │   │    │    │  │      │
+     ADD AND NOT   LOAD STORE      BR JMP   TRAP
+          │             │
+          │       ┌─────┼─────────┐
+          │       │     │         │
+          │       LD/ST LDI/STI LDR/STR
+          │       │     │         │
+          │       PC    indirect  Base+offset
+          │    relative
+          │
+      register
+      immediate

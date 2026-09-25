@@ -1038,3 +1038,91 @@ So:
 LDR -> memory -> register
 STR -> register -> memory
 ```
+
+```
+REGISTER
+    ↓
+operand is in register
+
+IMMEDIATE
+    ↓
+operand is literally inside instruction
+
+PC-RELATIVE
+    ↓
+PC + offset → memory operand
+
+INDIRECT
+    ↓
+PC + offset → memory gives address → memory operand
+
+BASE+OFFSET
+    ↓
+Base register + offset → memory operand
+```
+
+
+## Condition Codes
+The LC-3 has three one-bit registers:
+```
+N
+Z
+P
+```
+
+meaning:
+```
+N = negative
+Z = zero
+P = positive
+```
+
+The book says these are updated whenever one of the eight general-purpose registers is written as the result of an operate instruction or a load instruction.
+
+### Why do we need condition codes?
+Suppose:
+```
+R2 = 5
+```
+
+and you execute:
+```
+ADD R2, R2, #-5
+```
+
+Now:
+```
+R2 = 0
+```
+
+The processor needs some way for the next instruction to ask:
+
+    “Was the result zero?”
+
+That's what:
+```
+Z = 1
+```
+
+tells it.
+
+### Condition codes are basically "what happened?"
+Think:
+```
+previous instruction
+       ↓
+produced result
+       ↓
+N/Z/P remember its sign category
+```
+
+Then:
+```
+BR
+```
+
+can ask:
+
+    “Should I branch based on that previous result?”
+
+This is the bridge between arithmetic and control flow.

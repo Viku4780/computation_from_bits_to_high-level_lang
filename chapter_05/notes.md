@@ -1784,3 +1784,289 @@ M[x3102] -> 5
 
 destination register = 5
 ```
+
+## Datapath revisited
+
+### The global bus
+The LC-3 has a:
+```
+16-bit global bus
+```
+
+it provides a shared path for moving values around the processor.
+
+The book says only one value can be placed on the bus at a time, and tri-state devices allow exactly one supplier to drive it.
+
+Think:
+```
+        ┌───────────────┐
+R0 ────►│               │
+R1 ────►│               │
+ALU ───►│  GLOBAL BUS   │───► destination
+MDR ───►│               │
+PC ────►│               │
+        └───────────────┘
+```
+
+The control unit decides:
+
+    Who is allowed to put data onto the bus?
+
+and:
+
+    Who is going to capture it?
+
+### Register file
+the register file:
+```
+R0
+R1
+...
+R7
+```
+
+can supply two source values.
+
+The book explains that:
+```
+SR1
+SR2
+```
+identify the source registers, while:
+
+```
+DR
+```
+identifies where the result is written
+
+### SR1 and SR2
+Think:
+```
+SR1
+=
+Source Register 1
+```
+
+and:
+```
+SR2
+=
+Source Register 2
+```
+
+For:
+```
+ADD R2, R0, R1
+```
+
+you can think:
+```
+DR = R2
+SR1 = R0
+SR2 = R1
+```
+
+Then:
+```
+R0 ──► ALU
+R1 ──► ALU
+        ↓
+       ADD
+        ↓
+       R2
+```
+
+
+### SR2 can come from two places
+For ADD/AND:
+```
+second ALU operand
+```
+
+can come from:
+```
+register
+```
+
+or:
+```
+sign-extended immediate
+```
+
+A MUX chooses between them.
+
+Conceptually:
+```
+                 ┌──► Register SR2
+                 │
+second operand ──┤ MUX
+                 │
+                 └──► SEXT(imm5)
+```
+
+Bit [5] decides which source is used.
+
+
+### The ALU
+Now:
+```
+ALU
+```
+
+takes:
+```
+A input
+B input
+```
+
+and the control signal:
+```
+ALUK
+```
+
+tells it which operation to perform.
+
+For the LC-3:
+```
+ADD
+AND
+NOT
+```
+
+are the relevant operations.
+
+The book notes that ALUK is a control signal selecting which ALU operation takes place.
+
+So:
+```
+data:
+    A
+    B
+
+control:
+    ALUK
+
+        ↓
+
+       ALU
+
+        ↓
+
+     result
+```
+
+### Condition code logic
+After the ALU produces a 16-bit result:
+```
+result
+```
+
+another piece of logic examines it.
+
+It asks:
+```
+Is it negative?
+Is it zero?
+Is it positive?
+```
+
+and sets:
+```
+N
+Z
+P
+```
+
+This means condition codes are physically derived from the result.
+
+They're not magic variables added by the programmer.
+
+### MARMUX
+The chapter introduces:
+```
+MARMUX
+```
+
+This decides what value will be used as the memory address.
+
+Depending on the instruction, the address might come from:
+```
+PC + offset
+```
+
+or:
+```
+Base register + offset
+```
+
+or a trap-vector-related value.
+
+The book explains that ADDR1MUX determines whether the address calculation starts with the PC or a base register, while ADDR2MUX determines which offset/literal source is added.
+
+For you, the mental model is simply:
+```
+MARMUX
+=
+"Which address calculation should we use?"
+```
+
+### PCMUX
+Similarly:
+```
+PCMUX
+```
+
+decides where the next PC value comes from.
+
+Possible sources include:
+```
+PC + 1
+```
+
+or:
+```
+branch target
+```
+
+or another control-flow source.
+
+So:
+```
+PCMUX
+=
+"Where should the PC go next?"
+```
+
+### This makes control flow much easier to visualize
+Suppose:
+```
+normal execution
+```
+
+Then:
+```
+PC ← PC + 1
+```
+
+But if:
+```
+BR condition succeeds
+```
+
+then:
+```
+PC ← branch target
+```
+
+So:
+```
+              ┌── PC+1 ────────┐
+              │                 │
+PC ─────────► PCMUX ─────────► PC
+              ▲                 │
+              │                 │
+              └ branch target ──┘
+```
+
+The control unit tells PCMUX which source to choose.
+

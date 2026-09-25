@@ -1322,3 +1322,71 @@ BR  → nearby conditional control transfer
 
 JMP → anywhere, using address in register
 ```
+
+## Trap
+Now we get into OS interaction
+the processor itself doesn't necessarily directly know how to:
+```
+read keyboard
+display text
+halt a user program
+```
+
+instead the LC-3 can request a service from the OS
+
+That's what:
+```
+TRAP
+```
+does
+
+TRAP as a service call into the OS
+
+### The important TRAP vectors
+```
+x23 -> input a charecter
+x21 -> output a charecter
+x25 -> halt
+```
+
+So:
+```
+TRAP x23
+```
+
+means roughly:
+
+    OS, get a charecter from the keyboard for me.
+
+And:
+```
+TRAP x21
+```
+
+means:
+
+    OS, display the charecter i prepared.
+
+And:
+```
+TRAP x25
+```
+
+means:
+
+    OS, my program is finished
+
+
+```
+user program
+   ↓
+TRAP
+   ↓
+change execution to OS code
+   ↓
+OS performs service
+   ↓
+return to user program
+```
+
+After the OS services completes, the PC is restored to the instruction  following the TRAP so the program can continue

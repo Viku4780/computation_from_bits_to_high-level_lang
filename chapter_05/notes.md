@@ -1275,3 +1275,50 @@ may not be enough.
 
 That's why we have:
 JMP
+
+
+## JMP
+JMP uses a register as the target address.
+
+Opcode:
+```
+1100
+```
+
+Conceptually:
+```
+PC <- contents of BaseR
+```
+
+Suppose:
+```
+R2 = x6600
+```
+
+and we execute:
+```
+JMP R2
+```
+
+then:
+```
+PC = x6600
+```
+
+### BR vs JMP
+#### BR
+```
+condition + small relative offset
+```
+
+#### JMP
+```
+register contains complete target address
+```
+
+So:
+```
+BR  → nearby conditional control transfer
+
+JMP → anywhere, using address in register
+```

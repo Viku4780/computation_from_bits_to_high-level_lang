@@ -186,3 +186,49 @@ HTTP
 └── parse response
 ```
 Each step becomes manageable.
+
+
+### The three basic constructs
+the book says there are three fundamental ways to decompose a task:
+```
+1. Sequential
+2. Conditional
+3. Iterative
+```
+
+## Sequential construct
+Sequential means:
+
+    Do A, then do B.
+
+Example:
+```
+A
+↓
+B
+```
+
+For example:
+```
+1. Read a number.
+2. Add 5.
+```
+
+Nothing complicated.
+
+In LC-3:
+```
+instruction 1
+instruction 2
+instruction 3
+instruction 4
+...
+```
+
+The PC naturally moves from one instruction to the next.
+
+So this is important:
+
+    Sequential execution usually requires no branch instruction.
+
+The PC simply increments.

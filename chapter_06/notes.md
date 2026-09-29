@@ -341,3 +341,32 @@ condition → choose
               ↓
           test again
 ```
+
+### Every construct has one entrance and one exit
+The book's diagrams show that each construct has:
+```
+one entrance
+     ↓
+ construct
+     ↓
+one exit
+```
+
+that gives us a predictable structure
+
+Think about:
+```
+main task
+   ↓
+initialize
+   ↓
+process
+   ↓
+output
+   ↓
+done
+```
+
+instead of arbitrary jumps everywhere
+
+this is one reason structured programming makes programs easier to understand and debug.

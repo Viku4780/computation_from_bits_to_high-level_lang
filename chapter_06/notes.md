@@ -621,3 +621,48 @@ The book explicitly encourages this rather than expecting complete understanding
 
 This is actually a very useful professional programming habit.
 
+
+## debugging
+Now we move from:
+
+    How to build the program
+
+to:
+
+    How to figure out why it doesn't work.
+
+The book makes an important observation:
+
+    Writing the program isn't necessarily the hardest part.
+
+A program can look perfectly reasonable and still be wrong.
+
+So debugging becomes systematic too.
+
+### First build a proper mental model of debugging
+Suppose you expect:
+```
+Input: 10
+Input: 20
+Result: 30
+```
+
+But the program produces:
+```
+40
+```
+
+Don't immediately start randomly changing instructions
+
+instead ask:
+```
+What should happen?
+        ↓
+What actually happened?
+        ↓
+Where did they first become different?
+```
+
+That's debugging
+
+The book compares debugging to taking a wrong turn while driving: return to a known point, compare where you are with where you should be, and proceed systematically.

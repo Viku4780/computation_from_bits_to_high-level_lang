@@ -600,3 +600,24 @@ Character Count
     ├── convert count to ASCII
     └── output
 ```
+
+### A very important programming habit
+Sometimes you cannot understand the entire problem immediately.
+
+That's normal.
+
+Instead:
+```
+understand one piece
+      ↓
+build on it
+      ↓
+understand another piece
+      ↓
+connect them
+```
+
+The book explicitly encourages this rather than expecting complete understanding from the beginning.
+
+This is actually a very useful professional programming habit.
+

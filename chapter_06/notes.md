@@ -405,3 +405,155 @@ BR back to test
 ![alt text](image.png)
 
 ![alt text](image-1.png)
+
+
+## Charecter counting
+
+### Step-1 - understand what is required
+we need:
+```
+input charecter
+scan file
+count matching charecters
+display count
+```
+
+Already we can see three major tasks:
+```
+A = initialization
+B = scan/process file
+C = display result
+```
+
+This is our first decomposition.
+
+![alt text](image-2.png)
+
+### Decompose initialization
+
+What does initialization mean?
+
+We ask:
+
+    What information must exist before the main algorithm can start?
+
+We need:
+```
+1. Input character
+2. Pointer to first file character
+3. Current file character
+4. Count = 0
+```
+
+So:
+```
+A
+├── A1: count = 0
+├── A2: input character
+├── A3: pointer = first file location
+└── A4: load first character
+```
+
+Notice what happened.
+
+We took:
+```
+Initialize
+```
+
+and turned it into several concrete jobs.
+
+This is stepwise refinement
+
+
+### Decompose the scanning operation
+We have:
+```
+B = scan file and count matches
+```
+That's still too vague.
+
+We refine it:
+```
+while there are more characters
+    test current character
+    increment count if it matches
+    get next character
+```
+Now we have an iterative construct.
+
+The book uses the sentinel method, because we don't know beforehand how many characters the file contains.
+
+The sentinel is the end-of-text character, EOT.
+
+So:
+```
+while current character != EOT
+    ...
+```
+
+### Decompose one loop iteration
+We now have:
+```
+B1 = process current character
+```
+
+Still too vague.
+
+Break it down:
+```
+B1
+├── B2: test current character
+├── if match → increment counter
+└── B3: get next character
+```
+
+Then break B2 down:
+```
+B2:
+    Is current character == input character?
+```
+
+And B3:
+```
+B3:
+    increment pointer
+    load next character
+```
+
+Now the task is approaching machine-level operations.
+
+
+### Decompose output
+Originally:
+```
+C = display count
+```
+
+Still somewhat vague.
+
+Break it into:
+```
+C1 = convert count into ASCII
+C2 = output character
+```
+
+Because the monitor expects the ASCII representation of the digit.
+
+So:
+```
+C
+├── convert
+└── display
+```
+
+Again:
+```
+big task
+ ↓
+smaller task
+ ↓
+smaller task
+ ↓
+simple task
+```

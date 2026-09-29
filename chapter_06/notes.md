@@ -666,3 +666,81 @@ Where did they first become different?
 That's debugging
 
 The book compares debugging to taking a wrong turn while driving: return to a known point, compare where you are with where you should be, and proceed systematically.
+
+
+### Trace — one of the most important debugging concepts
+A trace records:
+```
+which instructions executed
++
+what results they produced
+```
+
+For LC-3, you might track:
+```
+PC
+R1
+R2
+R3
+...
+```
+
+after each instruction or at selected points.
+
+Example:
+```
+PC      R2     R5
+
+x3201   0      3
+x3202   10     3
+x3203   10     2
+x3201   20     2
+x3202   20     2
+...
+```
+
+Now the program's execution is no longer mysterious.
+
+You're watching its state change over time.
+
+The book specifically defines tracing as keeping track of the sequence of executed instructions and the results produced by them
+
+### Why tracing works
+Imagine you expect:
+```
+R5:
+3 → 2 → 1 → 0
+```
+
+but the trace says:
+```
+R5:
+3 → 2 → 1 → 0 → -1
+```
+
+Now something is obviously wrong.
+
+You don't need to inspect the whole program.
+
+You know:
+
+    The error is somewhere around the point where R5 became -1.
+
+That is the essence of debugging:
+```
+Entire program
+       ↓
+large search space
+
+Trace
+       ↓
+smaller search space
+
+Breakpoint
+       ↓
+even smaller
+
+single-step
+       ↓
+specific instruction
+```

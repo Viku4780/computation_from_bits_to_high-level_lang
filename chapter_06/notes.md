@@ -809,3 +809,92 @@ this is conceptaully very important:
     You can test one part of a program independently by supplying its expected inputs manually.
 
 that idea continues into modern unit testing.
+
+### Run
+Run means:
+```
+execute until:
+    HALT
+or
+    breakpoints
+```
+
+So:
+```
+Run
+ ↓
+program executes
+ ↓
+breakpoint encountered
+ ↓
+stop
+```
+
+or:
+```
+Run
+ ↓
+...
+ ↓
+HALT
+```
+
+### Step
+Step means:
+
+    Execute a chosen number of instructions and stop.
+
+If you choose:
+```
+1
+```
+
+you execute exactly one instruction.
+
+That's called:
+
+    single-stepping
+
+This lets you observe how each instruction changes the machine state.
+
+### Breakpoint
+Breakpoint means:
+
+    “Run normally, but stop when you reach this specific address.”
+
+For example:
+```
+breakpoint = x3203
+```
+
+Then:
+```
+Run
+ ↓
+x3200
+x3201
+x3202
+ ↓
+x3203
+STOP
+```
+
+The simulator checks the PC during instruction fetch and stops when the PC reaches the breakpoint address.
+
+This is much better than single-stepping through 10,000 instructions.
+
+### Display Values
+Once execution stops, inspect:
+```
+R0
+R1
+R2
+...
+memory[x4000]
+memory[x4001]
+...
+```
+
+The purpose is simple:
+
+    Observe the state of the machine at a useful moment.

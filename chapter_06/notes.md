@@ -772,3 +772,40 @@ Then you immediately know:
 You don't need to inspect the input module anymore.
 
 This is why good program structure helps debugging.
+
+
+## LC-3 debugging operations
+The chapter introduces four basic things you need to be able to do with the simulator
+```
+1. Set values
+2. Execute instructions
+3. Stop execution
+4. Display state
+```
+
+### Set values
+Suppose module A is responsible for a keyboard input.
+
+And module B processes the resulting character.
+
+you haven't finished debugging A.
+
+Do you have to wait?
+
+No.
+
+you can directly put a value into the register that A would have produced
+
+For example:
+```
+R0 = ASCII 'A'
+```
+Then start testing module B.
+
+The book explicitely gives this idea as a reason to manually place expected values into registers/memory before testing a later module.
+
+this is conceptaully very important:
+
+    You can test one part of a program independently by supplying its expected inputs manually.
+
+that idea continues into modern unit testing.

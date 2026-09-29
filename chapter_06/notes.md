@@ -370,3 +370,38 @@ done
 instead of arbitrary jumps everywhere
 
 this is one reason structured programming makes programs easier to understand and debug.
+
+### How these constructs translate into LC-3
+
+#### Sequential
+Mostly:
+```
+PC ← PC + 1
+```
+No special control instruction is needed.
+
+#### Conditional
+Usually:
+```
+compute condition
+      ↓
+set N/Z/P
+      ↓
+BR
+```
+
+#### Iterative
+Usually:
+```
+compute condition
+      ↓
+BR
+      ↓
+body
+      ↓
+BR back to test
+```
+
+![alt text](image.png)
+
+![alt text](image-1.png)

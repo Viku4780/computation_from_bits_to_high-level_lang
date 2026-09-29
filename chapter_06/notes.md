@@ -557,3 +557,46 @@ smaller task
  ↓
 simple task
 ```
+
+### And only now do we write LC-3 instructions
+Do not start with:
+
+    “Which LC-3 instruction should I use?”
+
+Start with:
+
+    “What is the algorithm?”
+
+Then:
+
+    “What smaller tasks make up the algorithm?”
+
+Then:
+
+    “Which LC-3 instructions implement those tasks?”
+
+The book explicitly says that the final stage of the decomposition can then be translated into LC-3 code
+
+```
+Character Count
+│
+├── A. Initialize
+│   ├── count = 0
+│   ├── read input character
+│   ├── set file pointer
+│   └── load first character
+│
+├── B. Process file
+│   │
+│   └── while not EOT
+│       │
+│       ├── compare current char
+│       ├── if match
+│       │      └── count++
+│       │
+│       └── get next character
+│
+└── C. Display
+    ├── convert count to ASCII
+    └── output
+```

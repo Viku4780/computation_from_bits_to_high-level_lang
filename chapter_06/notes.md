@@ -232,3 +232,73 @@ So this is important:
     Sequential execution usually requires no branch instruction.
 
 The PC simply increments.
+
+
+## Conditional construct
+Conditional means:
+
+    Do one thing OR another depending on a condition.
+
+Think:
+
+        condition?
+        /       \
+      yes       no
+       ↓         ↓
+      A          B
+       \         /
+        \       /
+         continue
+
+Example:
+```
+if number == 0
+    do A
+else
+    do B
+```
+
+Only one side executes.
+
+### How LC-3 implements a condition
+Remember the condition codes:
+```
+N = negative
+Z = zero
+P = positive
+```
+
+A previous instruction produces some result.
+
+That result sets the condition codes.
+
+Then:
+```
+BR
+```
+
+checks them.
+
+For example:
+```
+ADD R1, R2, #-5
+BRz SOMEWHERE
+```
+
+Conceptually:
+```
+R1 = R2 - 5
+     ↓
+set N/Z/P
+     ↓
+BRz
+     ↓
+if result == 0
+    jump
+else
+    continue normally
+```
+
+So the branch is essentially:
+
+    “Based on the result I just calculated, should I change the PC?”

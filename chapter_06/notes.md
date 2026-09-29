@@ -302,3 +302,42 @@ else
 So the branch is essentially:
 
     “Based on the result I just calculated, should I change the PC?”
+
+
+## Iterative construct
+Iteration means:
+
+    Repeat something while a condition remains true.
+
+Example:
+```
+while there are more numbers
+    process next number
+```
+
+Mental picture:
+```
+       test
+      /    \
+   false   true
+    ↓        ↓
+   done    body
+             |
+             |
+             └──────→ test
+```
+
+So unlike a conditional:
+```
+conditional:
+condition → choose once
+```
+
+iteration:
+```
+condition → choose
+              ↓
+             body
+              ↓
+          test again
+```

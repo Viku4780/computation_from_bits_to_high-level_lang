@@ -898,3 +898,208 @@ memory[x4001]
 The purpose is simple:
 
     Observe the state of the machine at a useful moment.
+
+
+## Debugging examples
+
+### Example 1 - Loop executes too many times
+The program wants to calculate:
+```
+10 × 3 = 30
+```
+
+Registers:
+```
+R4 = 10
+R5 = 3
+R2 = result
+```
+
+Conceptually:
+```
+R2 = 0
+
+repeat 3 times:
+    R2 = R2 + 10
+```
+
+Correct result:
+```
+30
+```
+
+But the program produces:
+```
+40
+```
+
+Why?
+
+Look at the loop:
+```
+ADD R2, R2, R4
+ADD R5, R5, #-1
+BRzp LOOP
+```
+
+Let's trace:
+
+#### First iteration
+```
+R5 = 3
+
+R2 = 0 + 10 = 10
+R5 = 3 - 1 = 2
+
+2 is positive
+BRzp → loop
+```
+Good.
+
+#### Second
+```
+R2 = 20
+R5 = 1
+```
+
+positive -> loop
+
+#### Third
+```
+R2 = 30
+R5 = 0
+```
+
+Now  look carefully
+
+BRzp means:
+```
+branch if Z or P
+```
+
+0 gives:
+```
+z = 1
+```
+
+Therefore:
+```
+R5 = 0
+↓
+BRzp taken
+↓
+fourth iteration
+```
+
+then:
+```
+R2 = 40
+R5 = -1
+```
+
+now the branch finally stops
+
+
+### The bug
+The programmer wanted:
+```
+branch while R5 > 0
+```
+
+but implemented:
+```
+branch while R5 >= 0
+```
+
+because:
+```
+BRzp
+```
+
+means:
+```
+zero OR positive
+```
+
+The correct branch is:
+```
+BRp
+```
+
+The book fixes the instruction accordingly and shows that a breakpoint on the loop-control instruction could have exposed the bug much faster than single-stepping every instruction.
+
+### The deeper lesson from Example 1
+This isn't really about multiplication.
+
+It's about reading loop boundaries precisely.
+
+Whenever you see:
+```
+counter--
+branch
+```
+
+ask:
+```
+When exactly should the loop stop?
+```
+
+For example:
+
+#### Repeat while counter > 0
+```
+BRp
+```
+
+#### Repeat while counter >= 0
+```
+BRzp
+```
+
+That one bit can completely change the algorithm.
+
+### Corner cases
+The book then makes an extremely important testing point.
+
+Suppose the program claims:
+```
+“Works for all integers.”
+```
+
+Testing only:
+```
+10
+3
+```
+
+is not enough.
+
+Try unusual values:
+```
+0
+negative
+large positive
+large negative
+```
+
+The book calls these unusual cases corner cases, and points out that programmers frequently fail to consider them.
+
+This is a major programming habit.
+
+Don't test only:
+```
+normal input
+```
+
+Also test:
+```
+smallest
+largest
+zero
+negative
+empty
+one-element
+boundary
+```
+
+where valid for the problem.

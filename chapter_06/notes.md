@@ -116,3 +116,73 @@ For example:
 ```
 
 is a procedure, but it doesn't terminate.
+
+## Systematic decomposition
+Imagine you are given this problem:
+
+    Count how many times a particular character occurs in a file.
+
+At first glance, that's one big problem.
+
+But trying to immediately write machine instructions for it is difficult.
+
+So we decompose it.
+
+The book calls this:
+
+    Systematic decomposition
+
+and
+
+    Stepwise refinement
+
+The basic idea is extremely simple:
+```
+Big problem
+    ↓
+smaller problems
+    ↓
+even smaller problems
+    ↓
+simple operations
+    ↓
+instructions
+```
+
+### Why decomposition is so powerful
+Suppose someone gives you:
+
+    Build a complete web browser.
+
+That sounds overwhelming.
+
+But you can break it into:
+```
+Browser
+├── UI
+├── Networking
+├── HTML parsing
+├── CSS parsing
+├── JavaScript engine
+├── Storage
+└── Rendering
+```
+
+Then:
+```
+Networking
+├── DNS
+├── TCP
+├── HTTP
+└── TLS
+```
+
+Then:
+```
+HTTP
+├── construct request
+├── send request
+├── receive response
+└── parse response
+```
+Each step becomes manageable.

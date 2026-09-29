@@ -744,3 +744,31 @@ single-step
        ↓
 specific instruction
 ```
+
+### Modules make debugging easier
+The book recommends partitioning a program into modules and examining results at the end of each module.
+
+Suppose:
+```
+Program
+├── Input module
+├── Calculation module
+└── Output module
+```
+
+And output is wrong.
+
+You can check:
+```
+Input result       ✓
+Calculation result ✗
+Output result      ✗
+```
+
+Then you immediately know:
+
+    The bug is probably in the calculation module.
+
+You don't need to inspect the input module anymore.
+
+This is why good program structure helps debugging.

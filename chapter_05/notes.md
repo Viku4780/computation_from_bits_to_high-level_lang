@@ -867,7 +867,7 @@ The book describes it this way:
 2. Read memory at that address.
 3. Treat the value read as another address.
 4. Read memory at that second address.
-5.Put the final value into the destination register.
+5. Put the final value into the destination register.
 
 So conceptually:
 ```

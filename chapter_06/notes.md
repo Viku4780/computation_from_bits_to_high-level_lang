@@ -1190,3 +1190,116 @@ R ← address
 ```
 
 The book's debugging example demonstrates exactly this mistake and fixes it by replacing the LD opcode with LEA.
+
+
+### Example 3 — Condition codes get overwritten
+This is perhaps the most important debugging lesson in the chapter.
+
+Suppose you write:
+```
+ADD R3, R3, #-1
+BRp LOOP
+```
+The intention is:
+```
+decrement R3
+↓
+check whether R3 is still positive
+↓
+branch
+```
+
+This works because:
+```
+ADD
+```
+
+sets condition codes.
+
+So:
+```
+ADD
+↓
+N/Z/P
+↓
+BR
+```
+
+is a connected pair.
+
+### The dangerous mistake
+Suppose instead you do:
+```
+ADD R3, R3, #-1
+LDR R2, R4, #0
+BRp LOOP
+```
+
+Now what happened?
+
+ADD set the condition codes.
+
+But then:
+```
+LDR
+```
+
+also sets the condition codes.
+
+Therefore the branch is no longer checking:
+```
+R3
+```
+
+It is checking:
+```
+R2
+```
+
+because LDR changed NZP.
+
+This is exactly the bug in Example 3.
+
+### The incredibly useful rule
+The book gives a very useful mental model:
+```
+Instruction A       ; sets condition codes
+BR instruction      ; uses those condition codes
+```
+
+Think of those as a pair.
+
+For example:
+```
+ADD R3, R3, #-1
+BRp LOOP
+```
+
+Do not insert another instruction that modifies NZP between them.
+
+So avoid:
+```
+ADD R3, R3, #-1
+LDR R2, R4, #0
+BRp LOOP       ❌
+```
+
+Instead:
+```
+ADD R3, R3, #-1
+BRp LOOP       ✅
+LDR R2, R4, #0
+```
+
+The book explicitly identifies this as the source of the bug and recommends viewing the conditional branch as the second instruction in a pair.
+
+### Example 3 teaches something deeper
+This is not simply:
+
+    “Remember LDR changes condition codes.”
+
+The deeper principle is:
+
+    Know what machine state your branch depends on, and make sure nothing changes that state before the branch executes.
+
+This idea is useful far beyond LC-3.

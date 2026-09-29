@@ -1444,3 +1444,194 @@ This gives us an extremely important rule:
 It must work for all valid inputs specified by the problem.
 
 The book emphasizes this point directly after the infinite-loop example.
+
+
+## A professional debugging workflow from Chapter 6
+
+#### Step 1 — State what the program is supposed to do
+Example:
+```
+Input:
+R4 = 10
+R5 = 3
+
+Expected:
+R2 = 30
+```
+
+Don't debug without defining the expected result.
+
+#### Step 2 — Choose useful test values
+Don't use only easy values.
+
+For example:
+```
+0
+1
+-1
+positive
+negative
+boundary
+```
+
+depending on the problem.
+
+#### Step 3 — Set initial state
+Use the simulator to manually place required values in:
+```
+registers
+memory
+```
+
+#### Step 4 — Run normally
+See whether:
+```
+HALT
+```
+
+or a breakpoint is reached.
+
+#### Step 5 — Use a breakpoint
+Don't immediately single-step the entire program.
+
+Think:
+
+    Where would I expect something interesting to happen?
+
+For a loop:
+```
+breakpoint = loop-control instruction
+```
+
+Then inspect state once per iteration.
+
+#### Step 6 — Trace
+Record things like:
+```
+PC
+important registers
+important memory
+```
+
+Example:
+```
+PC      R2    R5
+
+x3201   10    3
+x3202   10    2
+x3201   20    2
+x3202   20    1
+x3201   30    1
+x3202   30    0
+x3201   40    0   ← suspicious
+```
+
+Now you can see exactly where reality diverges from expectation.
+
+### Step 7 — Single-step around the suspicious region
+Once you isolate the area:
+```
+single-step
+```
+
+one instruction at a time.
+
+Then inspect:
+```
+registers
+CC
+memory
+PC
+```
+
+### A very powerful debugging question
+At every instruction ask:
+
+    What should this instruction do?
+
+For example:
+```
+ADD R3, R3, #-1
+```
+
+Write:
+```
+R3 ← R3 - 1
+```
+
+For:
+```
+BRp LOOP
+```
+
+write:
+```
+if P = 1:
+    PC ← LOOP
+else:
+    continue
+```
+
+For:
+```
+LEA R2, DATA
+```
+
+write:
+```
+R2 ← address(DATA)
+```
+
+For:
+```
+LD R2, DATA
+```
+
+write:
+```
+R2 ← M[address(DATA)]
+```
+
+This makes hidden mistakes much easier to spot.
+
+The book specifically recommends annotating instructions with precise descriptions after isolating a bug, because "eyeballing" instructions can lead to misunderstanding what they actually do.
+
+```
+                     CHAPTER 6
+                    PROGRAMMING
+                         │
+          ┌──────────────┴──────────────┐
+          │                             │
+    6.1 Problem Solving          6.2 Debugging
+          │                             │
+   Systematic Decomposition             │
+   = Stepwise Refinement                 │
+          │                             │
+      ┌───┼───┐                         │
+      │   │   │                         │
+   Sequence If/Else  Loop               │
+      │   │   │                         │
+      └───┼───┘                         │
+          │                             │
+      Algorithm                         │
+          │                             │
+    progressively                      │
+       refine                          │
+          │                             │
+     LC-3 code                   Observe actual state
+                                        │
+                                      Trace
+                                        │
+                                  Breakpoint
+                                        │
+                                  Single-step
+                                        │
+                               Examine registers
+                                 and memory
+                                        │
+                                  Find mismatch
+                                        │
+                                      Fix
+                                        │
+                                     Retest
+```

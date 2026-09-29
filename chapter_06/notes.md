@@ -1103,3 +1103,90 @@ boundary
 ```
 
 where valid for the problem.
+
+### Example 2 — LD versus LEA
+This is one of the best examples in the chapter because it reinforces a Chapter 5 concept.
+
+The program wants:
+```
+R2 = x3100
+```
+
+meaning:
+
+    R2 should contain the address of the first data item.
+
+But the programmer uses:
+```
+LD
+```
+
+Instead of:
+```
+LEA
+```
+
+Suppose:
+```
+M[x3100] = x3107
+```
+
+Then:
+```
+LD R2, ...
+```
+
+gives:
+```
+R2 = M[x3100]
+   = x3107
+```
+
+But what was wanted?
+```
+R2 = x3100
+```
+
+That's an address, not the contents stored there.
+
+
+### This is the address/value distinction
+You absolutely want this mental model to become automatic:
+```
+x3100
+```
+
+means:
+
+    memory location/address
+
+while:
+```
+M[x3100]
+```
+
+means:
+
+    value stored at that address.
+
+So:
+```
+LD
+```
+
+means essentially:
+```
+R ← M[address]
+```
+
+whereas:
+```
+LEA
+```
+
+means:
+```
+R ← address
+```
+
+The book's debugging example demonstrates exactly this mistake and fixes it by replacing the LD opcode with LEA.

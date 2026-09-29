@@ -1303,3 +1303,144 @@ The deeper principle is:
     Know what machine state your branch depends on, and make sure nothing changes that state before the branch executes.
 
 This idea is useful far beyond LC-3.
+
+
+### Example 4 — The corner case that creates an infinite loop
+The program searches for the first 1 bit in a 16-bit word.
+
+For example:
+```
+0010000110000000
+```
+
+The first 1 from the left is at bit:
+```
+13
+```
+
+So:
+```
+R1 = 13
+```
+
+Another:
+```
+0000000000000110
+```
+
+First 1 is:
+```
+bit 2
+```
+
+so:
+```
+R1 = 2
+```
+
+### How the algorithm works
+It starts with:
+```
+R1 = 15
+```
+
+because bit 15 is the leftmost bit.
+
+Then:
+```
+check bit 15
+```
+
+If zero:
+```
+R1--
+R2 = R2 + R2
+```
+
+Remember from Chapter 2:
+```
+R2 + R2
+```
+
+shifts the bit pattern left by one position.
+
+So:
+```
+before:
+0010000110000000
+
+after shift:
+0100001100000000
+```
+
+The next bit has now moved into bit 15.
+
+Then check again.
+
+### But what if the word is all zeros?
+Suppose:
+```
+R2 = 0000000000000000
+```
+
+Then:
+```
+R2 + R2
+```
+
+always produces:
+```
+0000000000000000
+```
+
+There is never a 1.
+
+So:
+```
+check → 0
+shift → still 0
+check → 0
+shift → still 0
+...
+```
+
+Meanwhile:
+```
+R1:
+14
+13
+12
+...
+0
+-1
+-2
+-3
+...
+```
+
+The loop never exits.
+
+That's an:
+
+    infinite loop
+
+The book's trace with a breakpoint exposes exactly this behavior.
+
+### Why is Example 4 especially important?
+
+Because the algorithm works for almost every input.
+
+It fails only for:
+```
+0000000000000000
+```
+
+That's why the bug survived normal testing.
+
+This gives us an extremely important rule:
+
+    A program is not correct merely because it works for most inputs.
+
+It must work for all valid inputs specified by the problem.
+
+The book emphasizes this point directly after the infinite-loop example.

@@ -125,3 +125,40 @@ you are explicitly telling the machine:
     Add 1 to R1
 
 you still have detailed control over the underlying ISA.
+
+
+### Assembly language is ISA-dependent
+High-level languages are generally:
+```
+ISA independent
+```
+
+For example, you can write C for:
+```
+x86
+ARM
+RISC-V
+...
+```
+
+But assembly languages are tied closely to a particular ISA.
+
+For example:
+```
+LC-3 assembly
+```
+
+is specifically describing LC-3 instructions.
+
+So:
+```
+C
+↓
+can target many different CPUs
+
+LC-3 assembly
+↓
+describes LC-3
+```
+
+That is why assembly is called a low-level language.

@@ -792,3 +792,41 @@ instruction executed by processor
 After assembly, .END is gone.
 
 The book explicitly stresses that .END does not stop execution and does not even exist at runtime.
+
+
+## instructions vs pseudo-ops
+This distinction should become automatic.
+
+#### Real instruction
+```
+ADD
+AND
+NOT
+LD
+ST
+BR
+LDR
+STR
+LEA
+TRAP
+...
+```
+
+These correspond to LC-3 ISA operations.
+
+They become machine instructions.
+
+#### Pseudo-op
+```
+.ORIG
+.FILL
+.BLKW
+.STRINGZ
+.END
+```
+
+These are messages to the assembler.
+
+They do not correspond to CPU operations.
+
+The book calls them assembler directives or pseudo-ops.

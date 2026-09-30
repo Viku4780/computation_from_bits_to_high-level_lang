@@ -830,3 +830,14 @@ These are messages to the assembler.
 They do not correspond to CPU operations.
 
 The book calls them assembler directives or pseudo-ops.
+
+### Five pseudo-ops you need to know
+```
+| Pseudo-op  | Meaning                                      |
+| ---------- | -------------------------------------------- |
+| `.ORIG`    | where to place the program                   |
+| `.FILL`    | place one specified word in memory           |
+| `.BLKW`    | reserve a block of words                     |
+| `.STRINGZ` | place ASCII characters plus terminating zero |
+| `.END`     | end of source program                        |
+```

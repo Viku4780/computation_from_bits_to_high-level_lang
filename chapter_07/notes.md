@@ -162,3 +162,155 @@ describes LC-3
 ```
 
 That is why assembly is called a low-level language.
+
+
+### The four parts of an assembly instruction
+This is one of the first things you should become comfortable reading.
+
+The book gives the form:
+```
+Label   Opcode   Operands   ; Comment
+```
+
+There are four conceptual pieces:
+```
+LABEL     OPCODE       OPERANDS       COMMENT
+  │          │             │              │
+name      operation       data         explanation
+```
+
+Only opcode and operands are mandatory.
+
+Label and comment are optional.
+
+
+### Opcode
+The opcode says:
+
+    What operation should be performed?
+
+Examples:
+```
+ADD
+AND
+NOT
+LD
+ST
+BR
+LDR
+STR
+LEA
+TRAP
+```
+
+For example:
+```
+ADD R3,R3,R2
+```
+
+ADD is the opcode.
+
+The assembler knows:
+```
+ADD → binary opcode 0001
+```
+
+because the LC-3 ISA specifies that mapping.
+
+
+### Operands
+Operands tell the instruction:
+
+    What should the operation act on?
+
+Example:
+```
+ADD R3,R3,R2
+```
+
+has three operands:
+```
+R3
+R3
+R2
+```
+
+Meaning:
+```
+destination = R3
+source 1    = R3
+source 2    = R2
+```
+
+Therefore:
+```
+R3 ← R3 + R2
+```
+
+The assembler uses these operands to fill the appropriate bit fields in the 16-bit instruction.
+
+
+### Label
+A label is simply a human-readable name for a memory location.
+
+For example:
+```
+AGAIN ADD R3,R3,R2
+```
+
+Here:
+```
+AGAIN
+```
+
+is a label.
+
+It means:
+
+    The memory location containing this instruction has been given the symbolic name AGAIN.
+
+Later you can write:
+```
+BRp AGAIN
+```
+
+instead of manually calculating the numerical address.
+
+The assembler performs that calculation for you.
+
+
+### Comments
+Anything after ; is a comment.
+
+Example:
+```
+ADD R3,R3,#1 ; increment counter
+```
+
+The assembler processes:
+```
+ADD R3,R3,#1
+```
+
+and ignores:
+```
+; increment counter
+```
+
+Comments are for humans, not the processor.
+
+The book makes a useful distinction here: good comments should explain something that isn't obvious rather than merely repeating the instruction.
+
+For example:
+```
+ADD R1,R1,#-1 ; Decrement R1
+```
+
+isn't particularly useful.
+
+But:
+```
+ADD R1,R1,#-1 ; R1 tracks the number of iterations remaining
+```
+
+provides additional information.

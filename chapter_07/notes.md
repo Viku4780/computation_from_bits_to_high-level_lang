@@ -1390,3 +1390,740 @@ Assembler
 The language is the input.
 
 The assembler is the translator.
+
+
+### Now let's understand .FILL more deeply
+Suppose:
+```
+VALUE .FILL #25
+```
+
+This means the assembler creates a memory word:
+```
+M[VALUE] = 25
+```
+
+But:
+```
+VALUE
+```
+
+is a symbol.
+
+Therefore the symbol table might contain:
+```
+VALUE → x4007
+```
+
+and memory becomes:
+```
+x4007: 0000 0000 0001 1001
+```
+
+The processor sees only the bits.
+
+The label disappears after assembly.
+
+This is a recurring theme:
+
+    Labels belong to the human/assembler world.
+
+### .BLKW is slightly different
+Consider:
+```
+BUFFER .BLKW 10
+```
+
+The assembler reserves 10 consecutive memory locations.
+
+Conceptually:
+```
+BUFFER
+  ↓
+x4000
+x4001
+x4002
+...
+x4009
+```
+
+The label identifies the first location.
+
+No instruction is created to perform this.
+
+It's simply:
+
+    Allocate these memory locations in the resulting memory image.
+
+The book emphasizes this use when discussing storage for values not yet known.
+
+### .STRINGZ is data generation
+Suppose:
+```
+MSG .STRINGZ "ABC"
+```
+
+The assembler generates:
+```
+M[MSG+0] = ASCII('A')
+M[MSG+1] = ASCII('B')
+M[MSG+2] = ASCII('C')
+M[MSG+3] = 0
+```
+
+So:
+```
+MSG
+ ↓
+A
+B
+C
+0
+```
+
+This is why .STRINGZ is useful for loops.
+
+A program can keep reading until:
+```
+current character == 0
+```
+
+which is the sentinel.
+
+### Why does .STRINGZ create n+1 words?
+Suppose:
+```
+"HELLO"
+```
+
+has five characters.
+
+You need:
+```
+H
+E
+L
+L
+O
+0
+```
+
+That's:
+```
+5 + 1 = 6 words
+```
+
+The zero isn't part of the visible text.
+
+It marks:
+```
+End of string.
+```
+
+### The character-count example becomes much easier in assembly
+Compare machine language:
+```
+000001...
+001001...
+111100...
+011000...
+...
+```
+
+with assembly:
+```
+TEST ADD R4,R1,#-4
+BRz OUTPUT
+NOT R1,R1
+ADD R1,R1,#1
+ADD R1,R1,R0
+BRnp GETCHAR
+ADD R2,R2,#1
+
+GETCHAR ADD R3,R3,#1
+LDR R1,R3,#0
+BRnzp TEST
+```
+
+Same machine.
+
+Much better human readability.
+
+### Let's trace what happens to one assembly line
+Take:
+```
+BRz OUTPUT
+```
+
+There are several levels.
+
+#### Level 1 — what you write
+```
+BRz OUTPUT
+```
+
+#### Level 2 — assembler interpretation
+```
+opcode = BR
+condition = Z
+target = OUTPUT
+```
+
+#### Level 3 — symbol lookup
+Suppose:
+```
+OUTPUT = x300E
+```
+
+#### Level 4 — calculate offset
+If branch is at:
+```
+x3005
+```
+
+then:
+```
+PC' = x3006
+```
+
+and:
+```
+offset = x300E - x3006
+       = x0008
+```
+
+#### Level 5 — encode bits
+```
+0000
+0 1 0
+000001000
+```
+
+#### Level 6 — put instruction in memory
+```
+M[x3005] = machine instruction
+```
+
+#### Level 7 — runtime
+Later the processor fetches that 16-bit instruction.
+
+This is exactly the journey from:
+```
+human meaning
+```
+
+to:
+```
+electrical machine operation
+```
+
+### This is why the Location Counter matters
+The assembler has to know:
+```
+Where is this instruction?
+```
+
+because otherwise it can't determine:
+```
+label addresses
+PC-relative offsets
+placement of data
+```
+
+So the location counter is essentially the assembler's current memory-position pointer.
+
+Think of it as:
+```
+LC
+↓
+"What memory location am I filling right now?"
+```
+
+### Pass 1 in slow motion
+Here's a simplified assembler state:
+```
+LC = x3000
+
+read line
+    ↓
+is .ORIG?
+    ↓ yes
+LC = x3000
+```
+
+Next line:
+```
+AND R2,R2,#0
+```
+
+No label.
+
+Store nothing in symbol table.
+
+Advance LC:
+```
+x3001
+```
+
+Next:
+```
+TEST ADD R4,R1,#-4
+```
+
+There is a label.
+
+So:
+```
+symbol_table["TEST"] = x3001
+```
+
+Then advance LC.
+
+That's the essence of Pass 1.
+
+### What if the label is on data?
+Same idea.
+
+Suppose:
+```
+ASCII .FILL x0030
+```
+
+When the assembler reaches it:
+```
+symbol_table["ASCII"] = current LC
+```
+
+Then .FILL occupies one word, so the LC advances one location.
+
+This is why labels can refer to both:
+```
+instructions
+```
+
+and:
+```
+data
+```
+
+### Pass 2 in slow motion
+Now the assembler starts again from the beginning.
+
+For each instruction it asks:
+```
+What opcode?
+What operands?
+Are there labels?
+If yes, what addresses do they represent?
+Which addressing mode does the instruction use?
+What fields need to be encoded?
+```
+
+Then it creates the machine instruction.
+
+For example:
+```
+ADD R3,R3,R2
+```
+
+is straightforward.
+
+But:
+```
+LD R3,PTR
+```
+
+requires:
+```
+symbol lookup
++
+PC-relative arithmetic
++
+encoding
+```
+
+This is why Pass 2 needs the symbol table produced during Pass 1.
+
+### One-to-one correspondence
+The book points out something important:
+
+Generally:
+```
+one assembly instruction
+        ↓
+one machine instruction
+```
+
+For example:
+```
+ADD R3,R3,R2
+```
+
+becomes one 16-bit LC-3 instruction.
+
+This is different from C, where:
+```
+x = x + y;
+```
+may eventually translate to several machine instructions.
+
+That distinction is useful when comparing assembly to higher-level languages.
+
+### But pseudo-ops break that simple idea
+For example:
+```
+.STRINGZ "Hello"
+```
+
+doesn't become one machine instruction.
+
+It creates several memory words.
+
+Similarly:
+```
+.BLKW 20
+```
+
+reserves many memory locations.
+
+So:
+```
+assembly instruction
+→ machine instruction
+```
+
+is generally true for actual instructions, but pseudo-ops are different because they are assembler directives.
+
+### What actually exists after assembly?
+After the assembler finishes, the source text:
+```
+ADD R1,R2,R3
+NUMBER .BLKW 1
+.END
+```
+
+is no longer what the machine executes.
+
+You now have something more like:
+```
+memory address    contents
+
+x3000             000100...
+x3001             001010...
+x3002             010100...
+x3003             0000...
+x3004             data
+...
+```
+
+The labels have been resolved.
+
+The comments are gone.
+
+.ORIG and .END aren't runtime things.
+
+The machine ultimately sees memory contents.
+
+### This leads to the executable image
+The chapter then goes beyond one assembly-language program.
+
+This is where your earlier learning about compilation and linking starts connecting nicely.
+
+Suppose a program has several components.
+
+For example:
+```
+module A
+module B
+library routine
+data module
+```
+
+Each may be translated independently.
+
+The result of each translation is an object file.
+
+The book describes an object file as containing instructions in the ISA plus associated data.
+
+
+### What is an object file?
+Conceptually:
+```
+source module
+      ↓
+assembler/compiler
+      ↓
+object file
+```
+
+The object file contains machine-language material, but it may not yet be the final combined executable program.
+
+Think:
+```
+object file = one piece of the final program
+```
+
+### What is an executable image?
+The final machine-executable entity is called an:
+
+    Executable image
+
+It is created by combining object modules.
+
+Conceptually:
+```
+object A
+object B
+library
+data
+   ↓
+ linker
+   ↓
+executable image
+```
+
+The processor then executes instructions from that executable image using the normal:
+```
+FETCH
+DECODE
+...
+```
+
+instruction cycle.
+
+
+### Now we encounter an interesting problem
+Suppose Module A contains:
+```
+PTR .FILL STARTofFILE
+```
+
+but STARTofFILE belongs to another module.
+
+Module A doesn't know its address yet.
+
+So during its assembly:
+```
+STARTofFILE
+```
+
+is not defined locally.
+
+Normally that would be an error.
+
+But in a multi-module system, that's not necessarily an error.
+
+It may simply mean:
+
+    This symbol will be supplied by another module later.
+
+This is where external symbols and linking enter the picture.
+
+### .EXTERNAL in the book's discussion
+The LC-3 assembly language described in this introductory chapter does not actually provide the .EXTERNAL mechanism being discussed as a normal built-in feature.
+
+The book says, essentially:
+
+    If the LC-3 assembly language had .EXTERNAL, we could tell the assembler that a symbol belongs to another module.
+
+For example:
+```
+.EXTERNAL STARTofFILE
+```
+
+would tell the assembler:
+```
+STARTofFILE
+```
+
+is intentionally unresolved here.
+
+The linker would resolve it later when the modules are combined.
+
+This distinction matters:
+```
+local symbol
+→ assembler can resolve it
+
+external symbol
+→ linker may resolve it later
+```
+
+
+### This connects directly to your C learning
+
+You've already learned the C pipeline:
+```
+C source
+ ↓
+preprocessor
+ ↓
+compiler
+ ↓
+assembly
+ ↓
+assembler
+ ↓
+object file
+ ↓
+linker
+ ↓
+executable
+```
+
+Chapter 7 gives you a very concrete look at the assembly/assembler stage.
+
+Conceptually:
+```
+Assembly language
+        ↓
+      assembler
+        ↓
+     object code
+        ↓
+      linker
+        ↓
+ executable image
+```
+
+And then:
+```
+CPU
+ ↓
+FETCH
+ ↓
+DECODE
+ ↓
+EXECUTE
+```
+
+So Chapter 7 is directly preparing you for the compiler/linker concepts you are already studying in C.
+
+
+### Whitespace
+The assembler also doesn't care about extra spaces in the source.
+
+You can format:
+
+ADD R1,R2,R3
+
+or with spacing:
+
+    ADD    R1, R2, R3
+
+The whitespace exists to make the source readable.
+
+
+### A complete mental model of an assembler
+Imagine you are the assembler.
+
+You receive:
+```
+.ORIG x3000
+
+LOOP ADD R1,R1,#1
+     BRp LOOP
+
+VALUE .FILL #10
+
+.END
+```
+
+#### First question:
+Where should this program begin?
+```
+.ORIG x3000
+→ LC = x3000
+```
+
+#### Next:
+```
+LOOP ADD R1,R1,#1
+```
+
+Record:
+```
+LOOP → x3000
+```
+
+Advance LC:
+```
+x3001
+```
+
+#### Next:
+```
+BRp LOOP
+```
+
+No new label.
+
+Advance:
+```
+x3002
+```
+
+Next:
+```
+VALUE .FILL #10
+```
+
+Record:
+```
+VALUE → x3002
+```
+
+Place one word.
+
+Advance:
+```
+x3003
+```
+
+.END
+
+Stop.
+
+Now symbol table is available.
+
+Pass 2 starts.
+
+When it sees:
+```
+BRp LOOP
+```
+
+it knows:
+```
+LOOP = x3000
+```
+
+and can calculate the branch offset.
+
+That's the assembler's core job.
+
+```
+
+                     CHAPTER 7
+                  ASSEMBLY LANGUAGE
+                         │
+          ┌──────────────┴───────────────┐
+          │                              │
+    Writing assembly              Translating assembly
+          │                              │
+          │                         assembler
+          │                              │
+   ┌──────┼───────┐              ┌──────┴──────┐
+   │      │       │              │             │
+opcode  labels comments       Pass 1         Pass 2
+   │                           │               │
+operands                   symbol table    machine code
+   │                                           │
+pseudo-ops                                     ↓
+   │                                      object code
+   │                                           │
+   └───────────────────────────────→ linker/object modules
+                                               │
+                                               ↓
+                                         executable image
+```

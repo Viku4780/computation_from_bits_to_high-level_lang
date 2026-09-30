@@ -101,3 +101,27 @@ The assembler later figures out that:
 ```
 NUMBER -> x3057
 ```
+
+
+### Assembly language does not hide the machine
+this is an important difference between assembly and C.
+
+Consider:
+```
+x = x + 1;
+```
+
+A C programmer does not directly specify which machine instruction performs that operation.
+
+the compiler decides.
+
+But with LC-3 assembly:
+```
+ADD R1, R1, #1
+```
+
+you are explicitly telling the machine:
+
+    Add 1 to R1
+
+you still have detailed control over the underlying ISA.

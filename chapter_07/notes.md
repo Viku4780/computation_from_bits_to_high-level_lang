@@ -314,3 +314,102 @@ ADD R1,R1,#-1 ; R1 tracks the number of iterations remaining
 ```
 
 provides additional information.
+
+
+### Labels are not variables
+This distinction will prevent a lot of confusion.
+
+Suppose:
+```
+NUMBER .BLKW 1
+```
+
+You might be tempted to think:
+```
+NUMBER is a variable.
+```
+
+Conceptually, that's not quite what the label itself is.
+
+NUMBER is a name attached to a memory address.
+
+For example:
+```
+NUMBER → x3057
+```
+
+Then:
+```
+M[x3057]
+```
+
+is the actual memory location.
+
+So think:
+```
+NUMBER
+   ↓
+memory address x3057
+   ↓
+contents stored there
+```
+
+A label gives a name to the location, not directly to the data inside it.
+
+### When do we need a label?
+
+#### Reason 1: branch target
+
+Example:
+```
+AGAIN ADD R3,R3,R2
+...
+BRp AGAIN
+```
+
+AGAIN identifies where execution should go when the branch is taken.
+
+#### Reason 2: data location
+Example:
+```
+NUMBER .BLKW 1
+```
+
+and:
+```
+LD R2,NUMBER
+```
+
+Here the label identifies a memory location containing data.
+
+So the same idea works for both:
+```
+label → memory address
+```
+
+### Label naming rules
+For the LC-3 assembly language described in the book, a label:
+
+- can contain 1–20 alphanumeric characters
+- must begin with a letter
+- cannot be something that already has a special meaning in the assembly language.
+
+Examples of valid labels:
+```
+NOW
+Under21
+R2D2
+R785
+C3PO
+```
+
+Examples that are not valid labels include things such as:
+```
+ADD
+NOT
+R4
+```
+
+because they already have special meaning.
+
+The book calls these reserved words.

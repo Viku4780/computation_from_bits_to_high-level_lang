@@ -456,3 +456,339 @@ x1000 = decimal 4096
 b1000 = decimal 8
 #1000 = decimal 1000
 ```
+
+
+## Now the first complete assembly program
+```
+.ORIG x3050
+
+LD R1,SIX
+LD R2,NUMBER
+AND R3,R3,#0
+
+AGAIN ADD R3,R3,R2
+      ADD R1,R1,#-1
+      BRp AGAIN
+
+HALT
+
+NUMBER .BLKW 1
+SIX    .FILL x0006
+
+.END
+```
+
+its goal is:
+```
+NUMBER x 6
+```
+
+by repeated addtion.
+
+This is something you already encountered in chapter 4/5
+
+### .ORIG x3050
+This is not a processor instruction.
+
+It is an instruction to the assembler.
+
+It means:
+
+    Start placing the resulting program at memory address x3050.
+
+So the assembler's first location becomes:
+```
+LC = x3050
+```
+
+Here LC means:
+
+    Location Counter
+
+We'll come back to it because it is extremely important.
+
+The .ORIG directive tells the assembler where the program starts.
+
+### LD R1,SIX
+This one is a real LC-3 instruction.
+
+At runtime it means:
+```
+R1 ← M[address of SIX]
+```
+
+SIX is a label.
+
+The assembler will eventually discover something like:
+```
+SIX → x3058
+```
+and convert the symbolic instruction into the corresponding machine instruction.
+
+So the processor doesn't actually see:
+```
+LD R1,SIX
+```
+It eventually sees 16 bits.
+
+
+### LD R2,NUMBER 
+this is also same as previous one
+
+### AND R3,R3,#0
+It produces:
+```
+R3 = 0
+```
+
+The comment tells us:
+```
+R3 will contain the product.
+```
+
+So R3 is the accumulator.
+
+### AGAIN
+This is not an instruction.
+
+It is a label.
+
+It marks the address where the next instruction lives:
+```
+AGAIN ADD R3,R3,R2
+```
+
+Therefore:
+```
+AGAIN → address of ADD instruction
+```
+
+Later:
+```
+BRp AGAIN
+```
+
+means:
+
+    if positive, branch back to that memory location.
+
+
+### ADD R3,R3,R2
+Now the product starts accumulating.
+
+Suppose:
+```
+NUMBER = 123
+R2 = 123
+R3 = 0
+```
+
+First iteration:
+```
+R3 = 0 + 123
+   = 123
+```
+
+Second:
+```
+R3 = 246
+```
+
+Third:
+```
+R3 = 369
+```
+and so on.
+
+### ADD R1,R1,#-1
+R1 started with:
+```
+6
+```
+
+So:
+```
+6 → 5 → 4 → 3 → 2 → 1 → 0
+```
+The branch will use the resulting condition code.
+
+### BRp AGAIN
+This means:
+```
+if P = 1
+    go to AGAIN
+```
+
+Since the previous ADD modifies condition codes:
+```
+R1 ← R1 - 1
+```
+the branch tests whether the new R1 is positive.
+
+So:
+```
+R1 = 5 → P → branch
+R1 = 4 → P → branch
+...
+R1 = 1 → P → branch
+R1 = 0 → Z → no branch
+```
+This repeats the addition six times.
+
+
+### HALT
+This is an actual LC-3 instruction.
+
+The processor eventually executes it and stops the program.
+
+Notice the difference between:
+```
+HALT
+```
+
+and:
+```
+.END
+```
+
+This is extremely important.
+
+HALT
+
+Runtime instruction.
+
+The processor executes it.
+
+.END
+
+Assembler directive.
+
+The processor never executes it.
+
+
+### .BLKW 1
+.BLKW means:
+
+    Block of Words
+
+It tells the assembler to reserve a number of sequential memory locations.
+
+For:
+```
+NUMBER .BLKW 1
+```
+
+the assembler reserves one word for NUMBER.
+
+So conceptually:
+```
+NUMBER
+   ↓
+one memory location
+```
+
+The actual value doesn't have to be known when assembling.
+
+Another piece of the program could later put a value there.
+
+The book specifically identifies .BLKW as useful when the value isn't yet known.
+
+
+### .FILL x0006
+.FILL tells the assembler:
+
+    Put this value directly into the next memory location.
+
+Therefore:
+```
+SIX .FILL x0006
+```
+
+produces:
+```
+SIX → memory location
+M[SIX] = x0006
+```
+
+This is important:
+```
+.FILL
+```
+
+doesn't create an instruction.
+
+It creates data in memory.
+
+The book defines .FILL exactly this way
+
+
+### .STRINGZ
+This is another extremely useful pseudo-op.
+
+Example:
+```
+MESSAGE .STRINGZ "Hello"
+```
+
+The assembler stores the ASCII codes of:
+```
+H
+e
+l
+l
+o
+```
+
+in consecutive memory locations and then places:
+```
+0
+```
+
+after them.
+
+Conceptually:
+```
+'H'
+'e'
+'l'
+'l'
+'o'
+'\0'
+```
+
+The book calls the final zero a convenient sentinel.
+
+For the example:
+```
+HELLO .STRINGZ "Hello, World!"
+```
+
+the assembler creates one word per character, followed by x0000.
+
+
+### .END
+.END says:
+
+    The source program is finished.
+
+The assembler stops processing.
+
+But:
+```
+.END ≠ HALT
+```
+
+Think:
+```
+.END
+↓
+message to assembler
+
+HALT
+↓
+instruction executed by processor
+```
+
+After assembly, .END is gone.
+
+The book explicitly stresses that .END does not stop execution and does not even exist at runtime.

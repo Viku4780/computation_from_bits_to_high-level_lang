@@ -413,3 +413,46 @@ R4
 because they already have special meaning.
 
 The book calls these reserved words.
+
+
+### Numeric notation
+LC-3 assembly needs a way to tell the assembler what base a number is written in.
+
+The book uses:
+```
+#   decimal
+x   hexadecimal
+b   binary
+```
+
+Examples:
+```
+#10
+```
+
+means decimal 10.
+
+```
+x10
+```
+means hexadecimal 0x10, which is decimal 16.
+
+```
+b1010
+```
+
+means binary 1010, which is decimal 10.
+
+This matters because:
+```
+1000
+```
+
+by itself is ambiguous.
+
+The book illustrates:
+```
+x1000 = decimal 4096
+b1000 = decimal 8
+#1000 = decimal 1000
+```

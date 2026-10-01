@@ -195,3 +195,28 @@ printHello();
 ```
 
 the code for the operation exists only once
+
+
+### Caller and callee
+Suppose:
+```
+MAIN
+  |
+  | calls
+  ↓
+FUNCTION
+```
+
+The program doing the calling is the:
+#### caller
+
+The program being called is the:
+#### callee
+
+So:
+```
+MAIN  --------calls-------->  SUBROUTINE
+caller                         callee
+```
+
+This terminology becomes extremely useful later when you study function calls, stack frames, calling conventions, ABI rules, and operating systems.

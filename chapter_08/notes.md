@@ -331,3 +331,94 @@ MAIN continues
 ```
 
 That is the complete fundamental call/return mechanism.
+
+### The most important problem: R7 can be destroyed
+Now comes the first real difficulty.
+
+Suppose:
+```
+MAIN
+ |
+ | JSR A
+ ↓
+A
+ |
+ | JSR B
+ ↓
+B
+```
+
+Remember what happens during JSR:
+```
+R7 = return address
+```
+
+So when MAIN calls A:
+```
+R7 = address back to MAIN
+```
+
+But then A calls B:
+```
+JSR B
+```
+
+Now:
+```
+R7 = address back to A
+```
+
+The old value:
+```
+address back to MAIN
+```
+
+has been overwritten.
+
+So the machine has forgotten how to return from A to MAIN.
+
+This is a fundamental problem.
+
+### Why recursion makes this problem worse
+Suppose:
+```
+FACT:
+    ...
+    JSR FACT
+    ...
+    RET
+```
+
+Now the function is calling itself.
+
+Imagine:
+```
+FACT #1
+   |
+   | JSR FACT
+   ↓
+FACT #2
+   |
+   | JSR FACT
+   ↓
+FACT #3
+```
+
+Every call changes R7.
+
+Therefore:
+```
+FACT #1's return address
+```
+
+gets destroyed by:
+```
+FACT #2
+```
+
+and then FACT #2's return address gets destroyed by FACT #3.
+
+So we need somewhere to store these return addresses.
+
+And that leads directly to:
+## THE STACK

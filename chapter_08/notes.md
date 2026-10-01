@@ -608,3 +608,48 @@ JSRR
 ```
 
 This is useful when the address isn't conveniently encoded as a nearby PC-relative target.
+
+
+### Library routines
+Now the chapter gives us another powerful idea.
+
+Suppose you need square root.
+
+You could write a square-root algorithm yourself.
+
+But you probably don't want to.
+
+Instead:
+```
+Your program
+     |
+     | calls
+     ↓
+SQRT library routine
+```
+
+You just need to know the interface:
+```
+Input:
+    where do I put x?
+
+Output:
+    where do I get sqrt(x)?
+```
+
+You don't necessarily need to know how the library internally calculates it.
+
+This is a practical example of abstraction.
+
+The chapter's example uses a square-root library routine and then connects it to separate object modules combined by the linker.
+
+This is directly connected to what you learned earlier about:
+```
+source files
+   ↓
+object files
+   ↓
+linking
+   ↓
+executable
+```

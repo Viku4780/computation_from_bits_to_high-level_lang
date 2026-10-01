@@ -135,3 +135,63 @@ some hardware structure
 The behavior is what defines the stack.
 
 that is the meaning of the abstraction.
+
+
+### Subroutines:
+you have already seen assembly instruction like:
+```
+ADD
+LDR
+BR
+STR
+```
+But imagine your program contains the same 20 instructions in five different places.
+
+That would be ugly:
+```
+code
+code
+code
+code
+code
+
+same code again
+
+code
+
+same code again
+
+code
+```
+
+instead, we can write it once:
+```
+SUBROUTINE_A
+    instructions...
+    instructions...
+    instructions...
+    return
+```
+
+and jump to it whenever we need it.
+
+this is the basic idea of a subroutine.
+
+in C, the equivalent concept is a function.
+
+for example:
+```
+void printHello(void)
+{
+    printf("Hello\n");
+}
+```
+
+then:
+```
+printHello();
+printHello();
+printHello();
+```
+
+the code for the operation exists only once

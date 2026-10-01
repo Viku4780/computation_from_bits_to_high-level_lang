@@ -296,3 +296,38 @@ R7 = 1002
 ```
 
 The book specifically defines JSR(R) as doing these two jobs: loading the PC with the subroutine address and loading R7 with the address immediately after the call.
+
+### Returning from the subroutine
+At the end of the subroutine we have:
+```
+JMP R7
+```
+
+Remember:
+```
+R7 = return address
+```
+
+Therefore:
+```
+JMP R7
+```
+
+means:
+
+    Put the value contained in R7 into the PC.
+
+So:
+```
+MAIN
+  |
+  | JSR
+  ↓
+SUBROUTINE
+  |
+  | JMP R7
+  ↓
+MAIN continues
+```
+
+That is the complete fundamental call/return mechanism.

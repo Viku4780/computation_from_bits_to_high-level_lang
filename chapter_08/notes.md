@@ -422,3 +422,137 @@ So we need somewhere to store these return addresses.
 
 And that leads directly to:
 ## THE STACK
+
+### Saving and restoring registers
+Before we get fully into the stack, there is another major problem with subroutines.
+
+Suppose the caller has:
+```
+R1 = 100
+R2 = 200
+R3 = 300
+```
+
+Then it calls a subroutine.
+
+Inside the subroutine:
+```
+LD R1,...
+LD R2,...
+LD R3,...
+```
+
+Now:
+```
+R1 = new value
+R2 = new value
+R3 = new value
+```
+
+The caller's values are gone.
+
+But what if the caller expected them to still exist?
+
+We have a problem.
+
+### Save and restore
+The basic solution is extremely simple.
+
+Before destroying a register:
+```
+save it
+```
+
+Then after you're finished:
+```
+restore it
+```
+
+Conceptually:
+```
+R1 = 100
+
+       ↓
+
+save 100 in memory
+
+       ↓
+
+R1 used by subroutine
+
+       ↓
+
+restore 100
+
+       ↓
+
+R1 = 100 again
+```
+
+### Caller save
+Suppose the caller knows that some operation will destroy a register.
+
+Then the caller can save it.
+
+```
+CALLER
+
+save R7
+JSR SUBROUTINE
+restore R7
+```
+
+That's:
+
+caller save
+
+The caller handles the preservation.
+
+### Callee save
+Suppose the callee knows:
+
+    "I need R1 and R2 for my own work."
+
+Then the subroutine itself saves them:
+```
+SUBROUTINE
+
+save R1
+save R2
+
+do work
+
+restore R2
+restore R1
+
+return
+```
+
+That's:
+
+#### callee save
+
+The book's key reasoning is very good:
+
+    The callee knows which registers it needs.
+
+Therefore it makes sense for the callee to save those registers.
+
+### The general rule
+You should build this mental rule:
+
+    If a value will be destroyed but you still need that value later, save it before destruction and restore it before using it again.
+
+This is broader than registers.
+
+It applies to:
+```
+register values
+return addresses
+local variables
+function state
+recursive state
+temporary computation values
+```
+
+And that is why the stack becomes so useful.

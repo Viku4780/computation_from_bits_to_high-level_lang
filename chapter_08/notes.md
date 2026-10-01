@@ -1169,3 +1169,461 @@ And therefore:
 PUSH → address goes downward
 POP  → address goes upward
 ```
+
+## Recursion
+
+    a function expressed in terms of itself.
+
+for example:
+```
+FACT(n) = n x FACT(n-1)
+```
+
+That means:
+```
+FACT(5)
+= 5 × FACT(4)
+
+= 5 × 4 × FACT(3)
+
+= 5 × 4 × 3 × FACT(2)
+
+= 5 × 4 × 3 × 2 × FACT(1)
+
+= 5 × 4 × 3 × 2 × 1
+```
+
+The key is:
+### Every recursive problem needs a base case.
+
+### Base case
+For factorial:
+```
+1! = 1
+```
+
+Therefore:
+```
+if n == 1
+    stop recursion
+```
+
+Without that:
+```
+FACT(5)
+ ↓
+FACT(4)
+ ↓
+FACT(3)
+ ↓
+FACT(2)
+ ↓
+FACT(1)
+ ↓
+FACT(0)
+ ↓
+FACT(-1)
+ ↓
+FACT(-2)
+ ↓
+...
+```
+
+Forever.
+
+So mentally:
+```
+recursive case
+      ↓
+smaller problem
+      ↓
+smaller problem
+      ↓
+...
+      ↓
+base case
+```
+
+### Why recursion requires a stack
+This is the real essence.
+
+Imagine:
+```
+FACT(5)
+```
+
+It calls:
+```
+FACT(4)
+```
+
+But FACT(5) isn't finished yet.
+
+Then FACT(4) calls:
+```
+FACT(3)
+```
+
+FACT(4) isn't finished either.
+
+Then:
+```
+FACT(2)
+```
+
+Then:
+```
+FACT(1)
+```
+
+Now we have:
+```
+FACT(5) waiting
+FACT(4) waiting
+FACT(3) waiting
+FACT(2) waiting
+FACT(1) running
+```
+
+Each waiting invocation needs its own information:
+```
+original n
+return address
+temporary values
+register state
+```
+
+That's exactly what the stack is good at.
+
+### Think of recursive calls as suspended worlds
+When:
+```
+FACT(5)
+```
+
+calls:
+```
+FACT(4)
+```
+
+FACT(5) hasn't disappeared.
+
+It is simply paused.
+
+Think:
+```
+FACT(5)
+┌─────────────────────┐
+│ "I'm waiting for    │
+│ FACT(4) to finish"  │
+└─────────────────────┘
+          ↓
+FACT(4)
+┌─────────────────────┐
+│ "I'm waiting for    │
+│ FACT(3) to finish"  │
+└─────────────────────┘
+          ↓
+FACT(3)
+```
+
+The stack stores these waiting contexts.
+
+That is the real relationship:
+```
+recursion
+   ↓
+nested calls
+   ↓
+many unfinished calls
+   ↓
+stack stores their state
+```
+
+### Factorial: why the naive recursive version is ugly at machine level
+Suppose:
+```
+FACT(n)
+```
+
+needs:
+```
+n
+return address
+register state
+```
+
+And then it recursively calls:
+```
+FACT(n-1)
+```
+
+Now another copy of those things is needed.
+
+So for:
+```
+FACT(5)
+```
+
+you might conceptually get:
+```
+Stack
+
+FACT(1) state
+FACT(2) state
+FACT(3) state
+FACT(4) state
+FACT(5) state
+```
+
+As recursion gets deeper, the stack grows.
+
+The book specifically shows that return linkages, the original n, and register values must be pushed so each recursive invocation can later recover its own state.
+
+
+### Why factorial is a bad example of recursion
+This is subtle.
+
+The formula is beautiful:
+```
+n! = n × (n-1)!
+```
+
+But the iterative solution is extremely simple.
+
+You can simply do:
+```
+result = 1
+
+for i = 2 to n
+    result = result * i
+```
+
+No recursive stack growth.
+
+No repeated call overhead.
+
+So for factorial:
+```
+recursive:
+beautiful mathematical expression
++
+extra execution overhead
+
+iterative:
+slightly less elegant
++
+simple and efficient
+```
+
+### So when is recursion actually good?
+This is where the chapter's maze example becomes important.
+
+Imagine a maze:
+```
++---+---+---+
+| S     |   |
++   +   +   +
+|   |       |
++   +---+   +
+|       | E |
++---+---+---+
+```
+
+At each cell you may have:
+```
+north
+east
+south
+west
+```
+
+You don't know which path will eventually lead to the exit.
+
+You can try one direction.
+
+If it fails:
+```
+come back
+try another
+```
+
+That naturally creates a recursive search.
+
+### The maze algorithm
+At the current cell:
+
+#### Step 1
+Ask:
+```
+Is there an exit here?
+```
+
+If yes:
+```
+return YES
+```
+
+#### Step 2
+Mark this cell as visited.
+
+The book calls this a breadcrumb.
+
+Why?
+
+Because otherwise you could get:
+```
+A → B → C → A → B → C → A → ...
+```
+
+forever.
+
+#### Step 3
+Try north.
+
+If there is a door and the cell has not been visited:
+```
+FIND_EXIT(north)
+```
+
+#### Step 4
+If north fails:
+```
+try east
+```
+
+Then:
+```
+south
+```
+
+Then:
+```
+west
+```
+
+#### Step 5
+If all possibilities fail:
+```
+return NO
+```
+
+This is a beautiful use of recursion.
+
+### Why recursion works naturally for the maze
+Suppose we are here:
+```
+A
+```
+
+We choose:
+```
+A → B
+```
+
+Now B is effectively a smaller version of the same problem:
+```
+"Can I get from B to the exit?"
+```
+
+So:
+```
+FIND_EXIT(A)
+```
+
+becomes:
+```
+FIND_EXIT(B)
+```
+
+which becomes:
+```
+FIND_EXIT(C)
+```
+
+That is exactly what recursion is good at:
+
+    Solve the same kind of problem on a smaller/new part of the problem.
+
+And when a path fails, the function returns to the previous invocation.
+
+The stack naturally remembers where each previous invocation was.
+
+That is why the chapter calls the maze a good recursion example.
+
+### The breadcrumb is extremely important
+This teaches another deep idea:
+
+#### Recursion alone does not prevent infinite loops.
+
+Suppose:
+```
+A → B
+B → A
+```
+
+Then:
+```
+FIND_EXIT(A)
+    ↓
+FIND_EXIT(B)
+    ↓
+FIND_EXIT(A)
+    ↓
+FIND_EXIT(B)
+    ↓
+...
+```
+
+The solution is:
+```
+mark visited
+```
+
+So:
+```
+recursive search
++
+visited state
+```
+
+allows the maze algorithm to terminate correctly.
+
+This is the beginning of what you'll later recognize as graph traversal.
+
+### Maze representation in memory
+This is another nice connection to your earlier bit manipulation learning.
+
+Each maze cell is stored in one word.
+
+The book uses bits to encode doors:
+```
+bit 4 → exit
+bit 3 → north
+bit 2 → east
+bit 1 → south
+bit 0 → west
+```
+
+And another bit is used as a breadcrumb.
+
+So a cell can conceptually look like:
+```
+bit15 ... bit4 bit3 bit2 bit1 bit0
+       breadcrumb exit north east south west
+```
+
+That's a very systems-oriented data representation.
+
+The maze is therefore not magic.
+
+It's just:
+```
+bits
+ ↓
+meaning
+ ↓
+memory
+ ↓
+algorithm
+```

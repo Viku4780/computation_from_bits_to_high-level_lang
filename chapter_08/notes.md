@@ -556,3 +556,55 @@ temporary computation values
 ```
 
 And that is why the stack becomes so useful.
+
+## JSR vs JSRR
+The LC-3 has two forms.
+
+#### JSR
+```
+JSR LABEL
+```
+
+uses PC-relative addressing.
+
+The target address is calculated roughly as:
+```
+target = incremented PC + sign-extended offset
+```
+
+The book gives JSR an 11-bit offset.
+
+#### JSRR
+```
+JSRR R5
+```
+
+uses a register containing the subroutine address.
+
+Conceptually:
+```
+R5 = 0x3002
+```
+
+then:
+```
+JSRR R5
+```
+
+means:
+```
+PC = R5
+```
+
+while also placing the return address in R7.
+
+So:
+```
+JSR
+    target comes from instruction's offset
+
+JSRR
+    target comes from a register
+```
+
+This is useful when the address isn't conveniently encoded as a nearby PC-relative target.

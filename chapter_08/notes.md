@@ -1627,3 +1627,348 @@ memory
  ↓
 algorithm
 ```
+
+## Queue
+Now we move from:
+```
+LIFO
+```
+
+to:
+## FIFO
+First in, first out
+
+Think about a normal line at a ticket counter
+```
+A -> B -> C -> D
+```
+A arrived first.
+
+Therefore A gets served first
+
+So:
+```
+A removed
+then B
+then C
+Then D
+```
+
+that's queue
+
+### Queue needs two ends
+A stack needs one important end:
+```
+TOP
+```
+
+A queue needs two:
+```
+FRONT                  REAR
+  ↓                      ↓
+[A] [B] [C] [D]
+```
+
+The book uses:
+```
+R3 = FRONT
+R4 = REAR
+```
+
+Why?
+
+Because:
+```
+remove from FRONT
+insert at REAR
+```
+
+That's the definition of the queue behavior.
+
+### Queue implemented in memory
+The example reserves:
+```
+x8000
+x8001
+x8002
+x8003
+x8004
+x8005
+```
+
+Now imagine:
+```
+45
+17
+23
+74
+10
+```
+
+The first two may have already been removed.
+
+The queue's logical data might be:
+```
+23 → 74 → 10
+```
+
+while memory still contains:
+```
+x8000 = 45
+x8001 = 17
+x8002 = 23
+x8003 = 74
+x8004 = 10
+```
+
+Again:
+```
+physical contents
+        ≠
+logical queue contents
+```
+
+Exactly like the stack.
+
+### Removing from a queue
+Because FRONT points just before the first logical item, removal does:
+```
+ADD R3,R3,#1
+LDR R0,R3,#0
+```
+
+Meaning:
+```
+move FRONT
+    ↓
+read new front item
+```
+
+So:
+```
+FRONT
+  ↓
+23  74  10
+```
+
+after removal of 23:
+```
+FRONT
+  ↓
+74  10
+```
+
+### Inserting into the queue
+To insert at the rear:
+```
+ADD R4,R4,#1
+STR R0,R4,#0
+```
+
+So:
+```
+move REAR forward
+      ↓
+store item there
+```
+
+### The queue's interesting problem: wasted space
+Suppose memory is:
+```
+x8000
+x8001
+x8002
+x8003
+x8004
+x8005
+```
+
+Initially we put:
+```
+A B C D E
+```
+
+then remove:
+```
+A
+B
+```
+
+Now:
+```
+x8000 → empty
+x8001 → empty
+x8002 → C
+x8003 → D
+x8004 → E
+x8005 → empty
+```
+There is space at the beginning.
+
+But REAR may already be at x8004.
+
+So if we only move forward, we'd incorrectly think:
+
+    "I've reached the end."
+
+But x8000 and x8001 are available again.
+
+We need:
+
+### Wrap-around
+
+### Wrap-around
+When REAR reaches:
+```
+x8005
+```
+
+and needs another position, it goes back to:
+```
+x8000
+```
+
+Conceptually:
+```
+x8000 → x8001 → x8002 → x8003 → x8004 → x8005
+   ↑                                           |
+   |___________________________________________|
+```
+
+This creates a circular queue.
+
+That is a very important data-structure pattern.
+
+### Why not use all n slots?
+Here comes a subtle design problem.
+
+Suppose there are six allocated locations.
+
+Imagine:
+```
+FRONT = x8002
+REAR  = x8002
+```
+
+What does that mean?
+
+Could mean:
+```
+empty
+```
+
+But after wrapping around, it could also mean:
+```
+full
+```
+
+That's ambiguous.
+
+The book solves this by deliberately leaving one slot unused.
+
+For an allocated capacity of:
+```
+n
+```
+
+the queue stores:
+```
+n - 1
+```
+
+elements.
+
+So with:
+```
+6 memory locations
+```
+
+maximum logical elements:
+```
+5
+```
+
+
+### Empty vs full
+With the unused-slot design:
+```
+Empty
+FRONT == REAR
+Full
+```
+
+After advancing REAR, it would collide with FRONT.
+
+That removes the ambiguity.
+
+So the one unused location is not a mistake.
+
+It is part of the design.
+
+### Queue underflow
+
+Same idea as stack.
+
+If:
+```
+queue empty
+```
+
+and you try:
+```
+REMOVE
+```
+
+you get:
+```
+UNDERFLOW
+```
+
+### Queue overflow
+
+If:
+```
+queue full
+```
+
+and you try:
+```
+INSERT
+```
+
+you get:
+```
+OVERFLOW
+```
+
+The chapter's queue subroutine reports success/failure using:
+```
+R5 = 0 → success
+R5 = 1 → failure
+```
+
+just like the stack routines.
+
+54. Complete queue mental model
+```
+Remember:
+
+                  QUEUE
+
+        remove                 insert
+           ↓                      ↓
+        FRONT                  REAR
+
+[A] [B] [C] [D] [E] [ ]
+
+        FIFO
+```
+
+And with wrap-around:
+```
+        ┌───────────────────────────────┐
+        ↓                               |
+x8000 → x8001 → x8002 → x8003 → x8004 → x8005
+  ↑                                         |
+  └─────────────────────────────────────────┘
+```

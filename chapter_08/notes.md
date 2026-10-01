@@ -220,3 +220,79 @@ caller                         callee
 ```
 
 This terminology becomes extremely useful later when you study function calls, stack frames, calling conventions, ABI rules, and operating systems.
+
+### The call/return mechanism
+Suppose our program is here:
+```
+MAIN:
+
+    instruction A
+    instruction B
+    JSR SUBROUTINE
+    instruction C
+    instruction D
+```
+
+When we execute:
+```
+JSR SUBROUTINE
+```
+
+we need two things to happen
+
+#### Thing 1 - Go to the subroutine
+The PC must become the address of:
+```
+SUBROUTINE
+```
+So execution changes:
+```
+MAIN
+ ↓
+JSR
+ ↓
+SUBROUTINE
+```
+
+#### Thing 2 - remember where to come back
+Suppose:
+```
+1000   instruction A
+1001   JSR SUBROUTINE
+1002   instruction C
+1003   instruction D
+```
+
+when we execute:
+```
+JSR SUBROUTINE
+```
+
+the computer must remember:
+```
+1002
+```
+because that's where it needs to continue after the subroutine
+
+The chapter calls this the return linkage.
+
+in the LC-3, the return linkage is stored in:
+```
+R7
+```
+
+so conceptaully:
+```
+Before JSR:
+
+PC = 1001
+R7 = whatever
+```
+
+After JSR:
+```
+PC = address of SUBROUTINE
+R7 = 1002
+```
+
+The book specifically defines JSR(R) as doing these two jobs: loading the PC with the subroutine address and loading R7 with the address immediately after the call.

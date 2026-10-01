@@ -1972,3 +1972,372 @@ x8000 → x8001 → x8002 → x8003 → x8004 → x8005
   ↑                                         |
   └─────────────────────────────────────────┘
 ```
+
+## Character strings
+Now the third major data structure.
+
+You're probably already familiar with:
+```
+"Hello"
+```
+
+But the computer doesn't fundamentally see "Hello" as a magical string object.
+
+At the low level, it is a sequence of character codes.
+```
+For ASCII:
+
+H → x48
+e → x65
+l → x6C
+l → x6C
+o → x6F
+```
+
+So memory might contain:
+```
+x5000 → x0048
+x5001 → x0065
+x5002 → x006C
+x5003 → x006C
+x5004 → x006F
+x5005 → x0000
+```
+
+The final:
+```
+x0000
+```
+is the null terminator.
+
+The chapter represents strings this way: one ASCII character per memory word in the LC-3 example, followed by x0000.
+
+### Why do we need the null terminator?
+Suppose memory looks like:
+```
+x5000 H
+x5001 e
+x5002 l
+x5003 l
+x5004 o
+x5005 ?
+x5006 ?
+x5007 ?
+```
+
+How does a program know where the string ends?
+
+It doesn't.
+
+So we establish a rule:
+```
+string ends at x0000
+```
+
+Therefore:
+```
+H e l l o \0
+```
+
+means:
+```
+characters...
+       ↓
+      END
+```
+This is a sentinel.
+
+### This is the C string you will later use
+Now the connection to your C learning becomes very clear.
+
+In C:
+```
+char name[] = "Hello";
+```
+
+conceptually corresponds to:
+```
+H
+e
+l
+l
+o
+\0
+```
+
+In normal C implementations, char is one byte, whereas the LC-3 example uses one memory word for each ASCII character. The underlying idea is the same:
+
+    a C string is a sequence of characters terminated by '\0'.
+
+This is why later:
+```
+strlen()
+strcmp()
+strcpy()
+printf("%s")
+```
+can walk through a string one character at a time.
+
+### Comparing two strings
+The chapter provides a STRCMP subroutine.
+
+Suppose:
+```
+string1 = "Bill"
+string2 = "Bill"
+```
+
+The algorithm is basically:
+```
+read character 1
+read character 2
+```
+
+compare
+```
+if different:
+    failure
+
+if both are null:
+    success
+```
+
+move to next character
+
+repeat
+
+Visually:
+```
+B == B ?
+↓
+i == i ?
+↓
+l == l ?
+↓
+l == l ?
+↓
+\0 == \0 ?
+↓
+YES
+```
+
+That means the strings match.
+
+### How the comparison is actually done at machine level
+Suppose:
+```
+R2 = character from string 1
+R3 = character from string 2
+```
+
+The LC-3 doesn't have some magical:
+```
+COMPARE_STRINGS
+```
+
+instruction.
+
+Instead it uses the operations you already learned.
+
+To check:
+```
+R2 == R3
+```
+
+it can form:
+```
+-R2
+```
+
+using two's complement:
+```
+NOT R2,R2
+ADD R2,R2,#1
+```
+
+then:
+```
+ADD R2,R2,R3
+```
+
+which gives:
+```
+R3 - R2
+```
+
+If result is zero:
+```
+R2 == R3
+```
+
+### Strings can represent numbers
+Suppose we have:
+```
+"79245"
+```
+
+In memory:
+```
+'7'
+'9'
+'2'
+'4'
+'5'
+'\0'
+```
+
+These are ASCII codes, not the binary integer:
+```
+79245
+```
+
+That's an important distinction.
+
+For example:
+```
+character '7'
+```
+
+has ASCII value:
+```
+x37
+```
+
+It does not mean:
+```
+binary 7
+```
+
+So:
+```
+"79"
+```
+
+is two character codes:
+```
+'7' → x37
+'9' → x39
+```
+
+not one integer value:
+```
+79
+```
+
+
+### A fascinating connection: data structure + pointer
+The personnel record example in the chapter is particularly useful.
+
+Imagine:
+```
+Employee record
+
++----------------------+
+| pointer to last name |
++----------------------+
+| pointer to first name|
++----------------------+
+| pointer to ID string |
++----------------------+
+| salary               |
++----------------------+
+| years employed       |
++----------------------+
+| pointer to job title |
++----------------------+
+```
+
+Then those pointers lead to separate strings:
+```
+      Employee record
+            |
+     +------+-------+
+     |      |       |
+     ↓      ↓       ↓
+  "Jones" "Mary" "Engineer"
+```
+
+This is extremely close to the way you will later use:
+```
+char *
+struct
+pointer
+array
+```
+
+### The real essence of Chapter 8
+
+The chapter may look like:
+```
+subroutines
+stack
+recursion
+queue
+strings
+```
+
+But underneath, it is teaching something deeper:
+
+    How to build higher-level structures from primitive memory and control operations.
+
+For example:
+```
+Memory + pointer
+        ↓
+STACK
+Memory + FRONT + REAR
+        ↓
+QUEUE
+Memory + ASCII + sentinel
+        ↓
+STRING
+JSR + R7 + saved state + stack
+        ↓
+FUNCTION CALL
+Function call + self-call + stack
+        ↓
+RECURSION
+```
+
+That's the core essence.
+
+
+```
+                    CPU
+                     |
+            primitive instructions
+                     |
+          +----------+----------+
+          |                     |
+       control                memory
+          |                     |
+      JSR / JMP           load / store
+          |                     |
+          +----------+----------+
+                     |
+               SUBROUTINES
+                     |
+             save / restore
+                     |
+                   STACK
+                     |
+        +------------+------------+
+        |                         |
+   function state             recursion
+        |                         |
+ return address              nested calls
+ local state                      |
+ temporary values                 |
+        +-------------------------+
+                     |
+              more complex
+                structures
+                     |
+          +----------+----------+
+          |          |          |
+        STACK      QUEUE      STRING
+         LIFO       FIFO      ASCII+\0
+```
+
+
+

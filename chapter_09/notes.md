@@ -116,3 +116,34 @@ SUPERVISOR MODE
    ↓
 SYSTEM RESOURCES
 ```
+
+
+### Priority = "How urgently must this happen"
+Priority is completely different.
+
+Suppose:
+```
+Program A = normal work
+Keyboard = waiting for input
+Power failure = happening right now
+```
+
+the computer cannot neccessarily treat all three as equally urgent.
+
+so things get priority levels.
+
+The LC-3 has:
+```
+PL0
+PL1
+PL2
+...
+PL7
+```
+where:
+```
+PL0 = lowest
+PL7 = highest
+```
+
+    Priority answer "who needs the processor more urgently?"

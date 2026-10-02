@@ -939,3 +939,70 @@ read keyboard
      ↓
 put result in R0
 ```
+
+
+## RTI — Return from Trap or Interrupt
+Now the OS is finished.
+
+How does it return?
+
+Not:
+```
+BR
+```
+
+Not ordinary:
+```
+JMP
+```
+
+Instead:
+```
+RTI
+```
+
+Why?
+
+Because the processor needs to restore both:
+```
+PC
+PSR
+```
+
+The RTI instruction pops the saved state from the supervisor stack.
+
+
+### RTI step-by-step
+Conceptually:
+```
+Supervisor stack:
+
+saved PC
+saved PSR
+```
+
+RTI does:
+```
+pop → PC
+pop → PSR
+```
+
+Then:
+```
+processor state = old state
+```
+
+If that old state indicates User mode, the processor switches back to the user stack as well.
+
+Therefore:
+```
+OS
+ ↓
+RTI
+ ↓
+restore PC
+restore PSR
+restore stack context
+ ↓
+user program continues
+```

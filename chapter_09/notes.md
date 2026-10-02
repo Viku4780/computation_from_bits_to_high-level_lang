@@ -147,3 +147,89 @@ PL7 = highest
 ```
 
     Priority answer "who needs the processor more urgently?"
+
+
+## Processor Status Register -- PSR
+How does the processor remember privilage and priority?
+
+Through the:
+PSR
+
+LC-3 PSR contains:
+```
+privilage
+priority
+condition codes
+```
+
+the important fields are:
+```
+bit 15   -> privilage
+bits 10:8 -> priority
+bits 2:0  -> N Z P condition codes
+```
+
+For the LC-3
+```
+PSR[15] = 0 -> Supervisor
+PSR[15] = 1 -> User
+```
+
+and:
+```
+PSR[10:8] = priority level
+```
+
+the condition codes are also stored in PSR because they are part of the processor state that must survive certain control transfers.
+
+
+### Why are the condition codes in the PSR?
+Remember your LC-3 branches:
+```
+BRz
+BRn
+BRp
+BRnz
+...
+```
+
+They depend on:
+```
+N
+Z
+P
+```
+
+Now imagine a user program does:
+```
+ADD R1,R1,#1
+BRz SOMETHING
+```
+
+Then an interrupt occurs.
+
+The interrupt service routine executes an ADD.
+
+That changes:
+```
+N/Z/P
+```
+
+If the processor did not preserve the original condition codes, the user's BRz might make the wrong decision when the user program resumes.
+
+Therefore:
+```
+program A condition codes
+          ↓
+       saved
+          ↓
+interrupt executes
+          ↓
+       restored
+          ↓
+program A continues correctly
+```
+
+This is a deep reason why processor state matters.
+
+The chapter explicitly identifies the condition codes, priority, and privilege as state that must be preserved across interrupts.

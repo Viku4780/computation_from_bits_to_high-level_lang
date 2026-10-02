@@ -562,3 +562,23 @@ The processor doesn't know exactly when the key will arrive.
 That's asynchronous.
 
 The chapter emphasizes that most processor/I/O interaction is asynchronous because devices operate at different speeds and are not locked to the processor's timing.
+
+### The ready bit is a simple handshake
+Think of the ready bit as:
+```
+DEVICE:
+"DATA IS READY"
+
+CPU:
+"Okay, I'll read it."
+```
+
+Then:
+```
+DEVICE:
+"DATA IS NOT READY"
+```
+
+This tiny bit creates a synchronization protocol.
+
+It's primitive, but extremely important.

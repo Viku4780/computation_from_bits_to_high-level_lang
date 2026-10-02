@@ -582,3 +582,83 @@ DEVICE:
 This tiny bit creates a synchronization protocol.
 
 It's primitive, but extremely important.
+
+
+## Memory-mapped I/O
+The LC-3 doesn't need special:
+```
+READ_KEYBOARD
+WRITE_MONITOR
+```
+
+instructions.
+
+Instead, it gives hardware registers addresses.
+
+For example:
+```
+xFE00 → KBSR
+xFE02 → KBDR
+xFE04 → DSR
+xFE06 → DDR
+```
+
+This means the same load/store machinery used for memory can interact with hardware.
+
+This is:
+Memory-mapped I/O
+
+### Why is it called memory-mapped?
+Because from the instruction's perspective:
+```
+LDR
+STR
+LD
+ST
+```
+are still being used.
+
+The address tells the hardware what resource you're accessing.
+
+So conceptually:
+```
+normal memory address
+        ↓
+     memory
+
+I/O address
+        ↓
+     device
+```
+The address space is being used for both.
+
+### Very important distinction
+This:
+```
+x3000
+```
+may refer to actual memory.
+
+But:
+```
+xFE02
+```
+
+does not mean:
+
+    "ordinary RAM location xFE02"
+
+In the LC-3 it means:
+
+    the keyboard data register.
+
+So:
+```
+address
+   ↓
+address-control logic
+   ↓
+memory OR device register
+```
+
+This is why the processor can use familiar load/store instructions for I/O.

@@ -327,3 +327,203 @@ R6
 is used as the active stack pointer.
 
 When privilege changes, the currently active stack pointer is saved and the other one becomes active.
+
+
+### Now we meet hardware device registers
+A keyboard needs somewhere to put the character.
+
+It also needs some way to say:
+
+    "I have a character ready."
+
+Therefore we need at least two registers:
+```
+data register
+status register
+```
+
+The LC-3 keyboard has:
+```
+KBDR
+KBSR
+```
+
+where:
+```
+KBDR = Keyboard Data Register
+KBSR = Keyboard Status Register
+```
+where:
+```
+KBDR = keyboard data register
+KBSR = keyboard status register
+```
+
+their addresses are:
+```
+KBDR = xFE02
+KBSR = xFE00
+```
+
+### Keyboard Data Register — KBDR
+Suppose you press:
+```
+A
+```
+
+The keyboard hardware puts the ASCII value for A into:
+```
+KBDR[7:0]
+```
+
+So conceptually:
+```
+keyboard
+   |
+   | "A"
+   ↓
+KBDR
+```
+
+The upper bits aren't needed for the character in this example.
+
+
+### Keyboard Status Register — KBSR
+Now the CPU needs to know:
+
+    "Is there a character waiting?"
+
+That's what the status register tells us.
+
+In the LC-3:
+```
+KBSR[15]
+```
+
+is the ready bit.
+
+Think:
+```
+KBSR[15] = 0
+    ↓
+no new character available
+
+KBSR[15] = 1
+    ↓
+character is ready
+```
+
+When a key is pressed:
+```
+keyboard loads KBDR
+        ↓
+KBSR[15] = 1
+```
+
+When the processor reads the KBDR:
+```
+character consumed
+        ↓
+KBSR[15] = 0
+```
+
+This is a synchronization mechanism between the slow keyboard and fast processor.
+
+### Why do we need the ready bit?
+Imagine the processor is extremely fast:
+```
+CPU:
+read KBDR
+read KBDR
+read KBDR
+read KBDR
+...
+```
+
+But a human may take:
+```
+0.5 second
+```
+
+to type another key.
+
+Without some status information, the processor doesn't know whether:
+```
+the character is new
+```
+
+or:
+```
+the same old character is still sitting there
+```
+
+So:
+```
+KBSR[15]
+```
+
+acts like a tiny communication signal:
+```
+Keyboard → "new data available"
+```
+
+### Output has the same idea
+The monitor also needs:
+```
+data register
+status register
+```
+
+For the LC-3:
+```
+DDR = Display Data Register
+DSR = Display Status Register
+```
+
+with:
+```
+DDR = xFE06
+DSR = xFE04
+```
+
+Again:
+```
+DDR → data to display
+DSR → status of display
+```
+
+The DSR's bit 15 is the ready bit.
+
+### DSR ready bit
+Suppose:
+```
+DSR[15] = 0
+```
+
+That means:
+
+    The monitor is busy processing the previous character.
+
+So don't send another character yet.
+
+When:
+```
+DSR[15] = 1
+```
+
+the processor can write the next character to DDR.
+
+Therefore:
+```
+DSR[15] = 1
+       ↓
+monitor ready
+       ↓
+write DDR
+       ↓
+monitor becomes busy
+       ↓
+DSR[15] = 0
+```
+
+Again we have synchronization.

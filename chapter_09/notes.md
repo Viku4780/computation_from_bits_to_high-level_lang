@@ -1101,3 +1101,525 @@ xFFFE
 The top bit controls the RUN latch.
 
 Clearing it stops the clock.
+
+
+### One subtle question
+You might ask:
+
+    "But the HALT routine ends with RTI. How can it return if the machine is already halted?"
+
+Exactly.
+
+The important thing is:
+```
+clearing RUN
+```
+
+stops the machine from continuing the instruction cycle.
+
+So the later RTI instruction is never actually executed before the machine stops.
+
+
+## Now we reach the biggest concept: interrupts
+Polling was:
+```
+CPU → "Are you ready?"
+CPU → "Are you ready?"
+CPU → "Are you ready?"
+```
+
+Interrupt-driven I/O reverses the relationship.
+
+Instead:
+```
+CPU:
+I'm doing useful work.
+
+Keyboard:
+"HEY! I HAVE INPUT!"
+
+CPU:
+Okay, stop what you're doing temporarily.
+I'll handle it.
+```
+
+This is an:
+Interrupt
+
+### Why interrupts are useful
+Suppose:
+```
+CPU = extremely fast
+keyboard = extremely slow
+```
+
+With polling:
+```
+CPU waits
+CPU waits
+CPU waits
+CPU waits
+```
+
+With interrupts:
+```
+CPU computes other things
+CPU computes other things
+CPU computes other things
+keyboard interrupts
+CPU reads character
+CPU goes back
+```
+
+So the CPU doesn't waste most of its time repeatedly checking.
+
+
+### But an interrupt doesn't magically happen
+The chapter gives three necessary ideas.
+
+The device must:
+```
+1. want service
+2. have permission to request service
+3. have sufficient priority
+```
+
+#### Condition 1 — device wants service
+For the keyboard:
+```
+someone typed a key
+```
+
+therefore:
+```
+KBSR[15] = 1
+```
+
+For the monitor:
+```
+previous character finished
+```
+
+therefore:
+```
+DSR[15] = 1
+```
+
+So the ready bit tells us:
+
+    "I need / can accept service."
+
+
+#### Condition 2 — interrupt enable
+The device also needs permission to interrupt the processor.
+
+The LC-3 uses:
+```
+IE = Interrupt Enable
+```
+
+For the device status registers:
+```
+bit 14 = IE
+bit 15 = ready
+```
+
+So conceptually:
+```
+Interrupt Request
+      =
+IE AND Ready
+```
+
+Meaning:
+```
+IE = 0
+    ↓
+device cannot interrupt
+
+IE = 1
+Ready = 0
+    ↓
+no interrupt
+
+IE = 1
+Ready = 1
+    ↓
+interrupt request
+```
+
+The chapter explicitly presents the request as the logical AND of the interrupt-enable and ready bits.
+
+
+#### Condition 3 — priority
+Suppose:
+```
+current program = PL2
+keyboard interrupt = PL4
+```
+
+Then:
+```
+4 > 2
+```
+
+So the keyboard can interrupt the program.
+
+But imagine:
+```
+current program = PL6
+keyboard = PL4
+```
+
+Then:
+```
+4 < 6
+```
+
+The keyboard should not interrupt the current program in this model.
+
+So:
+```
+request priority > current priority
+```
+
+is required.
+
+
+### What if several devices want service?
+Imagine:
+```
+Keyboard → PL4
+Timer    → PL5
+Emergency → PL7
+```
+
+all request service simultaneously.
+
+The processor shouldn't randomly choose one.
+
+The LC-3 uses a:
+## Priority encoder
+
+Conceptually:
+```
+PL4 ─┐
+PL5 ─┼──→ priority encoder → PL7
+PL7 ─┘
+```
+The highest-priority request wins.
+
+### The INT signal
+The final question is:
+
+    "Should the processor actually stop its current program?"
+
+The logic decides:
+```
+highest interrupt request
+          ↓
+compare with current program priority
+          ↓
+higher?
+   yes       no
+    ↓         ↓
+ INT=1       normal execution
+```
+
+So the processor only enters interrupt handling if the request is sufficiently urgent.
+
+
+### Interrupts happen at instruction boundaries
+This is one of the most important implementation details.
+
+Imagine the CPU is halfway through:
+```
+ADD R1,R2,R3
+```
+
+and suddenly an interrupt appears.
+
+Should it stop:
+```
+halfway through ADD?
+```
+
+No.
+
+That would make the processor state messy.
+
+Instead, the LC-3 waits until the current instruction has completed.
+
+So:
+```
+instruction A
+      ↓
+instruction finishes
+      ↓
+check INT
+      ↓
+interrupt? 
+   /      \
+ yes       no
+ ↓          ↓
+ISR      next instruction
+```
+
+The chapter emphasizes that interrupts are asynchronous to the processor's synchronous instruction cycle, but are recognized at an instruction boundary.
+
+
+### Why instruction boundaries make everything easier
+Imagine:
+```
+instruction = half finished
+```
+
+If an interrupt happens there, the system would need to remember:
+```
+which phase?
+which micro-operation?
+which temporary value?
+what remains?
+```
+
+Instead:
+```
+instruction completed
+```
+
+means:
+
+    The processor is in a clean, well-defined state.
+
+Then save that state.
+
+Much easier.
+
+### Now let's trace an interrupt completely
+Suppose:
+```
+User program A
+      |
+      | executing
+      ↓
+instruction x3006
+```
+
+Keyboard interrupt occurs.
+
+We will follow the machine.
+
+#### Stage 1 — finish the current instruction
+The processor finishes:
+```
+x3006
+```
+
+Then tests:
+```
+INT?
+```
+
+Suppose:
+```
+INT = 1
+```
+
+Now the processor does not fetch x3007 normally.
+
+Instead it enters interrupt processing.
+
+
+#### Stage 2 — save interrupted state
+The LC-3 needs to preserve:
+```
+PC
+PSR
+```
+
+The saved PC is the address of the instruction that would have executed next.
+
+So:
+```
+current instruction = x3006
+
+saved PC = x3007
+```
+
+The PSR contains things such as:
+```
+User/Supervisor
+priority
+N/Z/P
+```
+
+These go onto the supervisor stack.
+
+If we were in User mode, the LC-3 first switches stack context:
+```
+R6
+ ↓
+supervisor stack
+```
+
+The user stack pointer is saved separately.
+
+
+#### Stage 3 — load interrupt service routine
+Now the interrupting device provides an:
+```
+8-bit interrupt vector
+```
+
+Let's imagine:
+```
+INTV = x80
+```
+
+The processor expands this to:
+```
+x0180
+```
+
+because the Interrupt Vector Table occupies:
+```
+x0100 – x01FF
+```
+
+Then:
+```
+memory[x0180]
+```
+
+contains the address of the keyboard interrupt service routine.
+
+Suppose:
+```
+memory[x0180] = x6200
+```
+
+Then:
+```
+PC = x6200
+```
+
+Now the interrupt handler starts running.
+
+
+```
+Trap
+  ↓
+x0000-x00FF
+
+Interrupt
+  ↓
+x0100-x01FF
+```
+
+### What PSR does the interrupt service routine get?
+The interrupt service routine must be privileged.
+
+So:
+```
+PSR[15] = 0
+```
+
+and its priority becomes the priority associated with the interrupt.
+
+The chapter also initializes the condition-code bits for the service routine because no service-routine instruction has executed yet.
+
+The important mental model is:
+```
+old PSR
+   ↓
+saved
+
+new PSR
+   ↓
+privileged + interrupt's priority
+```
+
+#### Stage 4 — service the interrupt
+Now:
+```
+PC = ISR address
+```
+
+So the processor simply starts executing instructions there.
+
+For a keyboard ISR, it may:
+```
+read KBDR
+store/process character
+update data
+```
+
+and then eventually:
+```
+RTI
+```
+
+#### Stage 5 — RTI
+Now the supervisor stack contains something like:
+```
+saved PC
+saved PSR
+```
+
+The ISR executes:
+```
+RTI
+```
+
+The processor restores:
+```
+PC
+PSR
+```
+
+So:
+```
+PC = x3007
+PSR = old user-program PSR
+```
+
+Then, because the old program was in User mode, the processor switches R6 back to the user stack.
+
+Finally:
+```
+fetch x3007
+```
+and the user program continues.
+
+```
+|                           | TRAP                       | Interrupt                 |
+| ------------------------- | -------------------------- | ------------------------- |
+| Who initiates?            | Current program            | External event/device     |
+| Why?                      | Request a service          | Demand attention          |
+| Synchronous with program? | Yes, caused by instruction | Asynchronous              |
+| Vector comes from         | TRAP instruction           | Interrupting event/device |
+| Privilege change          | Yes                        | Yes                       |
+| Save state                | PC + PSR                   | PC + PSR                  |
+| Return                    | RTI                        | RTI                       |
+```
+
+### The nested interrupt example
+```
+Program A
+    ↓
+Device B interrupt
+    ↓
+B service routine
+    ↓
+Device C higher-priority interrupt
+    ↓
+C service routine
+    ↓
+RTI
+    ↓
+B resumes
+    ↓
+RTI
+    ↓
+A resumes
+```

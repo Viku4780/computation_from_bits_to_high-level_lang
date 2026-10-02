@@ -1623,3 +1623,157 @@ RTI
     ↓
 A resumes
 ```
+
+### Interrupts aren't only about I/O
+
+An interrupt can represent things such as:
+```
+timer
+machine check
+power failure
+```
+
+So don't permanently equate:
+```
+interrupt = keyboard
+```
+
+That's only one example.
+
+The broader idea is:
+
+    An external event needs processor attention.
+
+### Polling has one more subtle problem
+
+Suppose you're doing:
+```
+LDI R1,DSR
+BRzp LOOP
+STI R0,DDR
+```
+
+You might think:
+
+    "This is one operation: check whether display is ready, then write."
+
+But at the hardware level, these are three separate instructions.
+
+What if an interrupt happens between them?
+
+### The race-like problem
+Suppose:
+```
+Step 1:
+LDI
+```
+
+reports:
+```
+DSR ready = 1
+```
+
+Then:
+```
+Step 2:
+BRzp
+```
+
+does not branch.
+
+Before:
+```
+Step 3:
+STI
+```
+
+an interrupt occurs.
+
+The interrupt service routine writes something to the display.
+
+Now the display may become:
+```
+busy
+```
+
+The original program returns and executes:
+```
+STI R0,DDR
+```
+
+But the display is no longer ready.
+
+So the earlier observation:
+```
+ready = 1
+```
+
+is now stale.
+
+The chapter gives a concrete example in which this can cause one expected character to be lost
+
+
+### What did we assume incorrectly?
+We treated:
+```
+LDI
+BR
+STI
+```
+
+as though it were one indivisible operation.
+
+But it isn't.
+
+It's three instructions.
+
+An interrupt can occur between them.
+
+So we need a way to protect the critical sequence.
+
+
+### The solution: temporarily disable interrupts
+The book's solution is interesting.
+
+It does not say:
+
+    disable interrupts for the entire polling operation.
+
+That would be bad.
+
+Instead:
+```
+enable interrupts
+        ↓
+check whether device is ready
+        ↓
+not ready?
+        ↓
+enable again / continue polling
+
+ready?
+        ↓
+temporarily disable interrupts
+        ↓
+perform critical sequence
+        ↓
+restore previous PSR
+```
+
+The key is:
+
+    Interrupts are disabled only around the tiny critical section.
+
+### This is a critical-section idea
+You are going to see this concept again and again in your embedded/RTOS work.
+
+A critical section is a small piece of code that must not be interrupted in a way that would break its assumptions.
+
+Conceptually:
+```
+normal code
+     ↓
+critical section
+     ↓
+normal code
+```

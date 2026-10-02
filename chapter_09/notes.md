@@ -1777,3 +1777,53 @@ critical section
      ↓
 normal code
 ```
+
+### The deeper story: synchronization
+There is also a second theme.
+
+The CPU and device operate at different times.
+
+So we need:
+```
+status bits
+ready bits
+polling
+interrupts
+```
+
+All of these solve the same broad problem:
+
+    How do two independently operating components coordinate?
+
+You can see the progression:
+```
+DEVICE
+   ↓
+ready bit
+   ↓
+CPU checks
+   ↓
+polling
+```
+
+or:
+```
+DEVICE
+   ↓
+ready bit + interrupt enable
+   ↓
+interrupt request
+   ↓
+CPU reacts
+```
+
+```
+| Polling                            | Interrupt-driven                                        |
+| ---------------------------------- | ------------------------------------------------------- |
+| CPU repeatedly checks              | Device signals CPU                                      |
+| CPU controls interaction           | Device initiates interaction                            |
+| Can waste CPU time                 | CPU can do useful work                                  |
+| Simple                             | More complex                                            |
+| No interrupt mechanism required    | Requires interrupt mechanism                            |
+| Waiting happens explicitly in code | Waiting can happen implicitly while other work executes |
+```

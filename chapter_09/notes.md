@@ -527,3 +527,38 @@ DSR[15] = 0
 ```
 
 Again we have synchronization.
+
+
+## Asynchronous vs synchronous
+
+#### Synchronous
+Two things operate in a coordinated, predictable relationship.
+
+For example, imagine:
+```
+device produces one item
+every exact 100 cycles
+```
+
+The processor knows when it will happen.
+
+No uncertainty.
+
+#### Asynchronous
+The events happen independently.
+
+For example:
+```
+CPU: running continuously
+
+human:
+     types a key...
+           sometime...
+                 maybe now...
+```
+
+The processor doesn't know exactly when the key will arrive.
+
+That's asynchronous.
+
+The chapter emphasizes that most processor/I/O interaction is asynchronous because devices operate at different speeds and are not locked to the processor's timing.

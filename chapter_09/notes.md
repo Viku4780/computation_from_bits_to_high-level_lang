@@ -690,3 +690,74 @@ R0
 ```
 
 The book explains that memory-mapped I/O reuses the same basic data-movement pathway as memory, with the address-control logic selecting the appropriate device register.
+
+
+## Polling
+
+Suppose the CPU wants keyboard input.
+
+It can do:
+```
+START
+    LDI R1,KBSR
+    BRzp START
+    LDI R0,KBDR
+```
+
+Conceptually:
+```
+check ready?
+    ↓
+ NO ───────→ check again
+    |
+   YES
+    ↓
+read character
+```
+
+That's polling.
+
+The processor keeps asking:
+
+    "Are you ready yet?"
+
+
+### The problem with polling
+The CPU is doing:
+```
+LDI
+BR
+LDI
+BR
+LDI
+BR
+...
+```
+
+while the keyboard may take a long time to produce the next character.
+
+So the CPU spends time doing essentially nothing useful.
+
+This is called spinning or busy-waiting.
+
+The chapter's example shows that a processor can spend huge amounts of time waiting for human input when polling is used.
+
+now this motivates:
+## Interrupts
+
+### Before interrupts: TRAP
+We've already used things like:
+```
+TRAP x23
+TRAP x21
+TRAP x22
+TRAP x25
+```
+
+But until now, you didn't know the complete story.
+
+A TRAP is essentially a request:
+
+    "Operating system, please perform this service for me."
+
+The chapter notes that the generic term for this is a system call/service call.

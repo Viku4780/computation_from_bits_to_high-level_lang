@@ -1072,3 +1072,32 @@ character-by-character output
 ```
 
 The chapter's PUTS routine is specifically a service for writing a null-terminated string to the console.
+
+### The HALT service routine
+The LC-3 doesn't need a special HALT opcode in this design.
+
+Instead:
+```
+TRAP x25
+```
+
+invokes an OS halt routine.
+
+That routine eventually clears:
+```
+MCR[15]
+```
+
+where MCR is:
+```
+Master Control Register
+```
+
+at:
+```
+xFFFE
+```
+
+The top bit controls the RUN latch.
+
+Clearing it stops the clock.

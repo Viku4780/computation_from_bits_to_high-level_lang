@@ -1006,3 +1006,69 @@ restore stack context
  ↓
 user program continues
 ```
+
+
+### A huge conceptual distinction
+A normal subroutine is basically:
+```
+program → program
+```
+
+A system call is:
+```
+user program → operating system
+```
+
+And because that crosses a privilege boundary, the machine needs stronger protection and state handling.
+
+This is exactly the OS concept you were studying earlier:
+```
+system call
+=
+controlled transition from user execution into privileged OS execution
+```
+
+The LC-3 TRAP mechanism is the textbook's simple concrete model of that idea.
+
+
+### PUTS — an actual OS service
+The chapter then builds a string-output service:
+```
+TRAP x22
+```
+
+called:
+```
+PUTS
+```
+
+The user program provides:
+```
+R0 = address of string
+```
+
+The OS routine then:
+```
+read character
+check if zero
+wait for display
+send character
+advance pointer
+repeat
+```
+
+This is an excellent example of abstraction.
+
+User program says:
+```
+"print this string"
+```
+
+OS handles:
+```
+hardware details
+status checking
+character-by-character output
+```
+
+The chapter's PUTS routine is specifically a service for writing a null-terminated string to the console.

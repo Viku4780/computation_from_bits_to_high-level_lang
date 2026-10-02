@@ -1827,3 +1827,145 @@ CPU reacts
 | No interrupt mechanism required    | Requires interrupt mechanism                            |
 | Waiting happens explicitly in code | Waiting can happen implicitly while other work executes |
 ```
+
+### A full example from start to finish
+Let's take:
+```
+TRAP x23
+```
+
+and trace it as a real story.
+
+Before
+```
+Mode = User
+PC = address of TRAP
+R6 = user stack pointer
+```
+
+TRAP executes
+```
+save PC
+save PSR
+switch to supervisor stack
+switch to Supervisor mode
+```
+
+Vector lookup
+```
+x23
+ ↓
+x0023
+ ↓
+memory[x0023]
+ ↓
+x04A0
+```
+
+OS
+```
+PC = x04A0
+```
+
+Now the keyboard service routine executes.
+
+Result
+```
+R0 = ASCII character
+```
+
+Finish
+```
+RTI
+```
+
+RTI
+```
+restore PC
+restore PSR
+restore appropriate stack
+```
+
+Continue
+```
+PC = instruction after TRAP
+```
+
+From the user program's point of view:
+```
+TRAP
+ ↓
+character magically appears in R0
+ ↓
+next instruction
+```
+
+But now you know it isn't magic.
+
+### Full interrupt example
+Now:
+```
+User program A
+```
+
+is executing.
+
+Keyboard does:
+```
+KBSR[15] = 1
+```
+
+and:
+```
+KBSR[14] = 1
+```
+
+so:
+```
+ready AND enabled = 1
+```
+
+Suppose keyboard priority:
+```
+PL4
+```
+
+and current program:
+```
+PL2
+```
+
+Therefore:
+```
+4 > 2
+```
+
+so the processor asserts:
+```
+INT
+```
+
+At the instruction boundary:
+```
+finish current instruction
+        ↓
+save PC + PSR
+        ↓
+switch to supervisor stack
+        ↓
+interrupt vector
+        ↓
+interrupt vector table
+        ↓
+ISR address
+        ↓
+execute ISR
+        ↓
+RTI
+        ↓
+restore PC + PSR
+        ↓
+resume user program
+```
+
+That is the entire mechanism.

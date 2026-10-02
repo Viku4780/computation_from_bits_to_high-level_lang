@@ -233,3 +233,97 @@ program A continues correctly
 This is a deep reason why processor state matters.
 
 The chapter explicitly identifies the condition codes, priority, and privilege as state that must be preserved across interrupts.
+
+
+## Memory organization of the LC-3
+Now we need to understand where the OS, programs, and I/O live.
+
+The LC-3 has a 16-bit address:
+```
+0000 0000 0000 0000
+        ...
+1111 1111 1111 1111
+```
+
+So there are:
+```
+2^16 = 65,536
+```
+address values.
+
+That gives:
+```
+x0000 → xFFFF
+```
+The LC-3 divides this space into important regions.
+
+### LC-3 address-space map
+```
+x0000
+   │
+   │ SYSTEM SPACE
+   │ privileged
+   │ OS code + OS data
+   │
+x2FFF
+   │
+   │ USER SPACE
+   │ user programs + user data
+   │
+xFDFF
+   │
+   │ I/O PAGE
+   │ device registers
+   │ processor special registers
+   │
+xFFFF
+```
+
+```
+x0000 – x2FFF
+    System space
+    privileged
+
+x3000 – xFDFF
+    User space
+    unprivileged
+
+xFE00 – xFFFF
+    I/O page / special registers
+    privileged
+```
+
+
+### Why do we need two stacks?
+Now Chapter 9 gives us two contexts.
+```
+USER PROGRAM
+    ↓
+USER STACK
+```
+
+and:
+```
+OPERATING SYSTEM
+    ↓
+SUPERVISOR STACK
+```
+
+Why separate them?
+
+Because when the processor switches into privileged OS handling, the system needs protected stack storage for system-level state.
+
+The LC-3 therefore has:
+```
+USP = User Stack Pointer
+SSP = Supervisor Stack Pointer
+```
+
+and:
+```
+R6
+```
+
+is used as the active stack pointer.
+
+When privilege changes, the currently active stack pointer is saved and the other one becomes active.

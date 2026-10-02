@@ -761,3 +761,181 @@ A TRAP is essentially a request:
     "Operating system, please perform this service for me."
 
 The chapter notes that the generic term for this is a system call/service call.
+
+
+## TRAP as a controlled doorway
+Think of a TRAP like:
+```
+USER MODE
+    |
+    | TRAP
+    ↓
+[ controlled doorway ]
+    |
+    ↓
+SUPERVISOR MODE
+    |
+    ↓
+OS service routine
+```
+
+The user program does not simply jump anywhere it wants.
+
+The processor follows a controlled trap mechanism.
+
+This is the beginning of the OS security/protection model you were asking about in your OS studies.
+
+
+### Trap vectors
+The instruction:
+```
+TRAP x23
+```
+
+contains:
+```
+trap vector = x23
+```
+
+The vector identifies which service routine is wanted.
+
+The LC-3 has a Trap Vector Table in:
+```
+x0000 – x00FF
+```
+
+Each entry contains the starting address of a trap service routine.
+
+For example, according to the chapter:
+```
+x0021 → address of character output routine
+x0023 → address of keyboard input routine
+x0025 → address of halt routine
+```
+
+The corresponding service routines in the example start at:
+```
+x0420
+x04A0
+x0520
+```
+
+respectively.
+
+
+### Let's trace TRAP x23 completely
+Suppose:
+```
+TRAP x23
+```
+
+is executing in a user program.
+
+#### Step 1 — PC has already been incremented
+As part of the instruction cycle, the PC has advanced.
+
+So the PC now points to:
+```
+instruction immediately after TRAP
+```
+
+This is important because that's where we need to return.
+
+#### Step 2 — Save state
+The LC-3 needs enough information to later resume the interrupted/calling program.
+
+It saves:
+```
+PSR
+PC
+```
+on the supervisor stack.
+
+If currently in User mode, the processor first switches the active stack from the user stack to the supervisor stack.
+
+```
+user program:
+
+instruction A
+TRAP x23
+instruction B
+instruction C
+```
+saved PC:
+```
+address of instruction B
+```
+
+
+```
+before TRAP
+    ↓
+save PSR
+    ↓
+OS executes
+    ↓
+restore PSR
+    ↓
+user program resumes
+```
+
+#### Step 3 — switch to Supervisor mode
+The LC-3 sets:
+```
+PSR[15] = 0
+```
+
+So the service routine can access privileged resources.
+
+The priority stays at the priority of the calling program for a TRAP according to the chapter's mechanism
+
+#### Step 4 — use the trap vector
+The vector:
+```
+x23
+```
+
+is zero-extended to:
+```
+x0023
+```
+
+Then:
+```
+memory[x0023]
+```
+
+contains:
+```
+x04A0
+```
+
+So:
+```
+PC = x04A0
+```
+
+And now the processor begins executing the keyboard input service routine.
+
+```
+User program
+     |
+     | TRAP x23
+     ↓
+save PSR
+save return PC
+     ↓
+switch to supervisor
+     ↓
+x23 → x0023
+     ↓
+memory[x0023] = x04A0
+     ↓
+PC = x04A0
+     ↓
+OS keyboard service routine
+     ↓
+read keyboard
+     ↓
+put result in R0
+```

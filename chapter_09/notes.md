@@ -662,3 +662,31 @@ memory OR device register
 ```
 
 This is why the processor can use familiar load/store instructions for I/O.
+
+### How a memory-mapped input works internally
+Suppose we do:
+```
+LDI R0,KBDR
+```
+
+The important conceptual steps are:
+```
+1. obtain the target address
+2. place address in MAR
+3. address-control logic sees xFE02
+4. instead of selecting normal memory,
+   it selects KBDR
+5. KBDR → MDR
+6. MDR → R0
+```
+
+So:
+```
+KBDR
+  ↓
+MDR
+  ↓
+R0
+```
+
+The book explains that memory-mapped I/O reuses the same basic data-movement pathway as memory, with the address-control logic selecting the appropriate device register.

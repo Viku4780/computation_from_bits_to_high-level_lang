@@ -99,3 +99,75 @@ ASCII
    ≠
 integer representation
 ```
+
+## the two data types used by the calculator
+the calculator mainly works with two representations.
+
+### representation 1 - ASCII strings
+used for:
+```
+keyboard input 
+monitor output
+```
+
+examples:
+```
+"25"
+"793"
+"-42"
+```
+
+At the LC-3 level, the examples store each ASCII character in its own 16-bit word to simplify the algorithms.
+
+
+### Representation 2 - 2's-complement integers
+used for:
+```
+arithmetic
+```
+
+examples:
+```
+25
+-42
+793
+```
+
+represented in binary using two's complement.
+
+so the calculator is constantly performing:
+```
+ASCII -> binary
+```
+
+and:
+```
+binary -> ASCII
+```
+
+### Why data type conversion matters
+Imagine the expression:
+```
+A + B
+```
+
+where:
+```
+A = ASCII string
+B = binary integer
+```
+
+The ALU cannot simply receive:
+```
+"25"
+```
+
+and know that it means the integer 25.
+
+The data has to be in the representation expected by the hardware doing the operation.
+
+The textbook makes the general point:
+
+    An operation must receive operands in the representation appropriate for that operation.
+
+This is the machine-level foundation of many conversions that a compiler normally hides from you.

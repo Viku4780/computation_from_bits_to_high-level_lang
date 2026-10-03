@@ -580,3 +580,255 @@ then add 3:
 This eliminates the need for separate place-value lookup tables.
 
 That particular generalization is posed by the textbook as a challenge rather than used in its three-digit implementation.
+
+
+### Binary-to-ASCII conversion
+Now let's go the other direction.
+
+Suppose arithmetic produces:
+```
+295
+```
+
+The monitor doesn't want:
+```
+binary 295
+```
+
+It wants:
+```
+'2'
+'9'
+'5'
+```
+
+So we need:
+```
+binary integer
+      ↓
+decimal digits
+      ↓
+ASCII characters
+```
+
+The textbook's routine supports values:
+```
+-999 through +999
+```
+
+
+### First determine the sign
+Suppose:
+```
+R0 = -295
+```
+
+The routine tests the sign using the condition codes.
+
+If negative:
+```
+store '-'
+```
+
+If nonnegative:
+```
+store '+'
+```
+
+The ASCII codes used are:
+```
+'+' = x2B
+'-' = x2D
+```
+
+Then for a negative number it converts the value to its absolute magnitude using two's-complement negation:
+```
+NOT R0,R0
+ADD R0,R0,#1
+```
+
+So:
+```
+-295
+```
+
+becomes:
+```
+295
+```
+
+internally.
+
+
+### Why is absolute value convenient?
+Because extracting decimal digits is easier when we don't have to worry about the sign during every step.
+
+So the routine effectively does:
+```
+-295
+ ↓
+sign = '-'
+ ↓
+magnitude = 295
+ ↓
+extract digits
+```
+
+rather than trying to extract digits from the negative representation directly.
+
+
+### Finding the hundreds digit
+Suppose:
+```
+R0 = 295
+```
+
+The algorithm repeatedly subtracts:
+```
+100
+```
+
+until the result would become negative.
+
+Let's trace it:
+```
+295 - 100 = 195
+195 - 100 = 95
+95 - 100 = -5
+```
+
+We successfully subtracted 100:
+```
+2 times
+```
+
+so the hundreds digit is:
+```
+2
+```
+
+But we've gone one subtraction too far.
+
+The current value is:
+```
+-5
+```
+
+So the algorithm corrects by adding 100 back:
+```
+-5 + 100 = 95
+```
+
+Now:
+```
+hundreds = 2
+remainder = 95
+```
+
+The textbook explicitly describes this repeated-subtraction-and-correction strategy.
+
+### Finding the tens digit
+Now we have:
+```
+95
+```
+
+Again subtract 10:
+```
+95 - 10 = 85
+85 - 10 = 75
+...
+15 - 10 = 5
+5 - 10 = -5
+```
+
+We successfully subtracted:
+```
+9 times
+```
+
+so:
+```
+tens = 9
+```
+
+Then correct:
+```
+-5 + 10 = 5
+```
+
+Remaining:
+```
+5
+```
+
+Therefore:
+```
+ones = 5
+```
+
+Result:
+```
+295
+```
+
+### Convert each digit to ASCII
+Now we have numerical digits:
+```
+2
+9
+5
+```
+
+To convert a decimal digit to ASCII:
+```
+ASCII = digit + x30
+```
+
+So:
+```
+2 + x30 = x32
+9 + x30 = x39
+5 + x30 = x35
+```
+
+Therefore:
+```
+295
+```
+
+becomes:
+```
+x32 x39 x35
+```
+
+which is:
+```
+"295"
+```
+
+### The complete conversion pipeline
+Now you should see:
+```
+Keyboard
+   ↓
+ASCII characters
+
+'2' '9' '5'
+   ↓
+ASCII → binary
+   ↓
+295
+   ↓
+arithmetic
+   ↓
+some result
+   ↓
+binary → ASCII
+   ↓
+'2' '9' '5'
+   ↓
+Monitor
+```
+
+This is the fundamental data flow of the calculator.

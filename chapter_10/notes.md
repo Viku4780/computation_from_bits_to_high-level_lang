@@ -832,3 +832,256 @@ Monitor
 ```
 
 This is the fundamental data flow of the calculator.
+
+
+## Normal LC-3 arithmetic
+The LC-3 is a three-address machine for the purpose being discussed.
+
+For example:
+```
+ADD R0,R1,R2
+```
+
+means:
+```
+R0 = R1 + R2
+```
+
+There are explicitly:
+```
+source 1
+source 2
+destination
+```
+
+So:
+```
+ADD R0,R1,R2
+```
+
+contains three operand locations.
+
+### Two-address machines
+Other processors use something like:
+```
+ADD EAX,EBX
+```
+
+The result overwrites one of the operands.
+
+Conceptually:
+```
+EAX = EAX + EBX
+```
+
+So only two explicit locations are specified.
+
+The chapter contrasts this with the LC-3
+
+
+### Stack machines
+Now imagine we don't specify operands at all.
+
+Instead:
+```
+stack:
+42
+17
+```
+
+and the instruction simply says:
+```
+ADD
+```
+
+The machine knows:
+
+    "Take the top two values."
+
+So:
+```
+POP → 17
+POP → 42
+42 + 17 = 59
+PUSH 59
+```
+
+The instruction didn't specify:
+```
+R0
+R1
+R2
+```
+
+The stack determines the operands.
+
+Such an architecture is commonly called a:
+### Zero-address machine
+
+because an operation like:
+```
+ADD
+```
+
+doesn't explicitly specify operand addresses.
+
+### Why is this convenient for a calculator?
+Because a person can press:
+```
++
+```
+
+and conceptually that means:
+```
+take the last two values
+add them
+store result
+```
+
+The user doesn't need to tell the machine:
+```
+"Use R1 and R4 and put result in R2."
+```
+
+The stack already determines where the operands are.
+
+### Example: (25 + 17) × (3 + 2)
+The chapter uses:
+```
+(A + B) × (C + D)
+```
+
+with:
+```
+A = 25
+B = 17
+C = 3
+D = 2
+```
+
+Let's see the stack.
+
+#### Step 1
+```
+PUSH 25
+```
+
+Stack:
+```
+25
+```
+
+#### Step 2
+```
+PUSH 17
+```
+
+Stack:
+```
+17 ← top
+25
+```
+
+#### Step 3
+```
+ADD
+```
+
+Pop:
+```
+17
+25
+```
+
+Add:
+```
+25 + 17 = 42
+```
+
+Push:
+```
+42
+```
+
+Stack:
+```
+42
+```
+
+#### Step 4
+```
+PUSH 3
+```
+
+Stack:
+```
+3
+42
+```
+
+#### Step 5
+```
+PUSH 2
+```
+
+Stack:
+```
+2
+3
+42
+```
+
+#### Step 6
+```
+ADD
+```
+
+Pop:
+```
+2
+3
+```
+
+Calculate:
+```
+3 + 2 = 5
+```
+
+Push:
+```
+5
+42
+```
+
+#### Step 7
+```
+MULTIPLY
+```
+
+Pop:
+```
+5
+42
+```
+
+Calculate:
+```
+42 × 5 = 210
+```
+
+Push:
+```
+210
+```
+
+#### Step 8
+```
+POP
+```
+
+Result:
+```
+210
+```
+
+That's exactly the eight-step calculator-style computation described by the chapter.

@@ -2260,3 +2260,77 @@ one executable program
 
 Nothing in the computer works in isolation.
 
+### Let's understand PUSH in the calculator
+The calculator's PUSH routine is slightly different in presentation from the Chapter 8 version.
+
+It checks:
+```
+Is the stack full?
+```
+
+If not:
+```
+R6--
+memory[R6] = R0
+```
+
+If full:
+```
+print "Error: Stack is Full."
+R5 = 1
+```
+
+Otherwise:
+```
+R5 = 0
+```
+
+The PUSH routine also saves and restores the register it needs internally.
+
+### POP in the calculator
+POP checks:
+```
+Is the stack empty?
+```
+
+If empty:
+```
+print "Error: Too Few Values on the Stack."
+R5 = 1
+```
+
+Otherwise:
+```
+R0 = memory[R6]
+R6++
+R5 = 0
+```
+
+So every arithmetic routine gets a useful interface:
+```
+POP
+ ↓
+R0 = value
+R5 = success/failure
+```
+
+### Why does every subroutine save registers?
+Remember Chapter 8's caller/callee-save discussion.
+
+For example, OpAdd saves:
+```
+R0
+R1
+R5
+R7
+```
+
+before doing its own work.
+
+Why?
+
+Because it is a callee and does not want to unexpectedly destroy values that the caller might need.
+
+Likewise, OpMult saves the registers it needs.
+
+This is a real example of the save/restore convention you already learned.

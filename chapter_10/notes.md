@@ -2509,3 +2509,103 @@ STR R0,R6,#0
 ```
 
 This is exactly how larger systems are constructed.
+
+
+## Let's understand the 12 routines
+The chapter says the calculator consists of:
+```
+1 main algorithm
++
+11 subroutines
+```
+
+The routines include the central services we've studied:
+```
+ASCIItoBinary
+BinarytoASCII
+OpAdd
+OpMult
+OpNeg
+RangeCheck
+PushValue
+POP
+PUSH
+OpDisplay
+OpClear
+```
+
+plus the main calculator dispatcher.
+
+Together they form the complete calculator simulator.
+
+
+### Routine responsibility is separated
+Notice how each routine has a clear purpose.
+
+For example:
+```
+ASCIItoBinary
+```
+
+doesn't do:
+```
+stack management
+arithmetic
+monitor output
+```
+
+It only converts.
+
+Likewise:
+```
+OpAdd
+```
+
+doesn't need to understand:
+```
+keyboard characters
+ASCII parsing
+```
+
+It receives numbers through the stack.
+
+This is modularity.
+
+### Why modularity matters
+Imagine putting everything in one giant routine:
+```
+keyboard
+conversion
+addition
+multiplication
+printing
+stack
+error handling
+...
+```
+
+It would become extremely difficult to understand.
+
+Instead:
+```
+one job
+    ↓
+one routine
+```
+
+Then routines call other routines.
+
+This is the same design principle you'll use in C.
+
+For example, later you might write:
+```
+read_number();
+parse_number();
+push();
+add();
+multiply();
+display();
+```
+The syntax changes.
+
+The architecture remains.

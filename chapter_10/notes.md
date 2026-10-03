@@ -2361,3 +2361,112 @@ Therefore R7 can be overwritten.
 That's why a routine such as OpAdd saves its own R7 before making calls.
 
 This is exactly the nested-call problem from Chapter 8.
+
+
+```
+Calculator
+    |
+    +-- GETC
+    |
+    +-- OUT
+    |
+    +-- PushValue
+    |      |
+    |      +-- ASCIItoBinary
+    |      |
+    |      +-- PUSH
+    |
+    +-- OpAdd
+    |      |
+    |      +-- POP
+    |      +-- RangeCheck
+    |      +-- PUSH
+    |
+    +-- OpMult
+    |      |
+    |      +-- POP
+    |      +-- RangeCheck
+    |      +-- PUSH
+    |
+    +-- OpNeg
+    |      |
+    |      +-- POP
+    |      +-- PUSH
+    |
+    +-- OpDisplay
+           |
+           +-- POP
+           +-- BinarytoASCII
+           +-- PUTS
+           +-- restore value
+```
+
+```
+                     CALCULATOR
+                         |
+                 +-------+-------+
+                 |               |
+              INPUT            COMMAND
+                 |               |
+               GETC          dispatcher
+                 |
+            ASCII string
+                 |
+          +------+------+
+          |             |
+       validate      convert
+          |             |
+          +------> ASCIItoBinary
+                         |
+                       binary
+                         |
+                       PUSH
+                         |
+                         ↓
+                    +---------+
+                    |  STACK  |
+                    +---------+
+                         |
+             +-----------+-----------+
+             |           |           |
+           ADD         MULT        NEG
+             |           |           |
+             +-----------+-----------+
+                         |
+                       STACK
+                         |
+                      DISPLAY
+                         |
+                         ↓
+                  BinarytoASCII
+                         |
+                       PUTS
+                         |
+                         ↓
+                      MONITOR
+```
+
+### Why use a stack instead of registers?
+Suppose you're evaluating a complicated expression.
+
+With registers, you have to manage:
+```
+R0
+R1
+R2
+R3
+...
+```
+
+and carefully remember which value is in which register.
+
+With a stack:
+```
+PUSH value
+PUSH value
+operation
+```
+
+The ordering itself carries the operand information.
+
+So the program can treat the stack as temporary expression storage.

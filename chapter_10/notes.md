@@ -2334,3 +2334,30 @@ Because it is a callee and does not want to unexpectedly destroy values that the
 Likewise, OpMult saves the registers it needs.
 
 This is a real example of the save/restore convention you already learned.
+
+### Notice the role of R7
+Every time a subroutine does:
+```
+JSR
+```
+
+R7 receives a return address.
+
+But many calculator routines themselves call other routines.
+
+For example:
+```
+OpAdd
+  ↓
+POP
+  ↓
+RangeCheck
+  ↓
+PUSH
+```
+
+Therefore R7 can be overwritten.
+
+That's why a routine such as OpAdd saves its own R7 before making calls.
+
+This is exactly the nested-call problem from Chapter 8.

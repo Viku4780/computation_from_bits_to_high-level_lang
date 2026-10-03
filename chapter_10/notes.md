@@ -2470,3 +2470,42 @@ operation
 The ordering itself carries the operand information.
 
 So the program can treat the stack as temporary expression storage.
+
+
+## ISA vs microarchitecture vs software abstraction
+
+At the top:
+```
+Calculator:
+    ADD
+```
+
+Underneath:
+```
+calculator software
+    ↓
+OpAdd
+    ↓
+POP
+    ↓
+ADD R0,R0,R1
+    ↓
+machine hardware
+```
+
+So one "calculator ADD" operation is actually built from many lower-level operations.
+
+Likewise:
+```
+PUSH
+```
+
+is not a built-in LC-3 instruction.
+
+It's an abstraction implemented using:
+```
+ADD R6,R6,#-1
+STR R0,R6,#0
+```
+
+This is exactly how larger systems are constructed.

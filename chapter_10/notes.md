@@ -171,3 +171,412 @@ The textbook makes the general point:
     An operation must receive operands in the representation appropriate for that operation.
 
 This is the machine-level foundation of many conversions that a compiler normally hides from you.
+
+### ASCII-to-binary conversion
+Now suppose the user types:
+```
+295
+```
+
+The keyboard provides:
+```
+'2' → x32
+'9' → x39
+'5' → x35
+```
+
+The program stores these characters in:
+```
+ASCIIBUFF
+```
+
+Conceptually:
+```
+ASCIIBUFF:
+
+x32
+x39
+x35
+```
+
+and:
+```
+R1 = 3
+```
+
+meaning:
+```
+there are 3 digits
+```
+
+The chapter restricts this particular conversion routine to:
+```
+0 through 999
+```
+
+
+### First trick: remove the ASCII part
+ASCII digits have a useful property.
+
+The ASCII codes are:
+```
+'0' = x30
+'1' = x31
+'2' = x32
+'3' = x33
+...
+'9' = x39
+```
+
+Notice the low four bits:
+```
+x30 → 0000
+x31 → 0001
+x32 → 0010
+x33 → 0011
+...
+x39 → 1001
+```
+
+So for a valid decimal digit:
+```
+ASCII digit & x000F
+```
+
+gives its numerical digit value.
+
+For example:
+```
+x35
+AND x000F
+───────
+x0005
+```
+
+Thus:
+```
+ASCII '5'
+    ↓
+x35
+    ↓
+AND x000F
+    ↓
+5
+```
+
+The chapter uses exactly this technique.
+
+
+### But getting individual digits isn't enough
+Suppose we have:
+```
+2
+9
+5
+```
+
+After removing the ASCII template, we get:
+```
+2
+9
+5
+```
+
+But if we simply add:
+```
+2 + 9 + 5
+```
+
+we get:
+```
+16
+```
+
+not:
+```
+295
+```
+
+Why?
+
+Because position matters.
+
+The digits represent:
+```
+2 hundreds
+9 tens
+5 ones
+```
+
+Therefore:
+```
+295
+=
+2 × 100
++ 9 × 10
++ 5 × 1
+```
+
+So the conversion algorithm has to account for place value.
+
+
+### Lookup tables
+The textbook's routine uses lookup tables.
+
+One table is:
+```
+LookUp10
+
+0
+10
+20
+30
+40
+50
+60
+70
+80
+90
+```
+
+Another:
+
+LookUp100
+```
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+```
+
+So suppose the tens digit is:
+```
+7
+```
+
+The program uses:
+```
+7
+```
+
+as an index into:
+```
+LookUp10
+```
+
+and obtains:
+```
+70
+```
+
+Likewise:
+```
+2
+```
+
+in the hundreds table gives:
+```
+200
+```
+
+The chapter uses these tables because the calculator only accepts up to three digits.
+
+### Walk through 295
+Let's do the whole thing.
+
+input:
+```
+"295"
+```
+
+ASCII:
+```
+x32 x39 x35
+```
+
+#### Ones
+take:
+```
+x35
+```
+
+strip ASCII:
+```
+5
+```
+
+result accumulator:
+```
+R0 = 5
+```
+
+#### tens
+take:
+```
+x39
+```
+
+strip ASCII:
+```
+9
+```
+
+use tens table:
+```
+LookUp10[9]
+=
+90
+```
+
+Add:
+```
+R0 = 5 + 90
+```
+
+So:
+```
+R0 = 95
+```
+
+#### hundreds
+take:
+```
+x32
+```
+
+strip ASCII:
+```
+2
+```
+
+use hundreds table:
+```
+LookUp100[2]
+=
+200
+```
+
+then:
+```
+R0 = 95 + 200
+```
+
+so:
+```
+R0 = 295
+```
+
+Done
+
+### Why start from the rightmost digit?
+The routine begins with the ones digit.
+
+This makes the indexing and accumulation straightforward.
+
+For:
+```
+295
+```
+
+we can think:
+```
+5 → 5
+9 → 90
+2 → 200
+```
+
+then:
+```
+5 + 90 + 200
+=
+295
+```
+
+The chapter's flowchart and code implement exactly this staged contribution method.
+
+
+### Why did the textbook allocate four words?
+Initially you might think:
+```
+295
+```
+
+requires only:
+```
+3 words
+```
+
+And for input, that's true.
+
+But later the calculator has to display results such as:
+```
+-295
+```
+
+So it needs:
+```
+sign
+hundreds
+tens
+ones
+```
+
+Therefore:
+```
+4 words
+```
+
+are allocated for ASCIIBUFF.
+
+This is a good example of designing a data structure based on all future uses, not just the first use.
+
+
+### The chapter raises an important algorithm question
+The lookup-table method works for:
+```
+000 → 999
+```
+
+But imagine:
+```
+123456789
+```
+
+Would we need:
+```
+thousands table
+ten-thousands table
+hundred-thousands table
+...
+```
+
+A better general algorithm exists.
+
+The book deliberately points you toward that question as an exercise.
+
+And the general mathematical idea is:
+```
+value = value × 10 + next_digit
+```
+
+For example:
+```
+12
+```
+
+then add 3:
+```
+12 × 10 + 3
+=
+123
+```
+
+This eliminates the need for separate place-value lookup tables.
+
+That particular generalization is posed by the textbook as a challenge rather than used in its three-digit implementation.

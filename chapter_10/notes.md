@@ -1085,3 +1085,528 @@ Result:
 ```
 
 That's exactly the eight-step calculator-style computation described by the chapter.
+
+
+## The three arithmetic operations
+The calculator needs:
+```
+OpAdd
+OpMult
+OpNeg
+```
+
+They correspond to:
+```
++
+*
+-
+```
+
+But there is a subtle point.
+
+The calculator's - operation is unary negation.
+
+It doesn't directly mean:
+```
+A - B
+```
+
+Instead:
+```
+A - B
+```
+
+is performed as:
+```
+A + (-B)
+```
+
+because:
+```
+A - B = A + (-B)
+```
+
+### OpNeg
+Suppose the stack is:
+```
+7
+```
+
+OpNeg does:
+```
+POP
+```
+
+giving:
+```
+7
+```
+
+Then two's-complement negation:
+```
+NOT R0,R0
+ADD R0,R0,#1
+```
+
+produces:
+```
+-7
+```
+
+Then:
+```
+PUSH -7
+```
+
+So:
+```
+7
+ ↓
+OpNeg
+ ↓
+-7
+```
+
+The textbook's OpNeg routine follows exactly this pattern.
+
+
+### OpAdd
+Now let's understand OpAdd.
+
+Its job is:
+```
+POP first operand
+POP second operand
+ADD
+RangeCheck
+PUSH result
+```
+
+But there is an important concern:
+
+    What happens when something goes wrong?
+
+There are two major failures.
+
+### OpAdd failure #1 — not enough operands
+Suppose stack contains only:
+```
+10
+```
+
+and the user presses:
+```
++
+```
+
+The routine performs its first POP:
+```
+10
+```
+
+Success.
+
+Then it performs its second POP.
+
+But the stack is empty.
+
+So the second POP fails.
+
+Now the routine must return the stack to its original state.
+
+Remember:
+
+Before OpAdd:
+```
+10
+```
+
+After first POP:
+```
+empty
+```
+
+After second POP fails:
+```
+empty
+```
+
+That would be wrong.
+
+So OpAdd adjusts the stack pointer to make the first operand available again.
+
+The chapter explicitly emphasizes this rollback behavior.
+
+### OpAdd failure #2 — result too large
+Suppose:
+```
+700
+500
+```
+
+are on the stack.
+
+Add:
+```
+700 + 500 = 1200
+```
+
+But the calculator only accepts:
+```
+-999 through +999
+```
+
+So the result cannot be accepted.
+
+What should happen?
+
+The calculator should not simply lose both operands.
+
+It restores them to the stack.
+
+Original:
+```
+500
+700
+```
+
+After the failed operation:
+```
+500
+700
+```
+
+again.
+
+That's good error-handling design.
+
+### This is a very important programming lesson
+The routine isn't merely:
+```
+do the operation
+```
+
+It is:
+```
+attempt operation
+     ↓
+check whether input is valid
+     ↓
+perform operation
+     ↓
+check whether result is valid
+     ↓
+commit result
+```
+
+or:
+```
+failure
+ ↓
+rollback
+```
+
+That is a powerful general programming pattern.
+
+### RangeCheck
+The calculator wants all values to stay between:
+```
+-999
+```
+
+and:
+```
++999
+```
+
+So there is a helper subroutine:
+```
+RangeCheck
+```
+
+Suppose:
+```
+R0 = 500
+```
+
+Then:
+```
+500 <= 999
+500 >= -999
+```
+
+so:
+```
+R5 = 0
+```
+
+meaning:
+```
+success
+```
+
+If:
+```
+R0 = 1200
+```
+
+then:
+```
+1200 > 999
+```
+
+so:
+```
+R5 = 1
+```
+
+meaning:
+```
+failure
+```
+
+The routine also prints an error message when out of range.
+
+### Why use negative constants for comparison?
+Remember the LC-3 doesn't have:
+```
+CMP R0,#999
+```
+
+So the program uses subtraction through addition.
+
+To check:
+```
+R0 > 999
+```
+
+it can form:
+```
+R0 + (-999)
+```
+
+If the result is positive:
+```
+R0 > 999
+```
+
+Similarly, to check the lower limit:
+```
+R0 + 999
+```
+
+If that becomes negative:
+```
+R0 < -999
+```
+
+This is another example of using the primitive LC-3 operations creatively.
+
+### The LC-3 has no MUL instruction
+This becomes important for OpMult.
+
+We cannot simply write:
+```
+MUL R0,R1,R2
+```
+
+because the LC-3 ISA being used doesn't provide a multiply instruction.
+
+So how do we multiply?
+
+We already learned the basic algorithm:
+```
+A × B
+```
+
+can be computed as:
+```
+A + A + A + ... + A
+```
+
+B times.
+
+### But negative numbers create a problem
+Suppose:
+```
+6 × -4
+```
+
+We can't simply repeat the addition -4 times.
+
+So the algorithm separates:
+```
+magnitude
+```
+
+from:
+```
+sign
+```
+
+### The sign flag
+The OpMult routine uses a register as a sign flag.
+
+Conceptually:
+```
+flag = 0
+```
+
+means:
+```
+multiplier positive
+```
+
+and:
+```
+flag = 1
+```
+
+means:
+```
+multiplier negative
+```
+
+If the multiplier is negative:
+```
+remember negative sign
+negate multiplier
+```
+
+Now we can perform repeated addition using the positive magnitude.
+
+### Example: 6 × -4
+Initially:
+```
+multiplicand = 6
+multiplier = -4
+```
+
+Detect:
+```
+multiplier negative
+```
+
+Set flag:
+```
+negative
+```
+
+Then two's-complement negate:
+```
+-4 → 4
+```
+
+Now calculate:
+```
+6 + 6 + 6 + 6
+=
+24
+```
+
+Finally, because the flag says the final result should be negative:
+```
+24 → -24
+```
+
+Then push:
+```
+-24
+```
+
+The textbook's OpMult routine follows this logic.
+
+### Why only the multiplier's sign matters?
+Because:
+```
+(+A) × (+B) = positive
+(+A) × (-B) = negative
+(-A) × (+B) = negative
+(-A) × (-B) = positive
+```
+
+The sign can be handled separately from the magnitude.
+
+The routine chooses one operand as the multiplier, tracks its sign, converts it to a positive count, and applies the corresponding final sign.
+
+### What if the multiplier is zero?
+Suppose:
+```
+A × 0
+```
+
+The answer is immediately:
+```
+0
+```
+
+The routine detects this and avoids unnecessary repeated addition.
+
+This is a nice example of handling a special case efficiently.
+
+### What happens if multiplication overflows?
+Suppose:
+```
+500 × 3
+=
+1500
+```
+
+But valid range is:
+```
+-999 ... +999
+```
+
+So:
+```
+1500
+```
+
+is invalid.
+
+The result is rejected and the original operands are restored to the stack.
+
+Again:
+```
+attempt
+ ↓
+validate
+ ↓
+commit only if valid
+```
+
+The OpMult routine is designed around this same rollback idea as OpAdd.
+
+### Now build the calculator itself
+We have all the pieces:
+```
+keyboard input
+      ↓
+GETC
+      ↓
+ASCII characters
+      ↓
+PushValue
+      ↓
+ASCIItoBinary
+      ↓
+PUSH
+      ↓
+STACK
+      ↓
+OpAdd / OpMult / OpNeg
+      ↓
+STACK
+      ↓
+OpDisplay
+      ↓
+POP
+      ↓
+BinarytoASCII
+      ↓
+PUTS
+      ↓
+monitor
+```
+
+The calculator is essentially a manager coordinating these pieces.

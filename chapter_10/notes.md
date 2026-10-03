@@ -1610,3 +1610,653 @@ monitor
 ```
 
 The calculator is essentially a manager coordinating these pieces.
+
+## An important subtlety: this is basically stack notation
+The calculator doesn't behave like a normal mathematical calculator where you necessarily type:
+```
+25 + 17
+```
+
+and press equals.
+
+Instead, you put values onto the stack and operations consume those values.
+
+For example:
+```
+25
+17
++
+```
+
+means:
+```
+PUSH 25
+PUSH 17
+ADD
+```
+
+Result:
+```
+42
+```
+This is essentially postfix / reverse-polish style evaluation.
+
+The textbook's larger example uses this stack-oriented command sequence.
+
+### Evaluate a more complex expression
+The textbook demonstrates:
+```
+(51 - 49) * (172 + 205) - (17 * 2)
+```
+
+which gives:
+```
+720
+```
+
+The user enters:
+```
+51 LF
+49 LF
+-
+172 LF
+205 LF
++
+*
+17 LF
+2 LF
+*
+-
++
+D
+```
+Let's understand the stack evolution.
+
+### First part: 51 - 49
+After:
+```
+51
+49
+```
+stack:
+```
+49
+51
+```
+Press:
+```
+-
+```
+That means:
+```
+negate 49
+```
+stack:
+```
+-49
+51
+```
+Then the next + operation:
+```
+51 + (-49)
+=
+2
+```
+stack:
+```
+2
+```
+So:
+```
+51 - 49 = 2
+```
+
+### Second part: 172 + 205
+Input:
+```
+172
+205
+```
+
+stack:
+```
+205
+172
+2
+```
+
+Press:
+```
++
+```
+
+gives:
+```
+377
+```
+
+stack:
+```
+377
+2
+```
+
+### Multiply
+Press:
+```
+*
+```
+Now:
+```
+2 × 377 = 754
+```
+
+stack:
+```
+754
+```
+
+### Third part: 17 * 2
+Enter:
+```
+17
+2
+```
+
+stack:
+```
+2
+17
+754
+```
+
+Press:
+```
+*
+```
+
+gives:
+```
+34
+```
+
+stack:
+```
+34
+754
+```
+
+### Subtract 34 from 754
+Press:
+```
+-
+```
+
+This is unary negation:
+```
+34 → -34
+```
+
+Stack:
+```
+-34
+754
+```
+
+Then:
+```
++
+```
+
+gives:
+```
+754 + (-34)
+=
+720
+```
+
+Stack:
+```
+720
+```
+
+### Display
+Press:
+```
+D
+```
+
+The calculator:
+```
+POP
+```
+
+gets:
+```
+720
+```
+
+Then:
+```
+BinarytoASCII
+```
+
+produces something like:
+```
+"+720"
+```
+
+Then:
+```
+PUTS
+```
+
+prints it.
+
+Importantly, the display routine then pushes the number back onto the stack, so displaying it does not destroy the calculator's stored value. The textbook's OpDisplay routine explicitly performs this restore-to-stack behavior after displaying the result.
+
+
+### C — clear the stack
+How do we clear the calculator stack?
+
+We don't have to individually POP every element.
+
+Remember the fundamental stack rule:
+```
+R6 = stack pointer
+```
+
+So the empty stack is represented by:
+```
+R6 = StackBase + 1
+```
+
+Therefore the clear operation simply resets:
+```
+R6
+```
+to the empty-stack position.
+
+This is one of the nicest examples of the abstraction:
+
+    We don't have to erase every old memory word. We only have to restore the pointer that defines the logical stack.
+
+The textbook's OpClear routine does exactly that.
+
+### This is exactly like Chapter 8
+Remember our earlier point:
+```
+physical memory
+        ≠
+logical structure
+```
+
+Suppose:
+```
+memory still contains:
+
+720
+34
+754
+```
+
+but:
+```
+R6 = empty position
+```
+
+Then logically:
+```
+stack = empty
+```
+
+The old memory values don't matter.
+
+Again:
+```
+representation
+     +
+control information
+     ↓
+logical structure
+```
+
+### Let's examine the calculator's main algorithm
+The main program begins by setting the stack pointer:
+```
+LEA R6,StackBase
+ADD R6,R6,#1
+```
+
+So:
+```
+R6 = StackBase + 1
+```
+
+which means:
+```
+empty stack
+```
+
+Then it repeatedly:
+```
+prompt
+get command
+figure out what command it is
+perform corresponding action
+return to prompt
+```
+
+
+### Command dispatch
+Suppose the user enters:
+```
++
+```
+
+The main program essentially performs:
+
+Is it X?
+```
+No.
+```
+
+Is it C?
+```
+No.
+```
+
+Is it +?
+```
+Yes.
+```
+
+Call OpAdd.
+
+Then returns to:
+```
+NewCommand
+```
+
+This is a simple form of a command dispatcher.
+
+Conceptually:
+
+             input character
+                    |
+        +-----------+-----------+
+        |           |           |
+        X           C           +
+        |           |           |
+       halt       clear        add
+
+This pattern appears everywhere in software:
+```
+command
+  ↓
+identify command
+  ↓
+dispatch handler
+```
+
+### If it isn't a recognized command
+Suppose the character isn't:
+```
+X
+C
++
+*
+-
+D
+```
+
+Then the program assumes:
+```
+The user is entering a number.
+```
+
+So it calls:
+```
+PushValue
+```
+
+This is a nice example of the main program separating policy from work:
+
+main:
+"What kind of thing did the user enter?"
+
+PushValue:
+"Okay, I'll process the number."
+
+### PushValue is more complicated than simply GETC
+Why?
+
+Because a number isn't necessarily one character.
+
+Suppose:
+```
+295
+```
+
+The routine must:
+```
+read '2'
+read '9'
+read '5'
+read Enter
+```
+
+while checking every character.
+
+The textbook's PushValue routine therefore performs several jobs.
+
+### Job 1 — ensure the character is a digit
+Valid:
+```
+'0' through '9'
+```
+
+ASCII range:
+```
+x30 through x39
+```
+
+So for every typed character, the routine checks:
+```
+character >= '0'
+```
+
+and:
+```
+character <= '9'
+```
+
+If not:
+```
+NotInteger
+```
+
+### Job 2 — don't accept more than three digits
+The calculator allows:
+```
+maximum = 3 digits
+```
+
+So it maintains a digit count / remaining capacity.
+
+Suppose the user types:
+```
+123
+```
+
+fine.
+
+But:
+```
+1234
+```
+
+causes:
+```
+Too many digits
+```
+
+The routine then consumes input until the line is finished so the calculator can return to a clean state.
+
+### Job 3 — detect Enter / LF
+The calculator considers the end of number input to be the line-feed character:
+```
+x0A
+```
+
+So:
+```
+295
+Enter
+```
+
+looks conceptually like:
+```
+'2'
+'9'
+'5'
+LF
+```
+
+When the routine sees:
+```
+x0A
+```
+
+it knows:
+```
+The number is complete.
+```
+
+### What if the user presses Enter without typing a number?
+Then:
+```
+LF
+```
+
+is encountered immediately.
+
+There are no digits.
+
+The calculator reports:
+```
+No number entered
+```
+
+instead of pushing an invalid value.
+
+Again, validation happens before changing the calculator state.
+
+### Input errors are handled carefully
+The routine has separate cases for:
+```
+too many digits
+not an integer
+no digits
+```
+
+This is useful because the program doesn't simply crash when the input doesn't match expectations.
+
+It responds with a controlled error message.
+
+The chapter's PushValue routine includes these error paths.
+
+### Stack memory layout for the calculator
+The main program provides:
+```
+StackMax
+StackBase
+ASCIIBUFF
+```
+
+The stack storage is allocated in the main program.
+
+The textbook points out an important linking/assembly issue here:
+
+    The subroutines reference these global labels, so the entire calculator is assembled as one unit in this implementation.
+
+### Why can't each subroutine simply be assembled separately?
+Consider:
+```
+ASCIItoBinary
+```
+
+It refers to:
+```
+ASCIIBUFF
+```
+
+But ASCIIBUFF is defined somewhere else.
+
+So if you assemble only:
+```
+ASCIItoBinary
+```
+there is no address yet for:
+```
+ASCIIBUFF
+```
+
+Hence the assembler doesn't have enough information.
+
+The textbook notes that .EXTERNAL could be used to enable separate assembly, but instead the chapter chooses to assemble the whole calculator as a single unit.
+
+### Why must the labels have unique names?
+
+Because all the routines are being assembled together.
+
+Imagine two subroutines both contain:
+```
+DONE
+```
+
+Which DONE does another instruction mean?
+```
+Ambiguous.
+```
+
+So the routines use names like:
+```
+AtoB_Done
+BtoA...
+OpAdd_...
+OpMult_...
+OpNeg_...
+PushValue_...
+```
+
+This is a practical lesson about symbol tables and global naming.
+
+### This is another Chapter 7 connection
+
+Chapter 7 taught:
+```
+labels
+ ↓
+symbol table
+ ↓
+addresses
+ ↓
+machine code
+```
+
+Chapter 10 now has multiple routines referring to shared symbols.
+
+So the earlier lesson becomes practical:
+```
+main program
+      +
+subroutines
+      +
+global labels
+      ↓
+one executable program
+```
+
+Nothing in the computer works in isolation.
+

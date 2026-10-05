@@ -233,3 +233,30 @@ compiler decides implementation
    ↓
 target ISA operations
 ```
+
+### Maintainability
+Imagine two programmers.
+
+Programmer A gives you 1000 line of assembly.
+Programmer B gives you 300 lines of well-structured C.
+
+Which one is easier to understand?
+
+Usually, the C program.
+
+Why?
+
+Because things like:
+```
+if
+else
+for
+while
+function
+variable
+```
+
+directly communicate programming intent.
+instead of needing to reconstruct the intent from low-level instructions.
+
+This becomes incredibly important once software gets large.

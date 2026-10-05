@@ -121,3 +121,38 @@ So instead of thinking:
 You can think:
 
     This value is called counter
+
+
+### Control structures are another abstraction
+Suppose you want:
+
+    If it is cloudy, take an umbrella; otherwise take sunglasses.
+
+C lets you write:
+```
+if (IsItCloudy)
+    get(Umbrella);
+else
+    get(Sunglasses);
+```
+
+the CPU itself doesn't have a magical "if cloudy" instruction.
+
+At the machine level, the condition eventually becomes something like:
+```
+calculate/test condition
+       ↓
+set condition information
+       ↓
+conditional branch
+       ↓
+execute one block
+or
+execute the other block
+```
+
+you already learned this with LC-3 condition codes and branches.
+
+So C's if is not creating a new kind of computer.
+
+it is giving you a much more convenient way to express a pattern that ultimately becomes ordinary machine operations.

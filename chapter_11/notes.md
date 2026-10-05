@@ -371,3 +371,58 @@ understand
 ↓
 execute
 ```
+
+### Compilation
+Compilation works differently.
+
+The compiler takes your C program and translates it into a machine-oriented form before normal execution of the resulting program.
+
+Conceptually:
+```
+C source
+    ↓
+Compiler
+    ↓
+Machine code / executable
+    ↓
+CPU
+```
+
+Then later:
+```
+run executable
+run executable
+run executable
+```
+
+You don't need the compiler interpreting every C statement again during each ordinary execution.
+
+The book describes C as a typically compiled language.
+
+
+#### Complete analogy
+
+Interpretation
+
+You have a translator standing beside you:
+```
+original sentence
+   ↓
+translator
+   ↓
+your understanding
+```
+over and over.
+
+
+Compilation
+
+You translate the whole book first:
+```
+original book
+   ↓
+translator
+   ↓
+translated book
+```
+Then you read the translated version directly.

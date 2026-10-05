@@ -312,3 +312,62 @@ some address
 ```
 
 C simply gives you a convenient language for describing it.
+
+### Interpretation
+Suppose you write:
+```
+instruction 1
+instruction 2
+instruction 3
+instruction 4
+```
+
+An interpreter reads your program and performs the requested operations.
+
+Conceptually:
+```
+Your program
+     ↓
+Interpreter
+     ↓
+machine operations
+     ↓
+CPU
+```
+
+The important thing is:
+
+    The high-level program itself is being treated as input to another program.
+
+The interpreter is doing the work of understanding the program and executing its meaning.
+
+### Imagine an interpreter as a translator sitting beside you
+Suppose you give it:
+```
+x = x + 1
+```
+
+It effectively needs to understand:
+
+    "Take x, add 1, and place the result back into x."
+
+Then it performs the lower-level actions required by the target machine.
+
+Then it reads the next piece.
+
+Then the next.
+
+So:
+```
+read
+↓
+understand
+↓
+execute
+↓
+read next
+↓
+understand
+↓
+execute
+```

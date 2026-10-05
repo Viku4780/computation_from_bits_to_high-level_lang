@@ -467,3 +467,81 @@ program is used as input to a program that executes it
 ```
 program is translated into an executable representation
 ```
+
+## Now the most important pipeline: C compilation
+
+### Stage 1 - Preprocessor
+```
+directives like define
+or include headers
+```
+
+
+### Stage 2 - Compiler
+Now the preprocessed source reaches the compiler.
+
+The compiler has two broad jobs discussed by the book:
+```
+Analysis 
+Synthesis
+```
+
+### Compiler analysis
+The compiler first has to understand your code
+
+for example:
+```
+counter = startPoint + 1;
+```
+
+The compiler must recognize:
+```
+counter
+assignment
+startPoint
+addition
+constant 1
+semicolon
+```
+
+in other words, it needs to determine the structure and meaning of the source program
+
+the book describes analysis as parsing and building an internal representation of the program.
+
+### Compiler synthesis
+Once the compiler understands the program, it can generate target code.
+
+Conceptually:
+```
+C meaning
+   ↓
+target machine operations
+```
+
+the compiler can also perform optimization.
+
+for example, if it realizes that some unnecessary computation can be removed, it may produce more efficient code.
+
+### Symbol table
+The compiler uses a symbol table as internal bookkeeping for symbolic names used in the program
+
+suppose:
+```
+int counter;
+int startPoint;
+```
+
+The compiler needs to keep track of those names and their relevant informatin.
+
+This conceptaully related to the LC-3 assembler's symbol table that you studied earlier
+
+You can think:
+```
+symbol table
+
+counter    → information about counter
+startPoint → information about startPoint
+...
+```
+
+Later, when you learn C functions, pointer, arrays, scope, etc this bookkeeping becomes even more interesting.

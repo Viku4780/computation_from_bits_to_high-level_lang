@@ -90,3 +90,34 @@ the higher you go, the less you manually manage the underlying hardware.
 But there is an important truth:
 
     The CPU has not become more intelligent. You have simply moved some of the work into the translation software.
+
+
+### What problems does a high-level langauge solve?
+
+#### Managing values
+imagine you need a loop counter.
+
+in assembly, you have to explicitly determine where that value lives:
+```
+memory location?
+register?
+which register?
+how it is updated?
+```
+
+in C:
+```
+int counter;
+```
+
+You simply give the value a name.
+
+The compiler takes responsibility for allocating appropriate storage and generating the necessary data movement operations.
+
+So instead of thinking:
+
+    The counter is currently in R2
+
+You can think:
+
+    This value is called counter

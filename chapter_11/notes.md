@@ -557,3 +557,40 @@ other object modules
 ```
 
 and creates the final executable image.
+
+## Development environment
+the book also introduces two ways of developing programs.
+
+### Simple flow
+```
+text editor
+   ↓
+compiler
+   ↓
+executable
+   ↓
+run
+```
+
+For example:
+```
+Notepad
+   ↓
+gcc
+   ↓
+program.exe
+```
+
+### IDE
+An IDE combines tools into a single environment:
+```
+editor
+compiler
+debugger
+other development tools
+```
+you have encountered this in your own C and web-development work
+
+For this chapter, the important concept is that the IDE is not some different kind of programming language.
+
+it is a collection of development tools.

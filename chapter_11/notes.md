@@ -545,3 +545,15 @@ startPoint → information about startPoint
 ```
 
 Later, when you learn C functions, pointer, arrays, scope, etc this bookkeeping becomes even more interesting.
+
+### Stage 3 - Linker
+So the linker brings together:
+```
+your object code
++
+library object code
++
+other object modules
+```
+
+and creates the final executable image.

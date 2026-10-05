@@ -156,3 +156,80 @@ you already learned this with LC-3 condition codes and branches.
 So C's if is not creating a new kind of computer.
 
 it is giving you a much more convenient way to express a pattern that ultimately becomes ordinary machine operations.
+
+
+### Portability
+This is another huge reason high-level languages matter.
+
+Suppose you write a program in LC-3 assembly.
+
+That assembly program is specifically designed around LC-3.
+
+Move it to:
+
+- ARM
+- x86
+- another architecture
+
+and it generally cannot simply execute there.
+
+Why?
+
+Because the instructions are different.
+
+For example:
+```
+LC-3 ISA
+ADD
+AND
+NOT
+LD
+ST
+...
+```
+
+doesn't equal:
+```
+x86 instructions
+```
+
+and doesn't equal:
+```
+ARM instructions
+```
+
+But C attempts to provide a more hardware-independent programming interface.
+
+Conceptually:
+
+        same C program
+              |
+       -----------------
+       |       |       |
+      LC-3    ARM     x86
+       |       |       |
+    compiler compiler compiler
+       |       |       |
+    machine  machine machine
+     code     code    code
+
+So the source language can remain largely the same while the compiler changes the target machine code.
+
+The book identifies portability as one of the major advantages of high-level languages.
+
+And this idea will become especially meaningful for you later when you study:
+```
+C
+ ↓
+ARM Cortex-M
+ ↓
+embedded firmware
+```
+
+```
+C operation
+   ↓
+compiler decides implementation
+   ↓
+target ISA operations
+```

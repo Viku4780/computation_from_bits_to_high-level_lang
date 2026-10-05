@@ -1128,3 +1128,221 @@ human → cares about readability
 ```
 
 Good formatting serves the human.
+
+
+## printf in depth
+Now let's really understand printf.
+
+Suppose:
+```
+printf("43 is a prime number.");
+```
+
+It simply prints:
+```
+43 is a prime number.
+```
+
+But printf becomes much more powerful when you use format specifications.
+
+### %d
+Example:
+```
+printf("%d", 43);
+```
+
+%d means:
+
+    Format this value as a decimal integer.
+
+Result:
+```
+43
+```
+
+### %x
+```
+printf("%x", 102);
+```
+
+The chapter uses 102 because:
+```
+102 decimal = 0x66
+```
+
+So %x asks for hexadecimal representation.
+
+Result:
+```
+66
+```
+
+### %c
+Now:
+```
+printf("%c", 102);
+```
+
+The same numeric bit pattern is interpreted as a character.
+
+Since ASCII 102 corresponds to lowercase:
+```
+f
+```
+
+the output is:
+```
+f
+```
+
+This is one of the most important ideas in the whole chapter.
+
+
+### Same bits, different interpretation
+
+Suppose the value is:
+```
+102
+```
+
+The underlying binary is:
+```
+01100110
+```
+
+Now:
+```
+printf("%d", 102);
+```
+
+interprets it as:
+```
+decimal integer
+```
+
+while:
+```
+printf("%x", 102);
+```
+
+interprets it as:
+```
+hexadecimal representation
+```
+
+while:
+```
+printf("%c", 102);
+```
+
+interprets it as:
+```
+ASCII character
+```
+
+Same underlying value.
+
+Different interpretation.
+
+This connects directly to Chapter 10's central lesson:
+
+    A bit pattern does not carry its meaning inside itself. Context determines how it is interpreted.
+
+
+### printf is performing conversion
+This is subtle.
+
+Suppose you have:
+```
+int x = 102;
+```
+
+The computer internally has some binary representation.
+
+When you say:
+```
+printf("%d", x);
+```
+
+printf does not simply dump the bits directly onto your monitor.
+
+It converts the integer into a textual representation.
+
+Conceptually:
+```
+binary integer
+     ↓
+decimal conversion
+     ↓
+ASCII characters
+     ↓
+output
+```
+
+For %x:
+```
+binary integer
+     ↓
+hex conversion
+     ↓
+ASCII characters
+     ↓
+output
+```
+
+For %c:
+```
+numeric value
+     ↓
+interpret as character code
+     ↓
+character output
+```
+
+
+### Multiple format specifications
+
+You can write:
+```
+printf("%d %d\n", counter, startPoint - counter);
+```
+
+There are two %d specifications.
+
+Therefore there must be two corresponding values:
+```
+counter
+startPoint - counter
+```
+
+Think:
+```
+format string:
+%d %d\n
+ |  |
+ |  └── second value
+ └───── first value
+```
+
+The number and ordering of format specifications must match the values supplied.
+
+
+### Newline is explicit
+Unlike some environments where output seems to naturally move to the next line, printf needs you to request it:
+```
+\n
+```
+
+So:
+```
+printf("%d\n", counter);
+```
+
+prints the integer and then moves to the next line.
+
+Whereas:
+```
+printf("%d", counter);
+```
+
+does not explicitly request a newline.

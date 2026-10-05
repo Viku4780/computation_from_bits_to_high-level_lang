@@ -426,3 +426,44 @@ translator
 translated book
 ```
 Then you read the translated version directly.
+
+
+### Why compilation is usually faster
+With interpretation:
+```
+program
+ ↓
+interpreter
+ ↓
+execution
+```
+
+There is an extra layer involved during execution.
+
+With compilation:
+```
+program
+ ↓
+compile once
+ ↓
+machine code
+ ↓
+execute repeatedly
+```
+
+The machine gets code closer to what it natively understands.
+
+Therefore compiled programs can generally execute more efficiently.
+
+The chapter explains the usual tradeoff: interpretation can make interactive development and debugging easier, while compilation generally gives more efficient execution and is common for production software.
+
+
+#### Interpreter
+```
+program is used as input to a program that executes it
+```
+
+#### Compiler
+```
+program is translated into an executable representation
+```

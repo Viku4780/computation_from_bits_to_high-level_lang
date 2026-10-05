@@ -260,3 +260,55 @@ directly communicate programming intent.
 instead of needing to reconstruct the intent from low-level instructions.
 
 This becomes incredibly important once software gets large.
+
+### But high-level languages are not magic
+The chapter also points out disadvantages and tradeoffs.
+
+The more abstraction you introduce, the more details the programming language and its implementation handle for you.
+
+That can mean:
+
+- you have less direct control
+- some hardware details become hidden
+- certain low-level optimizations are harder to express
+- the generated code may not match what you would manually write
+
+This is one reason C is especially interesting.
+
+C sits relatively close to the machine compared with many other high-level languages.
+
+
+## What exactly is C?
+You can think of C as a language that gives you:
+```
+names
++
+data
++
+operations
++
+control flow
++
+functions
++
+memory access
+```
+
+while still staying relatively close to the machine.
+
+For example:
+```
+int counter = 5;
+```
+
+looks simple.
+
+But underneath, the machine still needs:
+```
+some storage
+some bit pattern
+some instructions
+some address
+```
+
+C simply gives you a convenient language for describing it.

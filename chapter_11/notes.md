@@ -1346,3 +1346,84 @@ printf("%d", counter);
 ```
 
 does not explicitly request a newline.
+
+
+## scanf in more detail
+Suppose:
+```
+int age;
+scanf("%d", &age);
+```
+
+The conceptual pipeline is:
+```
+keyboard
+   ↓
+ASCII characters
+   ↓
+scanf reads characters
+   ↓
+%d tells scanf "this should be decimal integer input"
+   ↓
+characters converted to numeric value
+   ↓
+result stored at address &age
+```
+
+### Examples of scanf
+The chapter gives examples such as:
+```
+scanf("%c", &nextChar);
+```
+Read a character.
+
+```
+scanf("%f", &radius);
+```
+Read a floating-point value.
+
+```
+scanf("%d %d", &length, &width);
+```
+Read two decimal integers.
+
+Again, the & is crucial because scanf must store the results in the variables.
+
+
+### Why printf does not need &
+
+Compare:
+```
+printf("%d", counter);
+```
+
+with:
+```
+scanf("%d", &counter);
+```
+
+Why the difference?
+
+Because their jobs differ.
+
+#### printf
+
+It only needs to read the value of counter.
+
+So:
+```
+counter
+```
+is enough.
+
+#### scanf
+
+It needs to write a new value into counter.
+
+So it needs:
+```
+&counter
+```
+which gives the location where the value should be stored.
+
+This distinction will become crystal clear when you reach pointers and function parameters.

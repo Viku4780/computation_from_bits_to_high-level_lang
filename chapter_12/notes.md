@@ -1321,3 +1321,34 @@ low addresses
 ```
 
 The exact visual ordering in the textbook's diagram should be understood together with the fact that the heap grows toward higher addresses and the stack toward lower addresses
+
+
+### Important compiler optimization caveat
+The textbook deliberately simplifies its LC-3 examples by assuming every variable gets a memory location.
+
+Real compilers may decide:
+```
+int x;
+```
+
+does not need an actual memory location at all.
+
+They may keep x in a register.
+
+Why?
+
+Because registers are faster to access.
+
+So this:
+```
+C variable
+```
+
+does not necessarily mean:
+```
+one permanent memory cell
+```
+
+The C language describes the variable semantically.
+
+The compiler chooses the physical implementation.

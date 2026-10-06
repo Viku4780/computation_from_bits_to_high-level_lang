@@ -413,3 +413,198 @@ _Bool flag = 1;
 bool test = false;
 ```
 
+## Scope — where is a variable visible?
+Suppose:
+```
+int main(void)
+{
+    int score = 10;
+
+    printf("%d", score);
+}
+```
+
+score exists within the block belonging to main.
+
+But if you have another block:
+```
+{
+    int x;
+}
+```
+then x belongs to that block.
+
+The basic idea of scope is:
+
+    Which part of the program is allowed to refer to this variable by name?
+
+### What is a block?
+A block is code enclosed in:
+```
+{
+    ...
+}
+```
+
+For example:
+```
+int main(void)
+{
+    int x;
+
+    {
+        int y;
+    }
+}
+```
+
+There are two nested blocks.
+
+Conceptually:
+```
+main block
+│
+├── x
+│
+└── inner block
+    └── y
+```
+
+### Local variables
+A variable declared inside a block is local to that block.
+
+the compiler treats the variable as belonging to a particular scope.
+
+### Nested scope
+Now look at this:
+```
+int globalVar = 2;
+
+int main(void)
+{
+    int localVar = 3;
+
+    {
+        int localVar = 4;
+
+        printf("%d\n", localVar);
+    }
+
+    printf("%d\n", localVar);
+}
+```
+
+Inside the inner block:
+```
+localVar
+```
+
+means the inner variable:
+```
+localVar = 4;
+```
+
+Outside that inner block:
+```
+localVar
+```
+
+means the outer one:
+```
+localVar = 3
+```
+
+So the same identifier can name different variables in different scopes.
+
+### Shadowing
+This behavior is commonly called shadowing.
+
+Visualize:
+```
+outer block
+
+localVar → 3
+     │
+     └─────────────┐
+                   ▼
+             inner block
+             localVar → 4
+```
+
+inside the inner block, the nearer declaration wins.
+
+When the inner block ends, the outer variable becomes visible again.
+
+### Global variables
+Now:
+```
+int globalVar = 2;
+
+int main(void)
+{
+    ...
+}
+```
+
+Because it is declared outside the blocks/functions in this example, it is a global variable in the textbook's simplified treatment.
+
+global variables can be accessed by many parts of the program.
+
+### Why globals can become dangerous
+Imagine:
+```
+function A changes global x
+        ↓
+function B reads x
+        ↓
+function C changes x
+        ↓
+function D depends on x
+```
+
+Now understanding one function requires knowing what other parts of the program might have done to the global.
+
+This creates hidden coupling.
+
+The textbook warns that global variables can make large programs harder to debug, maintain, extend, and modify, and therefore deliberately minimizes their use.
+
+### Local initialization vs global initialization
+Consider:
+```
+int x;
+```
+
+What value does x have?
+
+It depends on where x is declared.
+
+#### Local variable
+
+A local variable without an initializer has an undefined/indeterminate value in the book's terminology, often informally called a garbage value.
+
+Example:
+```
+int main(void)
+{
+    int x;
+}
+```
+Do not assume:
+```
+x = 0
+```
+
+#### Global variable
+A global variable without an explicit initializer is initialized to:
+```
+0
+```
+
+So:
+```
+int x;
+```
+
+at global scope gives zero initialization.
+
+therefore initialize local variables

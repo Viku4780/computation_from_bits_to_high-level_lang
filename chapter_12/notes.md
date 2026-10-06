@@ -1087,3 +1087,93 @@ int main(void)
 
     return 0;
 }
+```
+
+## Now the chapter goes underneath C
+The book now asks:
+
+    We have variables in C. Where do those variables actually get allocated?
+
+Remember:
+```
+int amount;
+int rate;
+int time;
+```
+
+These need storage.
+
+The compiler must decide where that storage belongs.
+
+
+### The symbol table
+
+The compiler maintains a symbol table.
+
+For a variable, the textbook's simplified symbol-table entry contains:
+
+identifier
+type
+memory location/offset
+scope
+other information
+
+For example:
+
+amount → int → offset 0 → main
+rate   → int → offset -1 → main
+time   → int → offset -2 → main
+...
+
+### Why use offsets instead of absolute addresses?
+Because local variables are associated with a function's stack frame.
+
+Suppose:
+```
+R5 = base of current stack frame
+```
+
+and :
+```
+amount -> offset 0
+rate -> offset -1
+time -> offset -2
+```
+
+then the compiler can generate:
+```
+LDR R0, R5, #0
+```
+for amount.
+
+for time:
+```
+LDR R0, R5, #-2
+```
+
+The actual absolute memory address can change depending on where the stack frame lives.
+
+The relative offset remains useful.
+
+This is very important compiler technique.
+
+### Local variables live in the runtime stack
+The chapter states:
+```
+global variables
+    ↓
+global data section
+
+local variables
+    ↓
+runtime stack
+```
+
+So:
+```
+int main(void)
+{
+    int x;
+}
+```
+means x is associated with main's stack frame in the textbook's LC-3 model.

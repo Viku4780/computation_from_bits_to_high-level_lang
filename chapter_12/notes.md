@@ -1177,3 +1177,92 @@ int main(void)
 }
 ```
 means x is associated with main's stack frame in the textbook's LC-3 model.
+
+## What is a stack frame?
+A stack frame, also called an activation record, is a contiguous region of the runtime stack associated with one function invocation.
+
+For example:
+```
+main's stack frame
+
++------------------+
+| amount           |
++------------------+
+| rate             |
++------------------+
+| time             |
++------------------+
+| hours            |
++------------------+
+| minutes          |
++------------------+
+| seconds          |
++------------------+
+```
+
+### R5 and R6
+The textbook uses:
+```
+R5 = frame pointer
+R6 = stack pointer
+```
+
+#### R5
+
+Points into the current stack frame.
+
+It gives the compiler a stable reference point for local-variable offsets.
+
+#### R6
+
+Points to the top of the runtime stack.
+
+So:
+```
+R5 → current frame
+R6 → top of stack
+```
+
+### Why do we need a frame pointer?
+Suppose:
+```
+R5 = 0x8000
+```
+
+and:
+```
+amount → R5 + 0
+rate   → R5 - 1
+time   → R5 - 2
+```
+
+Then the compiler knows:
+```
+amount = M[0x8000]
+rate   = M[0x7FFF]
+time   = M[0x7FFE]
+```
+
+If another function is called, a new stack frame is created and R5 changes to refer to that new frame.
+
+This is why the compiler can use simple offsets for local variables.
+
+### Why are the offsets negative?
+This is because the stack in the LC-3 model grows toward lower addresses.
+
+So conceptually:
+```
+higher addresses
+       ↑
+
+      R5
+       │
+       ├── offset 0
+       ├── offset -1
+       ├── offset -2
+       ├── offset -3
+       ↓
+lower addresses
+```
+
+That "upside-down" appearance is simply a consequence of the stack growing toward address x0000.

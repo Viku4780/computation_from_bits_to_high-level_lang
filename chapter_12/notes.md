@@ -1369,3 +1369,54 @@ short int age;
 unsigned int count;
 long double hugeNumber;
 ```
+
+## Literals
+A literal is a value written directly into source code.
+
+Examples:
+```
+42
+3.14
+'A'
+0x1DB
+```
+
+These are values that appear literally in your program.
+
+### Integer literal vs hexadecimal literal
+These represent the same numeric value in different notations.
+```
+123
+```
+is decimal.
+
+```
+0x7B
+```
+is hexadecimal.
+
+The 0x prefix tells C that the literal is written in hexadecimal.
+
+
+### Character literals
+A character literal uses single quotes:
+```
+'A'
+'R'
+'4'
+```
+These correspond to character-code values.
+
+Don't confuse:
+```
+'4'
+```
+with:
+```
+4
+```
+Again:
+```
+'4' → character code
+4   → integer four
+```

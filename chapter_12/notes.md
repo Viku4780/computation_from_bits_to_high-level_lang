@@ -1352,3 +1352,20 @@ one permanent memory cell
 The C language describes the variable semantically.
 
 The compiler chooses the physical implementation.
+
+
+### Additional type variations
+You can modify some basic types using:
+```
+long
+short
+unsigned
+```
+
+Examples:
+```
+long int population;
+short int age;
+unsigned int count;
+long double hugeNumber;
+```

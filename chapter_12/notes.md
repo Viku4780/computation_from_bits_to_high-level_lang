@@ -822,3 +822,145 @@ Example:
 + and -
 ```
 are evaluated left-to-right.
+
+
+#### Bitwise
+```
+& | ^ ~ << >>
+```
+
+means:
+
+    Work with the bits themselves.
+
+#### Logical
+```
+&& || !
+```
+
+means:
+
+    Work with truth/falsity.
+
+
+### Combining relational + logical operators
+Suppose you want to test:
+
+    Is x between 10 and 20 inclusive?
+
+You can write:
+```
+(10 <= x) && (x <= 20)
+```
+
+Why?
+
+First condition:
+```
+10 <= x
+```
+
+Second:
+```
+x <= 20
+```
+Both need to be true.
+
+That's exactly what && represents.
+
+### Testing whether a character is a letter
+The chapter gives the idea:
+```
+(('a' <= c) && (c <= 'z')) ||
+(('A' <= c) && (c <= 'Z'))
+```
+
+This means:
+```
+is c a lowercase letter?
+          OR
+is c an uppercase letter?
+```
+
+Again:
+```
+relational operators
+       ↓
+produce true/false
+       ↓
+logical operators combine them
+```
+
+### Increment and decrement
+C has:
+```
+++
+--
+```
+
+These exist because incrementing and decrementing are so common.
+```
+x++;
+```
+
+means essentially:
+```
+x = x + 1;
+```
+
+and:
+```
+x--;
+```
+
+means essentially:
+```
+x = x - 1;
+```
+
+### Post-increment vs pre-increment
+
+Consider:
+```
+x = 4;
+y = x++;
+```
+
+What happens?
+
+The old value is used by the expression first.
+
+So:
+```
+y = 4
+x = 5
+```
+
+Think:
+```
+use x
+ ↓
+then increment x
+```
+
+### Pre-increment
+Now:
+```
+x = 4;
+y = ++x;
+```
+
+The increment happens first.
+
+So:
+```
+x = 5
+y = 5
+```
+
+Think:
+```
+increment x
+ ↓
+then use x
+```

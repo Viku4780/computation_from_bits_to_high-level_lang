@@ -964,3 +964,126 @@ increment x
  ↓
 then use x
 ```
+
+## Now lets solve a real problem
+Suppose:
+```
+amount = number of bytes
+rate = bytes per second
+```
+
+We want:
+```
+hours 
+minutes
+seconds
+```
+for the transfer.
+
+This is a perfect example because it demonstrate how to go from:
+```
+problem
+ ↓
+algorithm
+ ↓
+data representation
+ ↓
+operators
+ ↓
+C code
+```
+
+### Step 1 - understand the problem
+We need threee broad phases:
+```
+get input
+calculate
+output
+```
+
+This is first refinement
+
+### Step 2 -  refine calculation
+Calculation becomes:
+```
+calculate total time in seconds
+convert total seconds to
+hour, minutes, seconds
+```
+
+Still not quite enough.
+
+### Step 3 -  refine conversion
+Break it down further:
+```
+total seconds
+      ↓
+calculate hours
+      ↓
+remaining seconds
+      ↓
+calculate minutes
+      ↓
+remaining seconds
+      ↓
+final seconds
+```
+
+now we are close enough write C code.
+
+This is the stepwise refinement methodology
+
+### Choosing the data type
+We need hours, minutes, and seconds
+
+do we need floating point?
+
+probably not.
+
+for example:
+```
+10.7 hours
+```
+
+is not how we want to represent this result.
+
+We want:
+```
+10 hours 42 minutes ...
+```
+Therefore integers are a natural representation
+
+This is an important programming principle:
+
+    Choose a data representation that naturally matches the problem.
+
+
+### The complete network program
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int amount;
+    int rate;
+    int time;
+    int hours;
+    int minutes;
+    int seconds;
+
+    printf("How many bytes of data to be transferred? ");
+    scanf("%d", &amount);
+
+    printf("What is the transfer rate (in bytes/sec)? ");
+    scanf("%d", &rate);
+
+    time = amount / rate;
+
+    hours = time / 3600;
+    minutes = (time % 3600) / 60;
+    seconds = (time % 3600) % 60;
+
+    printf("Time : %dh %dm %ds\n", hours, minutes, seconds);
+
+    return 0;
+}

@@ -1420,3 +1420,87 @@ Again:
 '4' → character code
 4   → integer four
 ```
+
+
+## Three kinds of "constant" discussed here
+
+The book distinguishes:
+```
+literal constants
+const variables
+#define symbolic values
+```
+
+
+### Literal constant
+
+Example:
+```
+3.14159
+```
+
+It is simply written directly into the source.
+
+For example:
+```
+double x = 3.14159;
+```
+
+You have an unnamed literal value.
+
+### const variable
+
+Example:
+```
+const double pi = 3.14159;
+```
+
+Now:
+```
+pi
+```
+has a name.
+
+And the variable is read-only through that object.
+
+The idea is:
+```
+pi → 3.14159
+```
+but you cannot subsequently assign a new value to pi.
+
+### #define
+
+Another possibility:
+```
+#define RADIUS 15.0
+```
+This is a preprocessor symbolic replacement.
+
+So:
+```
+RADIUS
+```
+is replaced by:
+```
+15.0
+```
+before compilation.
+
+### const vs #define
+
+Use a declared constant like:
+```
+const double pi = 3.14159;
+```
+
+for something you naturally think of as a constant value.
+
+Use:
+```
+#define RADIUS 15.0
+```
+
+for a symbolic parameter/value that might be changed and the program recompiled.
+
+The book notes that both provide values intended not to change during a program's execution, but they work differently and carry different stylistic meanings.

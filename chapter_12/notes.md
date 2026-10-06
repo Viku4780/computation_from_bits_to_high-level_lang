@@ -608,3 +608,217 @@ int x;
 at global scope gives zero initialization.
 
 therefore initialize local variables
+
+
+## Now we reach operators
+Variables give you data.
+
+Operators give you ways to manipulate that data.
+
+for example:
+```
+score = score + 3;
+```
+
+contains:
+```
+score       → variable
+=           → assignment operator
++           → addition operator
+3           → literal
+score + 3   → expression
+```
+
+
+### Expression vs statement
+Consider:
+```
+x + y
+```
+
+This is an expression.
+
+it produces a value.
+
+Now:
+```
+z = x + y;
+```
+
+is a statement.
+
+it represents a complete unit of work.
+
+Think:
+```
+expression
+ ↓
+produces a value
+
+statement
+ ↓
+performs an action
+```
+
+### Compound statements / blocks
+Multiple declarations and statements can be grouped:
+```
+{
+    a = b + c;
+    i = p * r * t;
+}
+```
+
+This is a compound statement, also called a block.
+
+So {} are not merely visual decoration.
+
+They also establish program structure and scope.
+
+
+### The assignment operator =
+This is probably the first operator beginners misunderstand.
+
+Consider:
+```
+a = b + c;
+```
+
+C means:
+
+    Evaluate b + c, then store that resulting value into a.
+
+So:
+```
+b + c
+  ↓
+calculate
+  ↓
+value
+  ↓
+store in a
+```
+
+### Assignment is not mathematical equality
+This is extremely important.
+
+In mathematics:
+```
+a = b + c
+```
+
+means:
+
+    a and b+c represent equal values.
+
+In C:
+```
+a = b + c;
+```
+
+means:
+
+    calculate the right side and make a contain that result.
+
+So:
+```
+x = x + 4;
+```
+
+makes perfect sense in C.
+
+It means:
+```
+old x
+ ↓
+add 4
+ ↓
+new x
+```
+
+Mathematically, you might object:
+```
+x = x + 4
+```
+
+cannot be an equality.
+
+But it is not being used as an equality assertion.
+
+It is an assignment operation.
+
+
+### How assignment becomes LC-3
+Suppose:
+```
+x = x + 4;
+```
+
+and R5 contains the address of x.
+
+The textbook's compiler generates:
+```
+LDR R0, R5, #0
+ADD R0, R0, #4
+STR R0, R5, #0
+```
+
+Let's decode it:
+```
+LDR
+ ↓
+get x from memory
+
+ADD
+ ↓
+x + 4
+
+STR
+ ↓
+put result back into x
+```
+
+### The C compiler is doing the bookkeeping
+You wrote:
+```
+x = x + 4;
+```
+
+You didn't write:
+```
+LDR R0, ...
+ADD R0, ...
+STR R0, ...
+```
+The compiler figures that out.
+
+That is the essence of compilation.
+
+### Arithemetic operators
+```
++ , -, *, /, %
+```
+
+### Precedence vs associativity
+Don't mix them up.
+
+#### Precedence
+Answers:
+
+    Which operator group gets priority?
+
+Example:
+```
+* before +
+```
+
+#### Associativity
+Answers:
+
+    When operators have the same precedence, which direction do we evaluate?
+
+Example:
+```
++ and -
+```
+are evaluated left-to-right.

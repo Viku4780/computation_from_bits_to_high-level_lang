@@ -1504,3 +1504,56 @@ Use:
 for a symbolic parameter/value that might be changed and the program recompiled.
 
 The book notes that both provide values intended not to change during a program's execution, but they work differently and carry different stylistic meanings.
+
+
+```
+C
+z = x * y;
+
+        ↓ compiler
+
+LC-3
+clear result
+load x
+load y
+repeat addition
+handle signs
+store result
+```
+
+```
+Identifier   Type   Offset   Scope
+
+amount       int      0      main
+rate         int     -1      main
+time         int     -2      main
+hours        int     -3      main
+minutes      int     -4      main
+seconds      int     -5      main
+```
+
+```
+VARIABLE
+   ↓
+named memory object
+   ↓
+has a type
+   ↓
+has scope
+   ↓
+compiler allocates storage
+   ↓
+symbol table tracks it
+
+OPERATOR
+   ↓
+defines computation
+   ↓
+expression produces value
+   ↓
+statement performs work
+   ↓
+compiler translates operation
+   ↓
+LC-3 instructions manipulate registers/memory
+```

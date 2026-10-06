@@ -1266,3 +1266,58 @@ lower addresses
 ```
 
 That "upside-down" appearance is simply a consequence of the stack growing toward address x0000.
+
+### Global variables live somewhere else
+Suppose:
+```
+int globalCount;
+```
+
+The compiler allocates it in the global data section.
+
+The textbook uses R4 as the register pointing to the beginning of the global-data region.
+
+So conceptually:
+```
+R4 → global data base
+```
+
+and a global variable can be accessed using an offset.
+
+For example, if:
+```
+earth → offset 4
+```
+
+then:
+```
+LDR R3, R4, #4
+```
+
+would obtain it.
+
+
+### Runtime memory map
+The chapter presents the broader organization as:
+```
+high addresses
+xFFFF
+┌─────────────────────┐
+│       Heap          │
+│                     │
+│       grows ↑       │
+├─────────────────────┤
+│   Runtime Stack     │
+│       grows ↓       │
+├─────────────────────┤
+│   Global Data       │
+├─────────────────────┤
+│   Program Text      │
+├─────────────────────┤
+│   System Space      │
+└─────────────────────┘
+x0000
+low addresses
+```
+
+The exact visual ordering in the textbook's diagram should be understood together with the fact that the heap grows toward higher addresses and the stack toward lower addresses

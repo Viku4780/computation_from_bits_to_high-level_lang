@@ -123,3 +123,55 @@ A control structure essentially changes the answer to:
     Which instruction should execute next?
 
 That is the essence
+
+### Before learning if: C's idea of true and false
+
+In C:
+```
+0         -> false
+non-zero  -> true
+```
+
+    C doesn't require a special Boolean value for every condition. Zero means false; anything non-zero means true.
+
+
+### Where do Boolean-looking conditions come from?
+Usually from relational operators.
+```
+<
+>
+<=
+>=
+==
+!=
+```
+
+Conceptually:
+```
+5 < 10
+ ↓
+true
+ ↓
+non-zero value
+```
+
+if:
+```
+x = 15;
+```
+
+then:
+```
+15 < 10
+ ↓
+false
+0
+```
+
+so:
+```
+if (x < 10)
+```
+is essentially asking:
+
+    Does this expression produce a non-zero value?

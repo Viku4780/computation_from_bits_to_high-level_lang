@@ -1169,3 +1169,170 @@ We didn't start by saying:
     Let's use nested loops.
 
 We discovered them from the problem.
+
+## switch
+Now let's learn the specialized decision structure.
+
+Suppose:
+```
+char operation;
+
+scanf(" %c", &operation);
+
+if (operation == '+') {
+    ...
+}
+else if (operation == '-') {
+    ...
+}
+else if (operation == '*') {
+    ...
+}
+else if (operation == '/') {
+    ...
+}
+```
+
+C provides:
+```
+switch (operation) {
+    case '+':
+        ...
+        break;
+
+    case '-':
+        ...
+        break;
+
+    case '*':
+        ...
+        break;
+
+    case '/':
+        ...
+        break;
+
+    default:
+        ...
+}
+```
+
+The book describes switch as useful when one variable determines which of several alternatives should execute.
+
+### The critical thing about switch
+Do not think:
+```
+switch automatically executes only one case
+```
+That's not quite how C works.
+
+When a matching case is found, execution jumps to that case label and then continues downward.
+
+That's why:
+```
+break;
+```
+matters.
+
+Example:
+```
+switch (x) {
+
+case 1:
+    printf("One");
+
+case 2:
+    printf("Two");
+
+}
+```
+
+If:
+```
+x == 1
+```
+
+you may get:
+```
+OneTwo
+```
+because execution falls through from case 1 into case 2.
+
+### break
+
+break means:
+
+    Immediately leave the nearest enclosing loop or switch.
+
+Example:
+```
+for (int i = 0; i < 10; i++) {
+
+    if (i == 5)
+        break;
+
+    printf("%d ", i);
+}
+```
+
+Output:
+```
+0 1 2 3 4
+```
+
+At:
+```
+i == 5
+```
+
+the break causes immediate exit.
+
+Conceptually:
+```
+loop
+ |
+ v
+i == 5?
+ |
+ yes
+ |
+ v
+EXIT LOOP
+```
+The book describes break this way and notes that it can terminate either a loop or a switch.
+
+### continue
+continue is different.
+
+It means:
+
+    Stop the current iteration and proceed to the next iteration.
+
+Example:
+```
+for (int i = 0; i < 10; i++) {
+
+    if (i == 5)
+        continue;
+
+    printf("%d ", i);
+}
+```
+
+Output:
+```
+0 1 2 3 4 6 7 8 9
+```
+
+At 5:
+```
+continue
+   ↓
+skip remaining body
+   ↓
+next iteration
+```
+
+The loop itself doesn't terminate.
+
+The book explicitly distinguishes this from break: break exits the loop; continue ends only the current iteration.

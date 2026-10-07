@@ -1336,3 +1336,112 @@ next iteration
 The loop itself doesn't terminate.
 
 The book explicitly distinguishes this from break: break exits the loop; continue ends only the current iteration.
+
+
+## Control flow and the compiler
+Suppose you write:
+```
+if (x < 10){
+    x++;
+}
+```
+
+The compiler roughly needs to produce something like:
+```
+load x
+compare x with 10
+
+if false:
+    jump over body
+
+x = x + 1
+
+continue
+```
+
+For:
+```
+while(x < 10){
+    x++;
+}
+```
+
+roughly:
+```
+LOOP:
+    load x
+    compare x with 10
+
+    if false:
+        jump DONE
+
+    x = x + 1
+
+    jump LOOP
+
+DONE:
+```
+
+For:
+```
+for (x = 0; x < 10; x++){
+    ...
+}
+```
+
+roughly:
+```
+x = 0
+
+LOOP:
+    compare x with 10
+
+    if false:
+        jump DONE
+
+    body
+
+    x++
+
+    jump LOOP
+
+DONE:
+```
+
+So the compiler is taking our structured description of control flow and transforming it into branches and jumps.
+
+
+### A deeper connection to finite state machines
+You studied finite state machines earlier.
+
+There is a beautiful connection.
+
+At the machine level, the computer itself is a state machine.
+
+Its state includes things like:
+```
+registers
+PC
+condition codes
+memory
+```
+An instruction changes that state.
+
+A control structure changes which instruction happens next.
+
+So:
+```
+C control structure
+       ↓
+machine branch
+       ↓
+PC changes
+       ↓
+new machine state
+       ↓
+different instructions execute
+```
+
+So high-level control flow is ultimately built on the same fundamental idea you encountered when studying state machines:
+
+    The system has a current state and transitions to another state based on conditions.

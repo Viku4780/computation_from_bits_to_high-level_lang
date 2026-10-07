@@ -897,3 +897,89 @@ before displaying it.
 you display it, then ask whether to continue.
 
 That's a natural use of do-while.
+
+## Control structures and  machine code
+Take:
+```
+int x = 0;
+
+while(x < 10){
+    printf("%d\n", x);
+    x++;
+}
+```
+
+At the C level:
+```
+while
+```
+
+At the control-flow level:
+```
+TEST
+ |
+ | false
+ v
+DONE
+
+true
+ |
+ v
+BODY
+ |
+ v
+UPDATE
+ |
+ └──────> TEST
+```
+
+At the machine level, this becomes something conceptually like:
+```
+LOOP:
+    load x
+    compare x with 10
+    branch if x >= 10 to DONE
+
+    execute body
+
+    x = x + 1
+
+    branch LOOP
+
+DONE:
+```
+
+the book shows essentially this transformation in LC-3 assembly: the loop needs a conditional branch to leave the loop and an unconditional branch to return to the test.
+
+Now you can see something powerful:
+
+    A loop is not a mysterious C feature. it is a pattern of branches.
+
+### This connects directly to the CPU's PC
+Suppose machine instructions are located like this:
+```
+1000 load x
+1001 compare
+1002 branch-if-false -> 1010
+1003 body
+1004 update
+1005 branch -> 1000
+...
+1010 next code
+```
+
+Normally the PC advances:
+```
+1000 -> 1001 -> 1002 -> 1003 -> ...
+```
+
+But the branch changes it:
+```
+1005 -> 1000
+```
+
+that's how the loop physically exists.
+
+The CPU is repeatedly changing the next instruction address.
+
+That is the hardware-level essence of iteration.

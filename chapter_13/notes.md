@@ -175,3 +175,294 @@ if (x < 10)
 is essentially asking:
 
     Does this expression produce a non-zero value?
+
+### if - the first decision strucutre
+The basic syntax:
+```
+if (condition)
+    statement;
+```
+
+Example:
+```
+int age = 20;
+
+if (age >= 18)
+    printf("Adult\n");
+```
+
+The CPU conceptual behavior is:
+```
+evaluate age >= 18
+        |
+        v
+      true?
+     /     \
+   no       yes
+   |         |
+   |         v
+   |      printf
+   |         |
+   └─────────┘
+```
+
+if false, it simply skips the statement.
+
+### Why braces {} matter
+You can write:
+```
+if (x > 10)
+    printf("A\n");
+```
+
+But if you need multiple statements:
+```
+if (x > 10){
+    printf("A\n");
+    printf("B\n");
+    x = 0;
+}
+```
+
+The braces make these three statements one compound statement, or block.
+
+Think:
+```
+if condition
+    execute ONE statement
+```
+
+A block lets that "one statement" become:
+```
+{
+    statement 1
+    statement 2
+    statement 3
+}
+```
+
+so:
+```
+if (x > 10) {
+    A;
+    B;
+    C;
+}
+```
+
+means:
+
+    If true, execute the entire block.
+
+### The dangerous mistake
+Look carefully:
+```
+if (x > 10)
+    printf("A\n");
+    printf("B\n");
+```
+
+A beginner might visually think:
+```
+if true:
+    A
+    B
+```
+
+But C sees:
+```
+if (x > 10)
+    printf("A\n");
+
+printf("B\n");
+```
+
+Only the next statement belongs to the if.
+
+Therefore:
+```
+if true:
+    A
+always:
+    B
+```
+
+This is why braces are strongly recommended when there is any possibility of confusion.
+
+### if-else
+Now suppose we don't merely want:
+```
+"Do something if true."
+```
+
+We want:
+```
+"Do A if true, otherwise do B."
+```
+
+That's if-else.
+```
+if (condition) {
+    A;
+}
+else {
+    B;
+}
+```
+
+Example:
+```
+int age = 15;
+
+if (age >= 18) {
+    printf("Adult\n");
+}
+else {
+    printf("Minor\n");
+}
+```
+
+Conceptually:
+
+             age >= 18?
+             /        \
+           yes         no
+            |           |
+            v           v
+         Adult        Minor
+            \           /
+             \         /
+              continue
+
+Exactly one branch executes.
+
+### Think of if-else as mutually exclusive paths
+Given:
+```
+if (condition) {
+    A;
+}
+else {
+    B;
+}
+```
+
+you should mentally understand:
+```
+condition = true
+    → A
+
+condition = false
+    → B
+```
+
+Never:
+```
+A and B
+```
+Only one branch is selected.
+
+## else if
+Suppose we have three possibilities:
+```
+score >= 90 → A
+score >= 80 → B
+score >= 70 → C
+otherwise   → F
+```
+
+We can write:
+```
+if (score >= 90) {
+    printf("A");
+}
+else if (score >= 80) {
+    printf("B");
+}
+else if (score >= 70) {
+    printf("C");
+}
+else {
+    printf("F");
+}
+```
+
+Conceptually this is:
+
+             score >= 90?
+              /       \
+            yes        no
+             |          |
+             A       score >= 80?
+                        /      \
+                      yes       no
+                       |         |
+                       B      score >= 70?
+                                  /    \
+                                yes     no
+                                 |       |
+                                 C       F
+
+But here's something important:
+
+    else if isn't a fundamentally new machine capability.
+
+It is essentially a convenient way of writing nested decisions.
+
+For example:
+```
+if (a) {
+    A;
+}
+else if (b) {
+    B;
+}
+else {
+    C;
+}
+```
+
+is conceptually equivalent to:
+```
+if (a) {
+    A;
+}
+else {
+    if (b) {
+        B;
+    }
+    else {
+        C;
+    }
+}
+```
+That's the kind of abstraction you should understand.
+
+### Nested if
+You can put an if inside another if.
+
+Example:
+```
+if (age >= 18) {
+    if (has_license) {
+        printf("Can drive");
+    }
+}
+```
+
+Mental model:
+```
+age >= 18?
+   |
+   yes
+   |
+has_license?
+   |
+   yes
+   |
+Can drive
+```
+
+The inner decision is reached only if the outer decision allows execution to reach it.
+
+This becomes useful when conditions depend on previous decisions.

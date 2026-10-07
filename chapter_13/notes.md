@@ -466,3 +466,157 @@ Can drive
 The inner decision is reached only if the outer decision allows execution to reach it.
 
 This becomes useful when conditions depend on previous decisions.
+
+## Iteration
+Imagine:
+```
+printf("Hello\n");
+printf("Hello\n");
+printf("Hello\n");
+printf("Hello\n");
+printf("Hello\n");
+```
+
+That's repetitive.
+
+What if we need 1,000 repetitions?
+
+We need a loop.
+
+the book emphasizes that iteration is fundamental to useful computation and introduces three C iteration contructs:
+```
+while
+for 
+do-while
+```
+
+```
+        ┌───────────────┐
+        │     TEST      │
+        └───────┬───────┘
+                |
+          true? | false
+           /    |    \
+          /     |     \
+         v      |      v
+      BODY      |     EXIT
+         |
+         |
+         └───────────> TEST
+```
+
+A loop always has:
+
+1. A condition
+2. Some work
+3. A way to eventually make the condition false
+
+if the third part is missing, you may create an infinite loop.
+
+### While
+Syntax:
+```
+while (condition) {
+    body;
+}
+```
+
+Example:
+```
+int x = 0;
+
+while (x < 10 ) {
+    printf("%d\n", x);
+    x++;
+}
+```
+
+Execution:
+```
+x = 0
+
+x < 10?
+yes
+ ↓
+print 0
+ ↓
+x = 1
+ ↓
+x < 10?
+yes
+ ↓
+print 1
+ ↓
+x = 2
+...
+```
+
+Eventually:
+```
+x = 10
+
+10 < 10?
+   ↓
+ false
+   ↓
+ exit loop
+```
+
+The book explicitly describes while as testing its condition before each execution of the loop body.
+
+### The most important property of while
+A while loop can execute:
+```
+0 times
+```
+because the condition is checked first.
+
+example:
+```
+int x = 20;
+
+while (x < 10){
+    printf("Hello");
+}
+```
+The body never executes.
+
+Why?
+```
+20 < 10
+ ↓
+false
+ ↓
+exit immediately
+```
+This is called a pre-test loop.
+
+### Infinite loop
+Look at this:
+```
+int x = 0;
+
+while(x < 10){
+    printf("%d\n", x);
+}
+```
+
+What's wrong?
+
+x never changes.
+
+So:
+```
+x = 0
+x < 10 → true
+print
+x = 0
+x < 10 → true
+print
+x = 0
+...
+```
+
+forever.
+
+    Every loop needs a believable path toward termination, unless you intentionally want an infinite loop.

@@ -983,3 +983,189 @@ that's how the loop physically exists.
 The CPU is repeatedly changing the next instruction address.
 
 That is the hardware-level essence of iteration.
+
+## Problem solving
+The chapter isn't only teaching:
+```
+if 
+while
+for
+do
+switch
+```
+
+the deeper lesson is:
+
+    How do i translate a problem into control flow?
+
+The book demonstrates this through problems including:
+
+1. approximating π,
+2. finding prime numbers below 100,
+3. analyzing an email address.
+
+let's learn the underlying problem-solving method.
+
+### Stepwise refinement
+Suppose someone says:
+
+    Write a program that calculates π.
+
+That's too vague.
+
+we don't immediately start typing C.
+
+First break it down
+```
+Calculate π
+```
+
+becomes:
+```
+Start
+ ↓
+Initialize
+ ↓
+Get input
+ ↓
+Evaluate series
+ ↓
+Output result
+ ↓
+Stop
+```
+The book uses exactly this kind of decomposition for its π example.
+
+Then:
+```
+Evaluate series
+```
+
+becomes:
+```
+initialize counter
+
+while/for another term:
+    calculate term
+    add/subtract term
+    update counter
+```
+
+This is crucial programming skill.
+
+### Don't begin with syntax
+A common beginner approach is:
+
+    I need a for loop here
+
+That's backwards.
+
+instead:
+
+#### Step 1 - understand the problem
+What needs to happen?
+
+#### Step 2 - break the problem into smaller tasks
+```
+A
+B
+C
+```
+
+#### Step 3 - identify decisions
+```
+Should A happen?
+```
+
+#### Step 4 -  identify repetition
+```
+Does B happen repeatedly?
+```
+
+#### Step 5 - identify what controls repetition
+```
+What makes B stop?
+```
+
+#### Step 6 - Choose the C construct
+```
+if 
+while
+for
+do-while
+```
+
+This is much more powerful than memorizing syntax.
+
+### Example: finding prime numbers
+Suppose:
+
+    Find all primes less than 100.
+
+We need to think.
+
+A number is prime if it has no divisor other than 1 and itself.
+
+So:
+```
+candidate = 2
+```
+Test candidate
+
+then:
+```
+candidate = 3
+```
+
+Then:
+```
+candidate = 4
+```
+etc
+
+That's one loop
+
+inside that loop we need another process:
+```
+try possible divisors
+```
+
+So:
+```
+for every candidate:
+    test divisors
+```
+
+That naturally produces nested loops.
+
+The book's example uses exactly this structure
+
+A simplified version:
+```
+for (int num = 2; num <= 100; num++){
+    bool prime = true;
+
+    for(int divisor = 2; divisor <= 10; divisor++){
+        if (((num % divisor) ==  0) && num != divisor)
+            prime = false;
+    }
+
+    if (prime)
+        printf("%d\n", num);
+}
+```
+
+Notice how the algorithm naturally produced:
+```
+outer loop
+    |
+    └── inner loop
+           |
+           └── decision
+```
+
+We didn't start by saying:
+
+    Let's use nested loops.
+
+We discovered them from the problem.

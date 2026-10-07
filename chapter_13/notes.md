@@ -866,3 +866,34 @@ That means the body executes at least once.
     EXIT     |
              └──> BODY
 ```
+
+### example: menu
+imagine:
+```
+1. Start
+2. Settings
+3. Exit
+```
+
+you probably want to display the menu at least once.
+
+so:
+```
+do {
+    printf("1. Start\n");
+    printf("2. Settings\n");
+    printf("3. Exit\n");
+
+    scanf("%d", &choice);
+}while (choice != 3);
+```
+
+you don't need to ask:
+
+    Should i display the menu?
+
+before displaying it.
+
+you display it, then ask whether to continue.
+
+That's a natural use of do-while.

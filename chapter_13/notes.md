@@ -820,3 +820,49 @@ So after the loop:
 printf("%d", i);
 ```
 is not valid because i no longer exists in that scope.
+
+### do-while
+Now we have a subtle difference.
+
+while:
+```
+while (condition) {
+    body;
+}
+```
+checks first.
+
+do-while:
+```
+do {
+    body;
+} while (condition);
+```
+executes first and checks afterward.
+
+That means the body executes at least once.
+
+
+#### While
+```
+       TEST
+      /    \
+   false   true
+     |       |
+    EXIT    BODY
+             |
+             └──> TEST
+```
+
+#### do-while
+```
+       BODY
+         |
+         v
+       TEST
+      /    \
+   false   true
+     |       |
+    EXIT     |
+             └──> BODY
+```

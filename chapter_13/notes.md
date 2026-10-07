@@ -661,3 +661,162 @@ stop    process
 ```
 
 The book specifically associates while with sentinel-controlled iteration, where the number of iterations isn't known beforehand.
+
+
+### for
+Now suppose we know how many times we want to repeat something.
+
+Example:
+```
+Print numbers 0 through 9.
+```
+
+You could write:
+```
+int x = 0;
+
+while (x < 10) {
+    printf("%d\n", x);
+    x++;
+}
+```
+
+But C gives us a compact form:
+```
+for (int x = 0; x < 10; x++) {
+    printf("%d\n", x);
+}
+```
+The book describes for as particularly suitable for counter-controlled loops.
+
+### Understand the three parts of for
+This:
+```
+for (initialization; condition; update)
+```
+
+contains three pieces.
+
+For example:
+```
+for (int x = 0; x < 10; x++)
+```
+
+means:
+
+Initialization
+```
+int x = 0
+```
+
+Do this once.
+
+Condition
+```
+x < 10
+```
+
+Check before every iteration.
+
+Update
+```
+x++
+```
+
+Do this after each iteration.
+
+So:
+```
+initialization
+      |
+      v
+   condition
+    /     \
+ false     true
+  |          |
+ exit       body
+             |
+             v
+           update
+             |
+             └──────> condition
+```
+This diagram is worth remembering.
+
+### for is not magic
+This is one of the biggest abstractions to remove.
+
+This:
+```
+for (int x = 0; x < 10; x++) {
+    printf("%d\n", x);
+}
+```
+is conceptually equivalent to:
+```
+int x = 0;
+
+while (x < 10) {
+    printf("%d\n", x);
+    x++;
+}
+```
+The for syntax is mainly a convenient way to express this common pattern.
+
+The book explicitly points out that a for loop can be constructed using a while loop and vice versa.
+
+So don't think:
+
+    "for is a completely different kind of machine operation."
+
+Think:
+
+    "for is another way of expressing iteration."
+
+### A subtle for trap: the semicolon
+Look at:
+```
+for (x = 0; x < 10; x++);
+```
+
+There is a semicolon immediately after the for.
+
+That means the loop body is an empty statement.
+
+So:
+```
+for (x = 0; x < 10; x++);
+sum = sum + x;
+```
+
+does not mean:
+```
+for (...) {
+    sum = sum + x;
+}
+```
+Instead:
+```
+loop does nothing
+x becomes 10
+then:
+sum = sum + x
+```
+The book uses this exact type of mistake to demonstrate how easy it is to accidentally create an empty loop body.
+
+### Scope of a for variable
+You can write:
+```
+for (int i = 0; i < 10; i++) {
+    printf("%d\n", i);
+}
+```
+Here i is declared inside the for.
+
+Its scope is essentially the for statement and its body.
+
+So after the loop:
+```
+printf("%d", i);
+```
+is not valid because i no longer exists in that scope.

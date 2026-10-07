@@ -620,3 +620,44 @@ x = 0
 forever.
 
     Every loop needs a believable path toward termination, unless you intentionally want an infinite loop.
+
+
+### Sentinel-controlled loops
+Sometimes you don't know beforehand how many times the loop should execute.
+
+For example:
+
+    Keep reading input until the user enters -1.
+
+Then:
+```
+int x;
+
+scanf("%d", &x);
+
+while(x != -1){
+    printf("You entered %d\n", x);
+    scanf("%d", &x);
+}
+```
+
+Here -1 is sentinel.
+
+it means:
+
+    Stop.
+
+So:
+```
+read input
+   ↓
+is it -1?
+ /     \
+yes     no
+ |       |
+stop    process
+          |
+          └── read again
+```
+
+The book specifically associates while with sentinel-controlled iteration, where the number of iterations isn't known beforehand.

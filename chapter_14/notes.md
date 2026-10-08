@@ -559,3 +559,46 @@ function stops
      +
 25 is given back
 ```
+
+### Local variables belong to a function invocation
+Consider:
+```
+int Square(int x)
+{
+    int result;
+
+    result = x * x;
+
+    return result;
+}
+```
+
+result is a local variable.
+
+it belongs to that particular execution of Square.
+
+if we call:
+```
+Square(5)
+```
+
+one execution gets its own:
+```
+x
+result
+```
+
+if we later call:
+```
+Square(10)
+```
+
+that execution gets its own local execution state.
+
+this idea becomes extremely important when we reach:
+
+- recursion
+- stack frames
+- pointers
+- memory
+- multitasking

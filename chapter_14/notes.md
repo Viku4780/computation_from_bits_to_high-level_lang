@@ -808,3 +808,138 @@ produce return value
 restore previous state
 return
 ```
+
+
+## The four fundamental phases of a function call
+
+#### Phase 1 - Pass arguments
+Caller gives the callee the required values.
+
+```
+main → Add
+      10
+      20
+```
+
+#### Phase 2 - Transfer control
+execution moves from caller to callee
+```
+main
+ ↓
+Add
+```
+
+#### Phase 3 - Execute
+The function performs its work.
+```
+10 + 20
+```
+
+#### Phase 4 - Return
+Control comes back, potentially with a result
+
+```
+Add
+ ↓
+30
+ ↓
+main
+```
+
+### Caller and callee
+Two important words:
+```
+caller
+callee
+```
+
+Suppose:
+```
+main()
+{
+    Add(10, 20);
+}
+```
+
+Then:
+```
+main = caller
+Add  = callee
+```
+
+Why?
+
+Because:
+
+    main calls Add.
+
+So:
+```
+caller
+   │
+   ▼
+callee
+```
+
+This terminology becomes very important when we discuss stack frames and calling conventions.
+
+
+### Calling convention
+The computer needs rules for answering questions like:
+
+- Where are arguments placed?
+- Where is the return value placed?
+- Where are local variables stored?
+- Where is the return address stored?
+- Which registers must be preserved?
+- How does the caller know where the callee's data is?
+- How does the callee return safely?
+
+These rules form a:
+
+    calling convention
+
+
+### Stack pointer vs frame pointer
+You have already encountered these concepts in your memory studies, but Chapter 14 gives them a specific function-call meaning.
+
+The textbook's LC-3 convention uses:
+```
+R5 = frame pointer
+R6 = stack pointer
+R7 = return address
+```
+
+Conceptually:
+
+#### Stack pointer
+
+Points to the current top of the stack.
+```
+SP
+ ↓
+┌──────────────┐
+│ newest data  │
+└──────────────┘
+```
+
+#### Frame pointer
+Provides a stable reference point inside the current function's frame.
+```
+FP
+ ↓
+┌─────────────────┐
+│ function frame  │
+│                 │
+│ locals          │
+│ arguments       │
+└─────────────────┘
+```
+
+Why do we need both?
+
+Because the stack pointer moves as things are pushed and popped.
+
+The frame pointer gives the current function a more stable reference point.
+
+The textbook specifically describes R5 as the frame pointer and R6 as the stack pointer.

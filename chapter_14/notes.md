@@ -60,3 +60,50 @@ Sqaured(c)
 ```
 
 The details are hidden inside Squared.
+
+    A function is a named, reusable unit of computation that can recieve values, perform operations, and optionally return a value.
+
+
+### Functions lets us create our own building blocks
+C already gives you operations:
+```
++
+-
+*
+/
+%
+```
+
+and control structures:
+```
+if
+while
+for
+switch
+```
+
+Functions allow you to create your own higher-level building blocks.
+
+For example:
+```
+int Squared(int x)
+{
+    return x * x;
+}
+```
+Now you have effectively created a new operation:
+```
+Squared(x)
+```
+
+Then:
+```
+Squared(5)
+```
+
+Means:
+```
+25
+```
+
+This is why the textbook describes functions as allowing programmers to create new primitive builing blocks.

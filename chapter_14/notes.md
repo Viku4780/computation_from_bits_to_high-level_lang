@@ -1110,3 +1110,115 @@ First Out
 which is the definition of a stack.
 
 The textbook illustrates the runtime stack growing and shrinking as functions are called and return.
+
+
+## C uses pass-by-value
+Consider:
+```
+void Change(int x)
+{
+    x = 100;
+}
+```
+
+And:
+```
+int main(void)
+{
+    int a = 10;
+
+    Change(a);
+
+    printf("%d\n", a);
+}
+```
+
+What do you think prints?
+```
+10
+```
+
+Why?
+
+Because:
+```
+Change(a);
+```
+
+passes the value of a.
+
+Conceptually:
+```
+main:
+a = 10
+
+       copy
+        ↓
+
+Change:
+x = 10
+```
+
+NOw: 
+```
+x = 100;
+```
+
+changes:
+```
+Change's x
+```
+not:
+```
+main's a
+```
+
+So:
+```
+main's a = 10
+```
+
+remains unchanged.
+
+
+### Think in terms of copies
+This is the simplest mental model:
+```
+int a = 10;
+
+Change(a);
+```
+
+means approximately:
+```
+a
+│
+│ value = 10
+│
+└──────copy──────► x
+                   │
+                   │ value = 10
+                   ▼
+                 modify x
+```
+
+So:
+```
+a ≠ x
+```
+
+They are separate objects.
+
+This is why this program:
+```
+void Swap(int x, int y)
+{
+    int temp;
+
+    temp = x;
+    x = y;
+    y = temp;
+}
+```
+
+does not swap the caller's variables.

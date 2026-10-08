@@ -448,10 +448,54 @@ result = 30;
 Then:
 ```
 printf("%d\n", result);
-````
+```
 
 prints:
 ```
 30
 ```
 
+### Functions can have no parameters
+Example:
+```
+void PrintHello(void)
+{
+    printf("Hello\n");
+}
+```
+Call:
+```
+PrintHello();
+```
+
+Here:
+```
+parameters = none
+return value = none
+```
+
+But notice something important
+
+There are two voids:
+```
+void Printello(void)
+```
+
+First void:
+```
+function returns nothing
+```
+
+Second void:
+```
+function accepts no arguments
+```
+This is worth remembering.
+
+```
+void PrintHello(void)
+│              │
+│              └── accepts no parameters
+│
+└── returns no value
+```

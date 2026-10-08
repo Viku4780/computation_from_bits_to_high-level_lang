@@ -1373,3 +1373,59 @@ and break it into:
 smaller problems
 ```
 Then solve each independently.
+
+
+### Function do NOT automatically make code better
+Don't think:
+
+    More functions = better program
+
+No
+
+The goal is:
+
+    Good separation of responsibilities.
+
+Bad:
+
+    DoEverything()
+
+containing:
+```
+500 lines
+```
+
+But also potentially bad:
+```
+AddOne()
+SubtractOne()
+MultiplyByTwo()
+PrintOne()
+```
+
+### A good function should have a clear responsibility
+For example:
+```
+CalculateAverage()
+```
+should calculate an average.
+
+Not:
+```
+calculate average
+open file
+send email
+draw UI
+modify database
+print debugging messages
+```
+
+A function should ideally have a coherent purpose.
+
+Think:
+```
+one function
+      ↓
+one meaningful responsibility
+```
+Not an absolute law, but a very useful design principle.

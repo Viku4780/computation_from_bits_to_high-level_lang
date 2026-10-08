@@ -1243,3 +1243,45 @@ int main(void)
 ```
 
 because a doesn't exist in main's scope.
+
+
+## Function interface
+Suppose we have:
+```
+int CalculateTax(int income);
+```
+
+The caller needs to know:
+```
+function name
+input type
+return type
+```
+
+The caller does not necessarily need to know how tax is calculated.
+
+So the function provides an interface.
+
+```
+                INTERFACE
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+    input type            output type
+        │                     │
+       int                   int
+        │                     │
+        └──── CalculateTax ───┘
+```
+implementation:
+```
+int CalculateTax(int income)
+{
+    // complicated implementation
+}
+```
+
+The caller only cares about:
+```
+CalculateTax(income)
+```

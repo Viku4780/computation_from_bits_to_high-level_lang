@@ -1335,3 +1335,41 @@ call
      ↓
 definition supplies implementation
 ```
+
+### Function decomposition
+Suppose you need to write:
+```
+Student management system
+```
+
+Don't write one enormous main.
+
+Instead:
+```
+main()
+ │
+ ├── ReadStudent()
+ │
+ ├── CalculateAverage()
+ │
+ ├── FindHighestScore()
+ │
+ ├── PrintStudent()
+ │
+ └── SaveStudent()
+```
+
+Now each function has a responsibility.
+
+This is called decomposition.
+
+You take:
+```
+large problem
+```
+
+and break it into:
+```
+smaller problems
+```
+Then solve each independently.

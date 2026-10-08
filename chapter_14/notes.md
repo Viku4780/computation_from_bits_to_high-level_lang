@@ -197,3 +197,48 @@ The declaration does not provide the implementation.
 its basically saying:
 
     Compiler, trust me for now. A function with this interface exists.
+
+
+### Function prototype
+In ordinary C terminology, this:
+```
+int Add(int a, int b);
+```
+
+is a function prototype.
+
+A prototype tells the compiler:
+```
+function name
+return type
+number/type of parameters
+```
+
+You can write:
+```
+int Add(int, int);
+```
+
+too.
+
+The parameter names aren't required in a prototype.
+
+For example:
+```
+int Add(int, int);
+```
+
+and:
+```
+int Add(int a, int b);
+```
+both communicate the parameter types.
+
+The names:
+```
+a
+b
+```
+
+are useful for readability, but the prototype primarily establishes the function's interface.
+

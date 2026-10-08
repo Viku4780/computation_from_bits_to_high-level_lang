@@ -728,3 +728,83 @@ A simplified frame may contain things such as:
 ```
 
 The exact layout depends on the architecture and calling convention. The textbook uses a specific LC-3 calling convention to demonstrate these ideas.
+
+### Why do we need a return address?
+Imagine:
+```
+main()
+{
+    int x;
+
+    x = Square(5);
+
+    printf("%d", x);
+}
+```
+
+When main calls Square, the CPU must eventually return to:
+```
+x = Square(5);
+```
+
+But how does it know where to return?
+
+It needs a:
+
+    return address
+
+Conceptually:
+```
+main
+   │
+   │ call Square
+   │
+   ├──────────────► Square
+   │                 │
+   │                 │ calculate
+   │                 │
+   ◄─────────────────┘
+   │
+   │ continue here
+   ▼
+printf(...)
+```
+
+The return address tells the processor:
+
+    "When this function finishes, resume execution from this location."
+
+
+### This connects directly to assembly
+You already learned LC-3 subroutines.
+
+At the assembly level, a subroutine call involves something like:
+```
+JSR
+```
+
+and returning:
+```
+RET
+```
+
+The textbook explicitly says:
+
+    C functions are the high-level equivalent of subroutines at the LC-3 machine level.
+
+So:
+```
+C
+
+Add(10, 20)
+```
+
+is conceptually implemented using mechanisms like:
+```
+save return location
+transfer control
+execute function
+produce return value
+restore previous state
+return
+```

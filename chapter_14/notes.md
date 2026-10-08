@@ -602,3 +602,129 @@ this idea becomes extremely important when we reach:
 - pointers
 - memory
 - multitasking
+
+
+## Why can't functions simply use fixed memory?
+Suppose:
+```
+int Square(int x)
+{
+    int result;
+    ...
+}
+```
+Where does x live?
+
+Where does result live?
+
+One possibility would be:
+```
+Square.x      → fixed memory
+Square.result → fixed memory
+```
+
+But what happens if Square() calls itself?
+
+For example:
+```
+Square(...)
+   ↓
+Square(...)
+      ↓
+Square(...)
+```
+
+Now there are multiple active executions of the same function.
+
+If all of them use the same memory:
+```
+Square.x
+Square.result
+```
+they would overwrite each other.
+
+So we need a different solution.
+
+
+### The runtime stack
+The solution is the runtime stack.
+
+You already learned that the stack stores things such as function execution state.
+
+Now you get to see why.
+
+Imagine:
+```
+main()
+{
+    ...
+    Square(5);
+}
+```
+
+When main is running:
+```
+STACK
+
+┌──────────────┐
+│ main frame   │
+└──────────────┘
+```
+
+Then main calls Square.
+
+A new frame is placed on the stack:
+```
+STACK
+
+┌──────────────┐
+│ Square frame │
+├──────────────┤
+│ main frame   │
+└──────────────┘
+```
+
+When Square finishes:
+```
+STACK
+
+┌──────────────┐
+│ main frame   │
+└──────────────┘
+```
+The Square frame disappears.
+
+This is exactly why the runtime stack is so useful.
+
+The textbook explains this as the mechanism that allows each function invocation to have its own local storage, including recursive calls.
+
+
+### Stack frame
+A function's runtime information is grouped into what we call a:
+
+    stack frame
+
+or:
+
+    activation record
+
+Think of it as the function's temporary workspace.
+
+A simplified frame may contain things such as:
+```
+┌─────────────────────────┐
+│ arguments / parameters  │
+├─────────────────────────┤
+│ return value            │
+├─────────────────────────┤
+│ return address          │
+├─────────────────────────┤
+│ saved frame pointer     │
+├─────────────────────────┤
+│ local variables         │
+├─────────────────────────┤
+│ other bookkeeping       │
+└─────────────────────────┘
+```
+
+The exact layout depends on the architecture and calling convention. The textbook uses a specific LC-3 calling convention to demonstrate these ideas.

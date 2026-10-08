@@ -107,3 +107,46 @@ Means:
 ```
 
 This is why the textbook describes functions as allowing programmers to create new primitive builing blocks.
+
+### A C program is essentially a collection of functions
+Consider:
+```
+#include <stdio.h>
+
+void SayHello(void)
+{
+    printf("Hello\n");
+}
+
+int main(void)
+{
+    SayHello();
+    return 0;
+}
+```
+
+There are two functions:
+```
+SayHello
+main
+```
+
+Execution begins in:
+```
+main()
+```
+
+Then:
+```
+main()
+   │
+   └── calls SayHello()
+             │
+             ▼
+          prints Hello
+             │
+             ▼
+        returns to main
+```
+
+The book emphasizes that every C statment belongs to a function, execution begins in main, and functions can call other functions, which can themselves call other functions. Eventually control returns to main, and when main finishes, the program finishes.

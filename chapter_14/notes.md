@@ -499,3 +499,63 @@ void PrintHello(void)
 │
 └── returns no value
 ```
+
+### Function returning a value
+Example:
+```
+int Square(int x)
+{
+    return x * x;
+}
+```
+Call:
+```
+int result = Square(5);
+```
+
+execution:
+```
+Square(5)
+   │
+   ▼
+x = 5
+   │
+   ▼
+x * x
+   │
+   ▼
+25
+   │
+   ▼
+return 25
+```
+
+Then:
+```
+result = 25
+```
+
+### return has two jobs
+Consider:
+```
+return x * x;
+```
+it does two things conceptually:
+
+#### Job 1
+finish execution of the current function.
+
+#### job 2
+provide a value to the caller.
+
+For example:
+```
+return 25;
+```
+
+means:
+```
+function stops
+     +
+25 is given back
+```

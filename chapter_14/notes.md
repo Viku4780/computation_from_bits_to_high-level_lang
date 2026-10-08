@@ -150,3 +150,50 @@ main()
 ```
 
 The book emphasizes that every C statment belongs to a function, execution begins in main, and functions can call other functions, which can themselves call other functions. Eventually control returns to main, and when main finishes, the program finishes.
+
+
+## Four important words
+These are extremely important:
+
+1. Declaration
+2. Definition
+3. Call
+4. Return
+
+### Function declaration
+Suppose we want a function:
+```
+int Add(int a, int b);
+```
+
+This is a function declaration.
+
+it tells the compiler:
+
+    There exists a function called Add.
+
+And:
+```
+name     == Add
+return   == int
+inputs   == int, int
+```
+
+So:
+```
+int Add(int a, int b);
+```
+
+means:
+```
+Add
+ ├── accepts int
+ ├── accepts int
+ └── returns int
+```
+
+The declaration does not provide the implementation.
+
+its basically saying:
+
+    Compiler, trust me for now. A function with this interface exists.

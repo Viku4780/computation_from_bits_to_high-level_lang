@@ -943,3 +943,170 @@ Because the stack pointer moves as things are pushed and popped.
 The frame pointer gives the current function a more stable reference point.
 
 The textbook specifically describes R5 as the frame pointer and R6 as the stack pointer.
+
+
+## Let's visualize a function call at the machine level
+Suppose:
+```
+int result = Add(10, 20);
+```
+
+Conceptually:
+#### Before call
+```
+STACK
+
+┌────────────────┐
+│ main frame     │
+└────────────────┘
+```
+
+#### Caller prepares arguments
+```
+STACK
+
+┌────────────────┐
+│ 20             │
+├────────────────┤
+│ 10             │
+├────────────────┤
+│ main frame     │
+└────────────────┘
+```
+
+#### Control transfers
+```
+main
+ ↓
+Add
+```
+
+#### Add creates its frame
+Conceptually:
+```
+STACK
+
+┌────────────────┐
+│ Add locals     │
+├────────────────┤
+│ saved state    │
+├────────────────┤
+│ return value   │
+├────────────────┤
+│ 20             │
+├────────────────┤
+│ 10             │
+├────────────────┤
+│ main frame     │
+└────────────────┘
+```
+
+The exact LC-3 ordering is more specific, but this is the correct conceptual picture.
+
+
+### Then Add executes
+```
+return a + b;
+```
+
+Conceptually:
+```
+a = 10
+b = 20
+
+a + b
+   ↓
+  30
+```
+
+The return value is prepared.
+
+Then the callee restores the caller's environment and returns.
+
+The caller recieves:
+```
+30
+```
+
+and stores it:
+```
+result = 30;
+```
+
+### Why is the stack such a beautiful solution?
+Because function calls naturally behave like a stack.
+
+Suppose:
+```
+main()
+{
+    A();
+}
+
+A()
+{
+    B();
+}
+
+B()
+{
+    C();
+}
+
+C()
+{
+}
+```
+
+Execution:
+```
+main
+ ↓
+ A
+ ↓
+ B
+ ↓
+ C
+```
+
+Stack:
+```
+C frame
+────────
+B frame
+────────
+A frame
+────────
+main frame
+```
+
+Then C returns:
+```
+B frame
+────────
+A frame
+────────
+main frame
+```
+
+Then B returns:
+```
+A frame
+────────
+main frame
+```
+
+Then A returns:
+```
+main frame
+```
+
+This is exactly:
+```
+Last In
+First Out
+```
+
+which is the definition of a stack.
+
+The textbook illustrates the runtime stack growing and shrinking as functions are called and return.

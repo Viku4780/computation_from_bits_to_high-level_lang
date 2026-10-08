@@ -1222,3 +1222,24 @@ void Swap(int x, int y)
 ```
 
 does not swap the caller's variables.
+
+### Parameters are local to the function
+Consider:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+a and b belong to the function invocation.
+
+You cannot just use them from main:
+```
+int main(void)
+{
+    printf("%d", a);  // ERROR
+}
+```
+
+because a doesn't exist in main's scope.

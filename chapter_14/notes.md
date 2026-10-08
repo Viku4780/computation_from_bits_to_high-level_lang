@@ -288,3 +288,170 @@ int Add(int a, int b)
     return a + b;
 }
 ```
+
+### Arguments vs parameters
+Consider:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+Here:
+```
+a
+b
+```
+are called parameters.
+
+They are the variables that receive the input.
+
+Now:
+```
+Add(10, 20);
+```
+
+Here:
+```
+10
+20
+```
+are arguments.
+
+Remember:
+
+FUNCTION DEFINITION:
+```
+int Add(int a, int b)
+            ↑     ↑
+        parameters
+
+```
+
+FUNCTION CALL:
+```
+Add(10, 20)
+    ↑   ↑
+  arguments
+```
+
+Simple rule:
+
+    Parameters belong to the function definition. Arguments are the actual values supplied during the call.
+
+### Complete simple example
+```
+#include <stdio.h>
+
+int Add(int a, int b);
+
+int main(void)
+{
+    int result;
+
+    result = Add(10, 20);
+
+    printf("%d\n", result);
+
+    return 0;
+}
+
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+#### Step 1 — program begins
+Execution begins:
+```
+main()
+```
+
+We have:
+```
+int result;
+```
+So memory is allocated for:
+```
+result
+```
+
+#### Step 2 — function call
+Then:
+```
+result = Add(10, 20);
+```
+
+The CPU must now execute another function.
+
+Conceptually:
+```
+main
+ │
+ │ calls Add(10,20)
+ ▼
+Add
+```
+
+### What happens to 10 and 20?
+The function has:
+```
+int Add(int a, int b)
+```
+
+So:
+```
+a = 10
+b = 20
+```
+
+Conceptually:
+```
+Add's private execution area
+
+a → 10
+b → 20
+```
+
+Then:
+```
+return a + b;
+```
+
+becomes:
+```
+return 30
+```
+
+### Where does 30 go?
+It goes back to the caller:
+```
+result = Add(10, 20);
+```
+
+So:
+```
+Add
+ │
+ │ returns 30
+ ▼
+main
+```
+
+and:
+```
+result = 30;
+```
+
+Then:
+```
+printf("%d\n", result);
+````
+
+prints:
+```
+30
+```
+

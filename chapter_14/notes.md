@@ -1429,3 +1429,50 @@ one function
 one meaningful responsibility
 ```
 Not an absolute law, but a very useful design principle.
+
+
+### The function call is a control-flow transfer
+Chapter 13:
+```
+if (...)
+```
+
+changes control flow.
+
+Now:
+```
+Add(10, 20);
+```
+
+also changes control flow.
+
+Execution goes:
+```
+main
+ ↓
+Add
+ ↓
+return
+ ↓
+main
+```
+
+So functions introduce a new kind of control flow:
+```
+call
+ ↓
+execute another function
+ ↓
+return
+```
+
+At the machine level this involves:
+```
+save return location
+jump to function
+execute
+restore state
+return
+```
+
+This is why the textbook says function support exists directly at the instruction-set level.

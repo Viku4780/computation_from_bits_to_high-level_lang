@@ -1285,3 +1285,53 @@ The caller only cares about:
 ```
 CalculateTax(income)
 ```
+
+### Why declaration before definition?
+Consider:
+```
+int main(void)
+{
+    int result = Add(2, 3);
+}
+
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+Depending on the C language version/compiler rules, the compiler needs to know about Add before the call.
+
+So we typically write:
+```
+int Add(int a, int b);
+```
+
+before main.
+
+Then:
+```
+int main(void)
+{
+    int result = Add(2, 3);
+}
+```
+
+and later:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+So:
+```
+declaration
+     ↓
+compiler learns interface
+     ↓
+call
+     ↓
+definition supplies implementation
+```

@@ -242,3 +242,49 @@ b
 
 are useful for readability, but the prototype primarily establishes the function's interface.
 
+
+### Function definition
+Now we actually implement the function:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+This is the definition.
+
+It tells the compiler exactly what the function does.
+
+Think:
+```
+DECLARATION
+    ↓
+"What exists?"
+
+DEFINITION
+    ↓
+"How does it work?"
+```
+
+### Function call
+Now:
+```
+int result = Add(10, 20);
+```
+This is a function call.
+
+We're asking the computer:
+
+    Execute Add using 10 and 20.
+
+So:
+```
+Add(10, 20)
+```
+causes execution to move into:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```

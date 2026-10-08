@@ -1476,3 +1476,55 @@ return
 ```
 
 This is why the textbook says function support exists directly at the instruction-set level.
+
+
+### One subtle but extremely important idea
+A function is not the same thing as its stack frame.
+
+The function is the code:
+```
+int Add(int a, int b)
+{
+    return a + b;
+}
+```
+The stack frame is the runtime state of one invocation.
+
+For example:
+```
+Add(10, 20)
+```
+creates one invocation.
+
+Later:
+```
+Add(50, 70)
+```
+creates another invocation.
+
+Same function code.
+
+Different execution state.
+
+Think:
+```
+FUNCTION CODE
+       │
+       │ called
+       ▼
+┌─────────────────┐
+│ invocation #1   │
+│ a = 10          │
+│ b = 20          │
+└─────────────────┘
+
+       same code
+
+┌─────────────────┐
+│ invocation #2   │
+│ a = 50          │
+│ b = 70          │
+└─────────────────┘
+```
+
+The function itself is reusable; its execution state is temporary

@@ -831,3 +831,173 @@ observe
 → make targeted change
 → retest
 ```
+
+
+## The debugger
+A debugger allows us to observe program execution.
+
+Instead of:
+```
+program
+ ↓
+runs extremely fast
+ ↓
+wrong result
+```
+
+we can pause:
+```
+program
+ ↓
+BREAK
+ ↓
+inspect state
+ ↓
+execute one step
+ ↓
+inspect again
+```
+
+The textbook explains that modern IDEs commonly provide source-level debuggers with operations for controlling execution and examining variables/memory.
+
+
+### Breakpoints
+A breakpoint tells the debugger:
+
+    Stop execution when you reach this location.
+
+Suppose:
+```
+int x = 10;
+int y = 20;
+int z = x + y;
+printf("%d\n", z);
+```
+
+Place a breakpoint at:
+```
+int z = x + y;
+```
+
+Then execution proceeds:
+```
+x = 10
+y = 20
+      ↓
+BREAKPOINT
+      ↓
+program pauses
+```
+
+Now you can inspect:
+```
+x
+y
+z
+```
+
+### Why breakpoints are powerful
+Without a breakpoint:
+```
+program executes
+  ↓
+everything happens
+  ↓
+wrong output
+```
+
+with one:
+```
+program executes
+      ↓
+breakpoint
+      ↓
+FREEZE TIME
+      ↓
+inspect state
+```
+
+### Breakpoint at a function
+you can often set a breakpoint not just at a line but at a function.
+
+Suppose:
+```
+int Calculate(int x)
+{
+    return x * 10;
+}
+```
+you can tell the debugger:
+```
+Stop whenever Calculate() begins.
+```
+Then:
+```
+main
+ ↓
+Calculate
+ ↓
+BREAK
+```
+
+Now you can inspect the function's parameters and state.
+
+### Conditional breakpoints
+Suppose:
+```
+for(x = 0; x < 100; x++)
+{
+    PerformCalculation(x);
+}
+```
+But you suspect the problem occurs only when:
+```
+x == 16
+```
+Stopping 16 times manually woulb be annoying
+
+A conditional breakpoint says:
+```
+Stop here only if x == 16.
+```
+
+So:
+```
+x = 0 -> continue
+x = 1 -> continue
+...
+x = 15 -> continue
+x = 16 -> BREAK
+```
+
+### Watchpoints
+A watchpoint is different.
+
+Instead of saying:
+```
+Stop at this line.
+```
+
+you can say:
+```
+Stop when this variable/state changes in a specified way.
+```
+
+For example:
+```
+LastItem == 4
+```
+
+The debugger watches the variable.
+
+It can stop wherever the execution causes:
+```
+LastItem
+```
+
+to become:
+```
+4
+```
+
+The textbook distinguishes watchpoints from breakpoints: a breakpoint is associated with a location, whereas a watchpoint can trigger whenever a specified condition on state becomes true.

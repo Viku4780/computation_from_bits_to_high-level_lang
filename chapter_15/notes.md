@@ -1541,3 +1541,29 @@ if (x >= 10)
 But if the program never receives x == 10, you may never observe the failure.
 
 That's why testing matters.
+
+
+### The subtle relationship between testing and bugs
+A test does not necessarily prove:
+```
+"There are no bugs."
+```
+It provides evidence about behavior.
+
+Suppose you run:
+```
+10 tests
+```
+and all pass.
+
+What can you conclude?
+
+Strong conclusion:
+
+    "The program passed these 10 tests."
+
+Weak conclusion:
+
+    "The program is definitely correct."
+
+The second statement is not justified.

@@ -1567,3 +1567,48 @@ Weak conclusion:
     "The program is definitely correct."
 
 The second statement is not justified.
+
+
+Therefore testing is about:
+
+    maximizing useful coverage with finite resources.
+
+That is why boundary tests, representative tests, unusual inputs, and white-box coverage matter.
+
+
+### Code coverage
+White-box testing leads naturally to the idea of coverage.
+
+You might ask:
+```
+Did my tests execute this line?
+```
+Or:
+```
+Did my tests execute this branch?
+```
+For:
+```
+if (x > 0)
+{
+    Positive();
+}
+else
+{
+    NonPositive();
+}
+```
+
+you want tests that exercise both paths.
+```
+x = 10
+   ↓
+Positive()
+
+x = 0
+   ↓
+NonPositive()
+```
+The exact formal coverage metrics go deeper than this chapter's core treatment, but the underlying idea is:
+
+    A test suite should exercise meaningful parts of the implementation.

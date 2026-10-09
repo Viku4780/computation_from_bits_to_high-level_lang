@@ -1503,3 +1503,41 @@ Debugging
 investigate a failure that occurred
 ```
 Good engineering uses both.
+
+### A very important distinction: bug vs failure
+
+These terms are related but not identical.
+
+Imagine:
+```
+BUG:
+incorrect condition in code
+```
+
+which causes:
+```
+FAILURE:
+program produces wrong result
+```
+
+So:
+```
+defect/bug
+     ↓
+execution under certain conditions
+     ↓
+failure
+```
+A bug may exist without immediately producing an observable failure.
+
+For example:
+```
+if (x > 10)
+```
+might be wrong if the requirement is:
+```
+if (x >= 10)
+```
+But if the program never receives x == 10, you may never observe the failure.
+
+That's why testing matters.

@@ -80,3 +80,118 @@ average = total / count;
 ```
 
 The first program can be syntactically perfect and still wrong.
+
+
+### Syntactic errors
+Suppose:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int x
+
+    printf("%d\n", x);
+
+    return 0;
+}
+```
+
+Look carefully:
+```
+int x
+```
+is missing:
+```
+;
+```
+Correct:
+```
+int x;
+```
+
+This is syntax error.
+
+why?
+
+Because the code doesn't conform to the grammer of C.
+
+### Examples of syntax errors
+
+#### Missing semicolon
+```
+int x
+```
+
+#### Missing brace
+```
+if (x > 5)
+{ 
+    printf("yes");
+```
+
+#### Wrong syntax
+```
+if x > 5
+```
+
+instead of:
+```
+if (x > 5)
+```
+
+#### Invalid declaration
+```
+int;
+```
+
+#### Misspelled keyword
+```
+whlie(x < 10)
+```
+
+instead of:
+```
+while(x < 10)
+```
+
+These are generally caught before the program can execute.
+
+### But compiler errors aren't always as simple as they look
+Suppose:
+```
+int x
+int y;
+```
+
+The compiler might complain about:
+```
+expected ';'
+```
+
+that's useful
+
+but sometimes the compiler points at a location after the real mistake.
+
+For example:
+```
+int x
+printf("hello");
+```
+
+The compiler might identify printf as the problematic location.
+
+BUt the actual problem is :
+```
+int x
+
+missing ;
+```
+
+Why?
+
+Because the compiler is parsing a sequence of tokens and only realizes something has gone wrong the next token doesn't make sense.4
+
+So:
+ 
+    The reported line is not always the root cause.

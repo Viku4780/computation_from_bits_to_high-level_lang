@@ -820,3 +820,14 @@ There is your defect.
 Testing found the symptom.
 
 Debugging found the cause.
+
+
+Good debugging is:
+```
+observe
+→ form hypothesis
+→ gather evidence
+→ isolate cause
+→ make targeted change
+→ retest
+```

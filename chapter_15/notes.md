@@ -1051,3 +1051,56 @@ Now you've narrowed down the problem.
 You can ask:
 
     What statement executed immediately before x became 999?
+
+### Inspecting variables
+A debugger allows you to examine:
+```
+x
+y
+result
+counter
+array[i]
+```
+at a particular point in execution.
+
+Suppose:
+```
+result = total / count;
+```
+
+You reach a breakpoint.
+
+Debugger shows:
+```
+total = 100
+count = 0
+```
+Now you immediately see a serious problem.
+
+The source line itself might look reasonable.
+
+The runtime state reveals the problem.
+
+### Runtime state is evidence
+Your source code represents:
+
+    what you think the program should do.
+
+Runtime state shows:
+
+    what the program is actually doing.
+
+Debugging compares the two.
+```
+EXPECTED STATE
+      │
+      │ compare
+      ▼
+ACTUAL STATE
+      │
+      ▼
+difference
+      │
+      ▼
+investigate
+```

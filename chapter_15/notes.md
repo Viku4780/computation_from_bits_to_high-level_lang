@@ -1235,3 +1235,98 @@ FormatOutput() correct
 Now the search space is dramatically smaller.
 
 This is called isolation/localization of the defect.
+
+### Binary-search-style debugging
+Suppose you have:
+```
+1000 lines
+```
+and don't know where the problem is.
+
+You can conceptually divide the program:
+```
+first half
+second half
+```
+Check an intermediate result.
+
+If the intermediate result is already wrong:
+```
+bug is before here
+```
+Otherwise:
+```
+bug is after here
+```
+Repeat.
+
+This is essentially a binary-search mindset applied to debugging.
+
+
+### Example debugging session
+Suppose:
+```
+int Calculate(int a, int b)
+{
+    int x;
+    int y;
+    int result;
+
+    x = a * 2;
+    y = b * 2;
+    result = x + y;
+
+    return result;
+}
+```
+
+Expected:
+
+Calculate(10, 20) = 60
+
+Actual:
+
+50
+
+Set breakpoint:
+
+int Calculate(int a, int b)
+
+Debugger:
+
+a = 10
+b = 20
+
+Single-step:
+
+x = 20
+
+Correct.
+
+Next:
+
+y = 40
+
+Correct.
+
+Next:
+
+result = 60
+
+Correct.
+
+Return:
+
+60
+
+But caller sees:
+
+50
+
+Now you know:
+
+The bug probably isn't inside this calculation.
+
+You move to the caller.
+
+This is evidence-driven debugging.

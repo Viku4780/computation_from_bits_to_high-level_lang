@@ -364,3 +364,45 @@ that's a:
                   MACHINE
                 "How does it execute?"
 ```
+
+
+## Why testing exists
+The textbook describes testing as putting software through synthetic trials:
+```
+provide inputs
+     ↓
+observe behavior
+     ↓
+compare against expected behavior
+     ↓
+discover bugs
+```
+Real software may undergo huge numbers of trials before release.
+
+So:
+ 
+    Testing is not simply "run the program and see if it works."
+
+it is a systematic attempt to find situation in which the program violates its requirements.
+
+
+### The perfect testing problem
+ideally, we'd test:
+
+    Every possible input.
+
+But that's usually impossible.
+
+Suppose:
+```
+A = 32-bit integer
+B = 32-bit integer
+```
+
+There are enormous numbers of possible combinations.
+
+the testbook points out that exhaustive testing can become computationally impossible; even at one million tests per second, testing evey pair of 32-bit values would take roughly half million years
+
+so we need:
+
+    Intelligent test selection.

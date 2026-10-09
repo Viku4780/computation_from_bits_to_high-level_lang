@@ -695,3 +695,85 @@ program under test
 ```
 
 The textbook discusses developing an independent checker program to automatically verify whether outputs meet specifications.
+
+
+### Why "just run it" is weak testing
+Suppose your program is:
+```
+int Divide(int a, int b)
+{
+    return a / b;
+}
+```
+
+You run:
+```
+Divide(10, 2)
+```
+
+and get:
+```
+5
+```
+
+You say:
+
+    "It works!"
+
+No.
+
+You have established only:
+
+    "It works for this particular test case."
+
+That's a very different claim.
+
+Good testing asks:
+```
+What inputs could cause failure?
+```
+
+### Testing should be adversarial
+A useful mindset is:
+
+    Try to break your own program.
+
+Don't merely ask:
+
+    "Can I make it work?"
+
+Ask:
+
+    "Can I make it fail?"
+
+For:
+```
+int Square(int x)
+```
+
+try:
+```
+0
+1
+-1
+INT_MAX
+INT_MIN
+```
+
+For an array:
+```
+empty
+one element
+first element
+last element
+out-of-range
+```
+
+For a parser:
+```
+empty input
+very long input
+invalid character
+unexpected format
+```
+This mindset is extremely valuable in real software engineering.

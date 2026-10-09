@@ -777,3 +777,46 @@ invalid character
 unexpected format
 ```
 This mindset is extremely valuable in real software engineering.
+
+
+### Example
+Suppose:
+```
+int result = Calculate(10);
+printf("%d\n", result);
+```
+
+Expected:
+```
+100
+```
+
+Actual:
+```
+90
+```
+
+Testing tells you:
+```
+FAIL
+```
+
+Now debugging begins.
+
+You investigate:
+```
+Calculate()
+```
+
+Maybe:
+```
+int Calculate(int x)
+{
+    return x * 9;
+}
+```
+There is your defect.
+
+Testing found the symptom.
+
+Debugging found the cause.

@@ -631,3 +631,34 @@ The textbook describes white-box testing as targeting different facets of the im
 | Based on       | Specification                 | Program structure                     |
 
 ```
+
+### Automated testing
+imagine manually doing:
+```
+run program
+enter input
+read output
+compare expected
+repeat
+```
+
+100,000 times.
+
+obviously ridiculous
+
+instead:
+```
+test program
+     ↓
+generate input
+     ↓
+run
+     ↓
+check output automatically
+     ↓
+repeat
+```
+
+This is automated testing.
+
+the textbook notes that larger programs commonly automate black-box testing so many more trials can be run per unit time.

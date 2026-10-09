@@ -1203,3 +1203,35 @@ before fix → fails
 after fix  → succeeds
 ```
 That's much stronger evidence.
+
+### Isolate the bug
+Suppose the entire program has:
+```
+100 functions
+```
+and the output is wrong.
+
+Don't inspect all 100 equally.
+
+Narrow it down.
+
+Maybe:
+```
+main
+ ↓
+ReadInput()
+ ↓
+Calculate()
+ ↓
+FormatOutput()
+```
+
+You discover:
+```
+ReadInput() correct
+Calculate() wrong
+FormatOutput() correct
+```
+Now the search space is dramatically smaller.
+
+This is called isolation/localization of the defect.

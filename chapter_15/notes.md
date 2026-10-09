@@ -260,3 +260,64 @@ The syntax is valid.
 The program executes.
 
 But it doesn't produce the intended result.
+
+
+### Algorithmic errors
+An algorithm error means:
+
+    Our approach to solving the problem is wrong.
+
+This is different from simply mistyping something.
+
+Suppose the problem is:
+
+    Find the average of 100 numbers.
+
+You decide:
+```
+Add all numbers
+Divide by 2
+```
+
+you implement that perfectly:
+```
+average = total /2;
+```
+No syntax error
+
+no typo
+
+the code faithfully implements your algorithm.
+
+But your algorithm is wrong.
+
+Correct:
+```
+average = total / 100
+```
+
+So:
+```
+wrong algorithm
+      ↓
+correct implementation
+      ↓
+wrong result
+```
+
+This is an algorithm error.
+
+```
+syntax error
+    ↓
+usually compiler catches it
+
+semantic error
+    ↓
+testing reveals it
+
+algorithmic error
+    ↓
+requires understanding the problem and algorithm
+```
+

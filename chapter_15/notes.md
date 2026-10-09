@@ -1353,3 +1353,153 @@ form hypothesis
 test hypothesis
 ```
 Programming is experimental.
+
+
+## Defensive programming
+The idea is:
+
+    Don't merely react to bugs. Write programs that detect or prevent problems early.
+
+For example:
+```
+if (count = 0)
+{
+    printf("Cannot calculate average.\n");
+}
+else
+{
+    average = total / count;
+}
+```
+
+Instead of blindly:
+```
+average = total / count;
+```
+defensive programming anticipates invalid or unexpected situations.
+
+### Preconditions
+A precondition is something that must be true before an operation is valid.
+
+For:
+```
+average = total / count;
+```
+
+a precondition is:
+```
+count != 0
+```
+
+Conceptually:
+```
+Before:
+count != 0
+    ↓
+safe to divide
+```
+
+If:
+```
+count == 0
+```
+the operation isn't valid.
+
+### Postconditions
+A postcondition describes what should be true after an operation completes.
+
+Suppose:
+```
+int Square(int x)
+{
+    return x * x;
+}
+```
+
+A postcondition is:
+```
+result == x * x
+```
+
+You can think:
+```
+input satisfies preconditions
+       ↓
+     function
+       ↓
+output satisfies postconditions
+```
+This way of thinking makes functions much easier to reason about.
+
+
+### Assertions
+C provides:
+```
+#include <assert.h>
+```
+
+and:
+```
+assert(condition);
+```
+
+For example:
+```
+assert(count != 0);
+average = total / count;
+```
+
+If the condition is false, the program can stop and report the failed assertion.
+
+The conceptual idea is:
+```
+I believe this condition must be true here.
+```
+
+If it isn't:
+```
+STOP
+Something is fundamentally wrong.
+```
+
+Assertions are especially useful for catching violations of assumptions during development.
+
+
+### Why assertions help debugging
+Suppose you have:
+```
+result = array[index];
+```
+
+You assume:
+```
+0 <= index < size
+```
+
+Instead of letting the program eventually crash somewhere mysterious, you can establish the assumption explicitly during development:
+```
+assert(index >= 0);
+assert(index < size);
+```
+
+Now the failure occurs closer to the source of the problem.
+
+This is a powerful debugging principle:
+
+    Fail close to the cause rather than far away from it.
+
+### The difference between prevention and debugging
+Think:
+```
+Defensive programming
+       ↓
+prevent/detect bad state early
+```
+
+while:
+```
+Debugging
+       ↓
+investigate a failure that occurred
+```
+Good engineering uses both.

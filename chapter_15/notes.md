@@ -1612,3 +1612,54 @@ NonPositive()
 The exact formal coverage metrics go deeper than this chapter's core treatment, but the underlying idea is:
 
     A test suite should exercise meaningful parts of the implementation.
+
+
+### A complete testing strategy
+Suppose you write:
+```
+int Classify(int score);
+```
+
+Requirements:
+```
+0–39   → F
+40–59  → C
+60–79  → B
+80–100 → A
+```
+
+Don't test only:
+```
+50
+70
+90
+```
+
+Instead:
+```
+-1
+0
+1
+39
+40
+41
+59
+60
+61
+79
+80
+81
+99
+100
+101
+```
+
+Now we're testing:
+```
+below valid range
+lower boundary
+just above boundary
+upper boundary
+above valid range
+```
+That's much stronger.

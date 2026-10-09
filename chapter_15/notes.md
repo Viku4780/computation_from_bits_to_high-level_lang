@@ -662,3 +662,36 @@ repeat
 This is automated testing.
 
 the textbook notes that larger programs commonly automate black-box testing so many more trials can be run per unit time.
+
+
+### Test oracle
+Suppose your program produces:
+```
+37
+```
+
+How do you know whether 37 is correct?
+
+You need something that tells you the expected result.
+
+That mechanism is often called a:
+
+    test oracle
+
+For example:
+```
+program under test
+       │
+       ├── input = 10
+       │
+       ▼
+      37
+       │
+       ▼
+ compare with expected = 42
+       │
+       ▼
+     FAIL
+```
+
+The textbook discusses developing an independent checker program to automatically verify whether outputs meet specifications.

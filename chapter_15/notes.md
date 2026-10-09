@@ -406,3 +406,228 @@ the testbook points out that exhaustive testing can become computationally impos
 so we need:
 
     Intelligent test selection.
+
+### Test cases
+A test case is essentially:
+```
+input
++
+expected behavior/output
+```
+
+For example, suppose:
+```
+int Square(int x);
+```
+Test case:
+```
+input: 5
+expected: 25
+```
+Another:
+```
+input: 0
+expected: 0
+```
+Another:
+```
+input: -5
+expected: 25
+```
+Each one tests some aspect of behavior.
+
+### Don't only test normal inputs
+Suppose you have:
+```
+int Divide(int a, int b);
+```
+
+You might test:
+```
+10 / 2 = 5
+```
+
+Good.
+
+But what about:
+```
+0 / 2
+10 / 1
+10 / 0
+-10 / 2
+10 / -2
+INT_MAX / 1
+```
+
+This is where good testing becomes interesting.
+
+You want inputs that expose weaknesses.
+
+### Boundary values
+One of the most useful testing ideas is:
+
+    Test the boundaries.
+
+Suppose the valid range is:
+```
+1 through 100
+```
+
+Don't only test:
+```
+50
+```
+
+Test:
+```
+0
+1
+2
+99
+100
+101
+```
+
+Why?
+
+Because bugs often occur around boundaries.
+
+For example:
+```
+if (score > 50)
+```
+versus:
+```
+if (score >= 50)
+```
+The difference only becomes visible around:
+```
+50
+```
+
+### Why boundaries are powerful
+Imagine:
+```
+if (age >= 18)
+{
+    printf("Adult");
+}
+```
+
+Important test values:
+```
+17
+18
+19
+```
+
+Why?
+
+Because the condition changes behavior at 18.
+
+So:
+```
+boundary - 1
+boundary
+boundary + 1
+```
+is a useful testing pattern.
+
+### Black-box testing
+In black-box testing, we don't care how the program is implemented.
+
+We care about:
+```
+INPUT → PROGRAM → OUTPUT
+```
+
+We treat the program as a black box:
+```
+                 ┌─────────────┐
+input ──────────►│             │──────────► output
+                 │ BLACK BOX   │
+                 │             │
+                 └─────────────┘
+```
+We don't inspect the internal code.
+
+We simply ask:
+
+    Given this input, does the program produce the correct output?
+
+The textbook defines black-box testing as checking whether the program meets its input/output specifications while disregarding its internals.
+
+### Example of black-box testing
+Suppose:
+```
+int Square(int x);
+```
+You don't care how it's implemented.
+
+Maybe:
+```
+return x * x;
+```
+
+Maybe:
+```
+return pow(x, 2);
+```
+Maybe something else.
+
+You test:
+```
+Input       Expected
+--------------------
+0           0
+1           1
+2           4
+5           25
+-5          25
+```
+You're testing behavior.
+
+That's black-box testing.
+
+
+### White-box testing
+Now turn the box transparent.
+
+In white-box testing, we know the internal implementation and design tests that exercise different parts of it.
+
+Imagine:
+```
+if (x > 10)
+{
+    ...
+}
+else
+{
+    ...
+}
+```
+A white-box tester wants tests that execute:
+```
+true branch
+```
+and:
+```
+false branch
+```
+So perhaps:
+```
+x = 11
+x = 10
+```
+
+The textbook describes white-box testing as targeting different facets of the implementation to provide assurance that many parts of the code are exercised.
+
+```
+|                | Black-box                     | White-box                             |
+| -------------- | ----------------------------- | ------------------------------------- |
+| Focus          | Behavior                      | Implementation                        |
+| Code knowledge | Not required                  | Used                                  |
+| Main question  | "Does it do the right thing?" | "Did we exercise the important code?" |
+| Based on       | Specification                 | Program structure                     |
+
+```

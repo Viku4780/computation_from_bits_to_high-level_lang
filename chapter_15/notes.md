@@ -1330,3 +1330,26 @@ The bug probably isn't inside this calculation.
 You move to the caller.
 
 This is evidence-driven debugging.
+
+### Debugging is not just staring at code
+A common beginner mistake is:
+```
+read code
+read code
+read code
+"Why doesn't this work?"
+```
+
+Better:
+```
+run
+ ↓
+observe
+ ↓
+inspect state
+ ↓
+form hypothesis
+ ↓
+test hypothesis
+```
+Programming is experimental.

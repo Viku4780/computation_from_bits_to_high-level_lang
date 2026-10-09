@@ -195,3 +195,68 @@ Because the compiler is parsing a sequence of tokens and only realizes something
 So:
  
     The reported line is not always the root cause.
+
+
+### Semantic errors
+Suppose:
+```
+int x = 10;
+int y = 20;
+
+int result = x - y;
+```
+
+The program:
+
+- compiles,
+- executes,
+- produces a value.
+
+Nothing is syntactically wrong.
+
+But suppose we wanted:
+```
+x + y
+```
+and accidentally wrote:
+```
+x - y
+```
+The program is syntactically valid.
+
+But it does the wrong thing.
+
+That's a semantic error.
+
+### Another semantic example
+Suppose the program is supposed to print:
+```
+1 × 7 = 7
+2 × 7 = 14
+...
+10 × 7 = 70
+```
+
+We write:
+```
+for (i = 0; i <= 10; i++)
+{
+    j = i * 7;
+    printf("%d x 7 = %d\n", i, j);
+}
+```
+This compiles.
+
+But output starts:
+```
+0 x 7 = 0
+1 x 7 = 7
+...
+```
+Maybe we wanted to start at 1.
+
+The syntax is valid.
+
+The program executes.
+
+But it doesn't produce the intended result.

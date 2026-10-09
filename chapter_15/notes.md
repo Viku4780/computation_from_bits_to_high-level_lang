@@ -1663,3 +1663,249 @@ upper boundary
 above valid range
 ```
 That's much stronger.
+
+
+## A debugging example combining everything
+Suppose we want:
+```
+Calculate the average of count numbers.
+```
+
+We write:
+```
+int Average(int total, int count)
+{
+    return total / count;
+}
+```
+
+Now:
+```
+input:
+total = 100
+count = 4
+```
+
+expected:
+```
+25
+```
+
+actual:
+```
+25
+```
+Good.
+
+Now:
+```
+total = 100
+count = 0
+```
+
+What happens?
+
+Our assumption:
+```
+count != 0
+```
+was violated.
+
+A defensive version might explicitly handle that condition.
+
+This demonstrates:
+```
+specification
+    ↓
+algorithm
+    ↓
+implementation
+    ↓
+testing
+    ↓
+failure
+    ↓
+debugging
+    ↓
+defensive improvement
+```
+
+### The machine-level connection
+When a debugger pauses:
+```
+int x = 10;
+```
+
+the CPU itself doesn't understand:
+```
+"variable x"
+```
+as a high-level concept.
+
+At the machine level, x corresponds to some runtime storage:
+```
+register
+or
+memory
+```
+The debugger uses information about the compiled program to map:
+```
+C variable x
+      ↓
+machine-level storage
+```
+So when the debugger shows:
+```
+x = 10
+```
+it is presenting machine/runtime state in a human-friendly abstraction.
+
+### Breakpoint at the machine level
+At a high level:
+```
+break at line 20
+```
+At the machine level, the debugger must arrange for execution to stop at a corresponding machine instruction/address.
+
+Conceptually:
+```
+C source line
+      ↓
+machine instructions
+      ↓
+instruction address
+      ↓
+breakpoint
+```
+
+Then:
+```
+CPU reaches address
+      ↓
+execution stops
+      ↓
+debugger gains control
+      ↓
+inspect registers/memory
+```
+So the debugger is another abstraction layer between you and the machine.
+
+### Single-stepping at two levels
+Source-level:
+```
+execute this C statement
+```
+
+Machine-level:
+```
+execute one or more machine instructions
+```
+These are not always exactly one-to-one.
+
+One C statement can compile into several machine instructions.
+
+For example:
+```
+x = a + b;
+```
+could conceptually become:
+```
+load a
+load b
+add
+store x
+```
+So when you single-step source code, the debugger may execute multiple machine instructions behind the scenes.
+
+This is another excellent example of abstraction.
+
+
+### A professional debugging mindset
+When you see:
+```
+WRONG OUTPUT
+```
+
+don't immediately ask:
+
+    "What line should I change?"
+
+Instead ask:
+
+#### 1. What exactly is wrong?
+```
+Expected: 42
+Actual: 37
+```
+
+#### 2. Can I reproduce it?
+```
+Input = ...
+```
+
+#### 3. Where did reality first diverge from expectation?
+
+This is extremely powerful.
+
+Suppose:
+```
+input        ✓
+intermediate ✓
+intermediate ✓
+intermediate ✗
+output       ✗
+```
+The bug is likely near the first incorrect intermediate state.
+
+### Find the first wrong state
+This is one of the best debugging principles I can teach you.
+
+Suppose:
+```
+Step 1 → correct
+Step 2 → correct
+Step 3 → correct
+Step 4 → WRONG
+Step 5 → wrong
+Step 6 → wrong
+```
+Don't spend your time analyzing steps 5 and 6.
+
+The first known divergence is:
+```
+Step 4
+```
+Investigate what happened there.
+
+Because:
+```
+first wrong state
+      ↓
+likely source of failure
+```
+Later wrong states may simply be consequences.
+
+### Root cause vs symptom
+Suppose:
+```
+program crashes at line 100
+```
+That doesn't necessarily mean:
+```
+line 100 contains the bug
+```
+Maybe:
+```
+line 20 corrupts memory
+      ↓
+line 40 continues
+      ↓
+line 70 continues
+      ↓
+line 100 finally crashes
+```
+The crash is the symptom.
+
+The memory corruption at line 20 may be the root cause.
+
+This is why debugging requires evidence.

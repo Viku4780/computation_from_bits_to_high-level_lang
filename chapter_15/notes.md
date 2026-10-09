@@ -321,3 +321,46 @@ algorithmic error
 requires understanding the problem and algorithm
 ```
 
+
+### Specification errors
+Suppose a client says:
+
+    Build a system that calculates employee bonuses
+
+You interpret the requirement as:
+```
+Bonus = 10% of salary
+```
+
+you build the system perfectly.
+
+Later the client says:
+
+    No. Bonuses are 10% only when performance is above 80%; otherwise 5%
+
+your code may be:
+- syntactically correct,
+- semantically correct,
+- algorithmically correct,
+
+accoding to your interpretation
+
+But the requirements itself was misunderstood
+
+that's a:
+
+    Specification error
+
+```
+                SPECIFICATION
+                "What is required?"
+                       ↓
+                  ALGORITHM
+                "How will we solve it?"
+                       ↓
+                  PROGRAM
+                "How do we express it?"
+                       ↓
+                  MACHINE
+                "How does it execute?"
+```

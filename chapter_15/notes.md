@@ -1104,3 +1104,102 @@ difference
       ▼
 investigate
 ```
+
+### The debugging loop
+A disciplined debugging process looks like:
+```
+              ┌───────────────┐
+              │ Observe bug   │
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Reproduce it  │
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Form a theory │
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Gather evidence│
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Find root cause│
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Fix it        │
+              └───────┬───────┘
+                      ↓
+              ┌───────────────┐
+              │ Test again    │
+              └───────┬───────┘
+                      │
+                      └──────► if still wrong,
+                               repeat
+```
+
+### Reproduce th bug
+First:
+
+    Can you make the bug happen reliably?
+
+Suppose someone says:
+
+    "Sometimes the program crashes."
+
+That's not enough.
+
+You want to determine:
+```
+Which input?
+Which environment?
+Which sequence of actions?
+Which state?
+```
+
+For example:
+```
+Input:
+age = 18
+```
+
+Steps:
+```
+1. create account
+2. enter profile
+3. save
+4. logout
+5. login
+```
+
+Result:
+```
+crash
+```
+Now you have a reproducible test case.
+
+### Why reproducibility matters
+If you cannot reproduce a bug:
+```
+change code
+run
+maybe works
+```
+
+you don't know whether you fixed anything.
+
+But if:
+```
+same input
+same steps
+same failure
+```
+
+then you can test:
+```
+before fix → fails
+after fix  → succeeds
+```
+That's much stronger evidence.

@@ -1001,3 +1001,53 @@ to become:
 ```
 
 The textbook distinguishes watchpoints from breakpoints: a breakpoint is associated with a location, whereas a watchpoint can trigger whenever a specified condition on state becomes true.
+
+
+### Single-stepping
+Once the debugger pauses, you can execute the program one statement at a time.
+
+Suppose:
+```
+int x = 10;
+int y = 20;
+int z = x + y;
+printf("%d\n", z);
+```
+
+Single-step:
+```
+Step 1:
+x = 10
+
+Step 2:
+y = 20
+
+Step 3:
+z = 30
+
+Step 4:
+printf(...)
+```
+Instead of watching the program fly by, you're walking through it.
+
+The textbook calls this single-stepping and emphasizes its usefulness for isolating a bug and verifying control flow.
+
+
+### Why single-stepping is so powerful
+Suppose you expect:
+```
+x:
+10 → 20 → 30 → 40
+```
+
+but observe:
+```
+x:
+10 → 20 → 999
+```
+
+Now you've narrowed down the problem.
+
+You can ask:
+
+    What statement executed immediately before x became 999?

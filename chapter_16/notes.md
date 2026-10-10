@@ -517,3 +517,24 @@ Here, the array's size depends on len, which is evaluated when execution reaches
 The last row deserves attention. A VLA is not a dynamically resizable array. Its length is selected when the declaration is executed; you cannot later change that existing array's length.
 
 Also, the standard's support for VLAs varies by C version and implementation. C99 introduced them, while later C standards allow implementations to omit VLA support. Check your compiler and language mode before relying on them.
+
+
+## Multidimensional arrays
+
+### Why do we need two-dimensional arrays?
+So far, our arrays have represented one sequence of values. But many real-world structures naturally have rows and columns:
+
+- A spreadsheet has rows and columns.
+- A chessboard has ranks and files.
+- A digital image has rows and columns of pixels.
+- A table of student marks might have students in rows and subjects in columns.
+
+C supports multidimensional arrays.
+
+For example:
+```
+int grid[3][4];
+```
+This declares a two-dimensional array with three rows and four columns. It contains twelve int elements in total.
+
+The expression grid[1][2] selects the element at row index 1, column index 2—the second row and third column, because indexing starts at zero.

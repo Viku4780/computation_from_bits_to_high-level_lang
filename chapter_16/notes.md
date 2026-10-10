@@ -55,3 +55,27 @@ Why zero? Because indexing can be understood as an offset from the beginning of 
 - marks[0]: move zero elements from the beginning.
 - marks[1]: move one element from the beginning.
 - marks[2]: move two elements from the beginning.
+
+
+### What happens in memory?
+Suppose, just for illustration, that marks begins at memory address 1000, and each int occupies four bytes on this particular machine.
+
+![alt text](image-3.png)
+
+Three important observations:
+
+1. The elements are stored in contiguous memory: one immediately follows another.
+2. Each element occupies sizeof(int) bytes.
+3. The address of an element can be calculated from the starting address and its index.
+
+For an array of integers, the conceptual address calculation is:
+
+    address of element i = base address + i * sizeof(int)
+
+for example, if the base address is 1000 and sizeof(int) is 4, the address of marks[3] is:
+
+    1000 + 3 * 4 = 1012
+
+this calculation is the bridge between arrays and pointers.
+
+One precision point: C guarantees that array elements are contiguous and that sizeof(marks) gives the total size of this complete array object. But C does not guarantee that an int is four bytes or that the array begins at any particular address. Those details depend on the implementation and the actual program execution.

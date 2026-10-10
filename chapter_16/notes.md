@@ -279,3 +279,36 @@ These initializations have the same effect.
 The array is still an array. The pointer is still a pointer. They are related because the array name can convert to a pointer to its first element in most expressions.
 
 That last qualification matters: an array is not itself a pointer. We will see why shortly.
+
+
+### Pointer arithmetic: moving from one element to another
+Suppose:
+```
+int numbers[4] = {10, 20, 30, 40};
+int *ptr = numbers;
+```
+Initially, ptr points to numbers[0].
+
+What does this do?
+```
+ptr++;
+```
+It advances the pointer to the next int element.
+
+It does not necessarily add one byte to the address. C pointer arithmetic scales the movement by the size of the pointed-to type.
+
+If sizeof(int) == 4 and the first element is at illustrative address 1000, the progression looks like this:
+
+![alt text](image-9.png)
+
+For a pointer ptr to an element of an array, these operations are meaningful:
+```
+ptr++;      // Advance by one int element
+ptr--;      // Move back by one int element
+ptr + 2;    // Pointer two int elements forward
+ptr - 1;    // Pointer one int element backward
+```
+
+Pointer arithmetic is defined within an array object and permits forming a pointer one element past the end. That one-past-the-end pointer may be used for comparisons and loop termination, but must not be dereferenced.
+
+You must not move a pointer arbitrarily outside the array's allowed range and then dereference it.

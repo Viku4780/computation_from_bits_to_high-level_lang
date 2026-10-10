@@ -312,3 +312,39 @@ ptr - 1;    // Pointer one int element backward
 Pointer arithmetic is defined within an array object and permits forming a pointer one element past the end. That one-past-the-end pointer may be used for comparisons and loop termination, but must not be dereferenced.
 
 You must not move a pointer arbitrarily outside the array's allowed range and then dereference it.
+
+
+### Why does numbers[i] work?
+Here is the surprising connection:
+```
+numbers[2]
+```
+
+is defined in C in terms of pointer arithmetic and dereferencing. The expression is equivalent to:
+```
+*(numbers + 2)
+```
+
+This means:
+
+1. In this expression, numbers converts to a pointer to its first element.
+2. numbers + 2 advances to the element two positions later.
+3. * dereferences that pointer, accessing the element's value.
+
+So, for this array:
+```
+int numbers[4] = {10, 20, 30, 40};
+
+printf("%d\n", numbers[2]);      // 30
+printf("%d\n", *(numbers + 2));  // 30
+```
+
+Both expressions access the same element.
+
+This is one of the fundamental ideas behind arrays in C: indexing is closely connected to pointer arithmetic and dereferencing.
+
+Let's make the equivalence more concrete.
+
+![alt text](image-10.png)
+
+this equivalence explains why pointers are so useful for processing arrays.

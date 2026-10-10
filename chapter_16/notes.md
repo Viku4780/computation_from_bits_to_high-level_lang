@@ -167,3 +167,25 @@ printf("%p\n", (void *)&number);
 ```
 
 Here, &number means "the address of number." the cast to void * is the appropriate form for printing an object pointer with %p.
+
+
+### What is a pointer?
+A pointer is an object whose value is an address that can designate another object or function, depending on the pointer type.
+
+For example:
+```
+int number = 42;
+int *ptr = &number;
+```
+
+Let's read the second line from left to right.
+
+- int *ptr declares ptr as a pointer to an int.
+- &number obtains the address of number.
+- = initializes ptr with that address.
+
+If number is at address 2000, then ptr stores that address.
+
+![alt text](image-6.png)
+
+A pointer is not the value 42 in this example. It stores the address of the object that contains 42.

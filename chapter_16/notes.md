@@ -243,3 +243,39 @@ int *ptr;
 *ptr = 99;   // Wrong: ptr was not initialized
 ```
 Here, ptr has an indeterminate value. Dereferencing it is not valid. A pointer is not automatically initialized to point to a useful object.
+
+
+## the connection between pointer and arrays
+
+### The address of the first array element
+Consider:
+```
+int numbers[4] = {10, 20, 30, 40};
+```
+We know the array contains four integers in contiguous memory.
+
+Now look at these two expressions:
+```
+numbers
+&numbers[0]
+```
+
+In most expressions, the array name numbers is automatically converted into a pointer to its first element. Therefore, in this context, numbers and &numbers[0] point to the same first element.
+
+For example:
+```
+int *ptr = numbers;
+```
+This is valid C. It initializes ptr to point to numbers[0].
+
+Compare it with:
+```
+int *ptr = &numbers[0];
+```
+These initializations have the same effect.
+
+![alt text](image-8.png)
+
+The array is still an array. The pointer is still a pointer. They are related because the array name can convert to a pointer to its first element in most expressions.
+
+That last qualification matters: an array is not itself a pointer. We will see why shortly.

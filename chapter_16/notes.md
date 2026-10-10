@@ -189,3 +189,36 @@ If number is at address 2000, then ptr stores that address.
 ![alt text](image-6.png)
 
 A pointer is not the value 42 in this example. It stores the address of the object that contains 42.
+
+
+### What does *ptr mean?
+We have now seen two operators:
+
+- &number: obtain the address of number.
+- *ptr: dereference ptr, accessing the object to which it points.
+
+For example:
+```
+int number = 42;
+int *ptr = &number;
+
+printf("%d\n", *ptr);  // 42
+```
+The expression *ptr means, in this context, “the int object reached through the address stored in ptr.”
+
+Now consider:
+```
+*ptr = 99;
+```
+
+This does not replace the pointer's stored address. It changes the value of the object to which the pointer points.
+
+After that assignment:
+```
+printf("%d\n", number);  // 99
+```
+Why does number now contain 99? Because ptr points to number. The expression *ptr accesses the same object as the name number.
+
+Here is the essential relationship:
+
+![alt text](image-7.png)

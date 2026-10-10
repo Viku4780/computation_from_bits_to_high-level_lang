@@ -464,3 +464,28 @@ void printNumbers(int *values, int count);
 Inside the function, values[i] works using the same indexing rule we learned earlier.
 
 There is a consequence: inside printNumbers, sizeof(values) gives the size of a pointer, not the total size of the original array. That is why passing the element count separately is a common and useful C convention.
+
+
+## Array length, variable-length arrays, and memory-safety
+
+### How do we determine an array's length?
+For an actual array object available in the same scope, a common C technique is:
+```
+int numbers[] = {10, 20, 30, 40};
+
+size_t count = sizeof(numbers) / sizeof(numbers[0]);
+```
+
+You need <stddef.h> if you want to explicitly include the definition of size_t.
+
+Why does this work?
+
+- sizeof(numbers) gives the total size of the array in bytes.
+- sizeof(numbers[0]) gives the size of one element in bytes.
+- Dividing the total size by the element size gives the number of elements.
+
+For example, if the four integers occupy 16 bytes in total and each integer occupies four bytes:
+
+![alt text](image-11.png)
+
+This technique works for a real array object in a scope where it has not already been converted to a pointer. It does not work the same way for an array parameter, because an array parameter is adjusted to a pointer parameter.

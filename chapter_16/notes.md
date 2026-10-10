@@ -348,3 +348,28 @@ Let's make the equivalence more concrete.
 ![alt text](image-10.png)
 
 this equivalence explains why pointers are so useful for processing arrays.
+
+
+### A pointer can also access and modify an array element
+Because *ptr accesses the pointed-to element, it can be used on the left side of an assignment:
+
+```
+int numbers[3] = {10, 20, 30};
+int *ptr = numbers;
+
+*ptr = 99;
+```
+
+After this, numbers[0] is 99.
+
+Now:
+```
+*(ptr + 1) = 55;
+```
+This changes numbers[1] to 55.
+
+The array is now:
+```
+99, 55, 30
+```
+We did not need to write numbers[0] or numbers[1] directly. The pointer expressions accessed the same elements.

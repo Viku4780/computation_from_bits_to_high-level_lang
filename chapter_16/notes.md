@@ -489,3 +489,31 @@ For example, if the four integers occupy 16 bytes in total and each integer occu
 ![alt text](image-11.png)
 
 This technique works for a real array object in a scope where it has not already been converted to a pointer. It does not work the same way for an array parameter, because an array parameter is adjusted to a pointer parameter.
+
+
+### Fixed-size arrays versus variable-length arrays
+Your textbook discusses variable-length arrays as a way to make an array's size depend on a value known at runtime. 
+
+A fixed-size array can be written as:
+```
+int data[10];
+```
+The number of elements is fixed at ten.
+
+A variable-length array (VLA) can be written as:
+```
+void calculate(int len)
+{
+    int data[len];
+
+    /* Work with data here. */
+}
+```
+
+Here, the array's size depends on len, which is evaluated when execution reaches the declaration. The length must be valid for a VLA; a zero or negative length is not valid.
+
+![alt text](image-12.png)
+
+The last row deserves attention. A VLA is not a dynamically resizable array. Its length is selected when the declaration is executed; you cannot later change that existing array's length.
+
+Also, the standard's support for VLAs varies by C version and implementation. C99 introduced them, while later C standards allow implementations to omit VLA support. Check your compiler and language mode before relying on them.

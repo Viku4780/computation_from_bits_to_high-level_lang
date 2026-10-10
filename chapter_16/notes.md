@@ -373,3 +373,56 @@ The array is now:
 99, 55, 30
 ```
 We did not need to write numbers[0] or numbers[1] directly. The pointer expressions accessed the same elements.
+
+
+### Are arrays and pointers the same thing?
+No. This distinction is essential.
+
+Consider:
+```
+int numbers[4] = {10, 20, 30, 40};
+int *ptr = numbers;
+```
+The array numbers is an array object containing four int elements. The pointer ptr is a separate pointer object containing the address of its first element.
+
+This difference appears in several ways.
+
+#### Difference 1: sizeof
+```
+sizeof(numbers)
+```
+gives the total size of the entire array object, in bytes.
+
+If sizeof(int) == 4, the result here is 16.
+
+But:
+```
+sizeof(ptr)
+```
+gives the size of the pointer object itself. Its size is implementation-dependent and need not equal the size of an int or of the array.
+
+#### Difference 2: assignment
+
+This is valid:
+```
+ptr = &numbers[1];
+```
+Now ptr points to the second element.
+
+But this is not valid:
+```
+numbers = ptr;  // Invalid: arrays cannot be assigned this way
+```
+The array name is not an ordinary modifiable pointer variable. You cannot reassign the array itself to make it refer to a different block of memory.
+
+#### Difference 3: incrementing
+
+This is valid:
+```
+ptr++;
+```
+But this is not valid:
+```
+numbers++;  // Invalid
+```
+You can change the pointer variable, but you cannot increment the array name.

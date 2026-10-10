@@ -79,3 +79,68 @@ for example, if the base address is 1000 and sizeof(int) is 4, the address of ma
 this calculation is the bridge between arrays and pointers.
 
 One precision point: C guarantees that array elements are contiguous and that sizeof(marks) gives the total size of this complete array object. But C does not guarantee that an int is four bytes or that the array begins at any particular address. Those details depend on the implementation and the actual program execution.
+
+
+### accessing and modifying elements
+```
+int marks[5] = {75, 82, 91, 68, 88};
+
+marks[2] = 95;
+marks[0] = 70;
+```
+
+After these assignments, the values are:
+```
+70, 82, 95, 68, 88
+```
+
+The array has the same number of elements. We have changed the values stored in two of those elements.
+
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int marks[5] = {75, 82, 91, 68, 88};
+
+    for (int i = 0; i < 5; i++) {
+        printf("%d\n", marks[i]);
+    }
+
+    return 0;
+}
+```
+
+![alt text](image-4.png)
+
+when i becomes 5, the condition i < 5 is false, so the loop stops.
+
+Notice how the array and loop complement each other: the array gives the elements a predictable organization, while the loop systematically visits each index.
+
+
+### A serious mistake: accessing beyond the array
+Consider this:
+```
+int marks[5] = {75, 82, 91, 68, 88};
+
+printf("%d\n", marks[5]);  // Wrong
+```
+
+Why is this wrong?
+
+Because the valid indices are 0, 1, 2, 3, and 4. Index 5 refers to a position outside the array.
+
+In C, accessing an array outside its valid bounds this way causes undefined behavior. It does not reliably produce a particular value, and the program might appear to work, print an unexpected value, corrupt other data, or crash.
+
+A dangerous example is:
+```
+int marks[5];
+int limit = 10;
+
+for (int i = 0; i < limit; i++) {
+    marks[i] = 0;
+}
+```
+The loop attempts to write to ten elements even though only five exist. The error is in the mismatch between the array's capacity and the loop's limit.
+
+The lesson: every array access must respect the array's actual bounds. C generally does not automatically check them for you.

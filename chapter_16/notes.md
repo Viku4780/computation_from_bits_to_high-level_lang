@@ -144,3 +144,26 @@ for (int i = 0; i < limit; i++) {
 The loop attempts to write to ten elements even though only five exist. The error is in the mismatch between the array's capacity and the loop's limit.
 
 The lesson: every array access must respect the array's actual bounds. C generally does not automatically check them for you.
+
+
+## Pointers: variables that store addresses
+
+### start with an ordinary variable
+```
+int number = 42;
+```
+
+Conceptually, memory contains a variable named number whose value is 42.
+
+Now suppose its address is 2000 on our illustrative machine.
+
+![alt text](image-5.png)
+
+The variable's value is 42. its address is 2000. These are different things
+
+C provides the address-of  operator &:
+```
+printf("%p\n", (void *)&number);
+```
+
+Here, &number means "the address of number." the cast to void * is the appropriate form for printing an object pointer with %p.

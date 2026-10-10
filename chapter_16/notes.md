@@ -538,3 +538,133 @@ int grid[3][4];
 This declares a two-dimensional array with three rows and four columns. It contains twelve int elements in total.
 
 The expression grid[1][2] selects the element at row index 1, column index 2—the second row and third column, because indexing starts at zero.
+
+### Visualizing the array
+
+Let's initialize a small two-dimensional array:
+```
+int grid[3][4] = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+```
+
+![alt text](image-13.png)
+
+You can access or update a cell just like an element of a one-dimensional array:
+```
+printf("%d\n", grid[1][2]);  // 7
+
+grid[1][2] = 99;
+```
+After the assignment, the selected element contains 99.
+
+
+### How does a two-dimensional array fit into linear memory?
+This is where the computer's view and our visual view meet.
+
+We imagine a grid with rows and columns, but ordinary C arrays are laid out in a linear sequence of memory locations. In C, the last index changes fastest: elements in the same row are stored consecutively. This arrangement is called row-major order. 
+
+
+For our array:
+```
+int grid[3][4] = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+```
+
+the memory order is conceptually:
+```
+1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
+```
+The first row comes first, followed by the second row, then the third row.
+
+If the first element were at illustrative address 1000 and each int occupied four bytes, the addresses would progress like this:
+
+![alt text](image-14.png)
+
+Notice the transition from grid[0][3] to grid[1][0]: the address moves directly to the next integer.
+
+For an array with C columns, the conceptual zero-based linear element offset for row r, column c, is:
+```
+offset=r×C+c
+```
+For grid[1][2], there are four columns:
+```
+1×4+2=6
+```
+So grid[1][2] is six elements after grid[0][0]. Its illustrative address is:
+```
+1000+6×4=1024
+```
+This calculation is a useful mental model for understanding how a compiler can translate two-dimensional indexing into memory accesses.
+
+
+### Nested loops for two-dimensional arrays
+We can process every cell with nested loops:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int grid[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            printf("%d ", grid[row][col]);
+        }
+
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+The outer loop selects a row. The inner loop visits every column in that row.
+
+The output is:
+```
+1 2 3 4
+5 6 7 8
+9 10 11 12
+```
+Let's trace the beginning:
+
+- row = 0, col = 0: print grid[0][0], which is 1.
+- row = 0, col = 1: print grid[0][1], which is 2.
+- The inner loop continues through col = 3.
+- The inner loop ends, and the newline is printed.
+- The outer loop advances to row = 1; the inner loop starts again at col = 0.
+
+The pattern is the same as a single loop, but now we are tracking two indices.
+
+
+### A two-dimensional array is not an array of pointers
+This is another important C distinction.
+```
+int grid[3][4];
+```
+This is an array of three elements, where each element is itself an array of four integers. It is not automatically a collection of three pointer variables.
+
+That is why the following function declaration can accept it:
+```
+void printGrid(int grid[][4], int rows);
+```
+The parameter is adjusted to a pointer to an array of four integers. The compiler needs to know the number of columns so it can calculate the correct address for grid[row][col].
+
+You can also write the parameter explicitly:
+```
+void printGrid(int (*grid)[4], int rows);
+```
+This says that grid is a pointer to an array of four integers.
+
+Notice the parentheses in int (*grid)[4]. They matter because the declaration means something different from int *grid[4], which declares an array of four pointers to int.
+
+Do not worry if that distinction feels difficult at first. The main thing to remember is that the structure of a multidimensional array affects the type of its pointer and how indexing works.

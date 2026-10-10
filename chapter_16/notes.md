@@ -426,3 +426,41 @@ But this is not valid:
 numbers++;  // Invalid
 ```
 You can change the pointer variable, but you cannot increment the array name.
+
+
+### What happens when an array is passed to a function?
+Suppose we want a function that prints the elements of an array.
+```
+#include <stdio.h>
+
+void printNumbers(int values[], int count)
+{
+    for (int i = 0; i < count; i++) {
+        printf("%d\n", values[i]);
+    }
+}
+
+int main(void)
+{
+    int numbers[4] = {10, 20, 30, 40};
+
+    printNumbers(numbers, 4);
+
+    return 0;
+}
+```
+
+This code illustrates an important C rule: an array parameter declaration such as int values[] is adjusted to a pointer parameter, int *values.
+
+That means the function does not receive a complete copy of the array object just because its parameter is written with brackets. It receives a pointer to the first element.
+
+The function also receives count, because the pointer by itself does not tell the function how many elements are available.
+
+These two declarations are equivalent as function parameter declarations:
+```
+void printNumbers(int values[], int count);
+void printNumbers(int *values, int count);
+```
+Inside the function, values[i] works using the same indexing rule we learned earlier.
+
+There is a consequence: inside printNumbers, sizeof(values) gives the size of a pointer, not the total size of the original array. That is why passing the element count separately is a common and useful C convention.

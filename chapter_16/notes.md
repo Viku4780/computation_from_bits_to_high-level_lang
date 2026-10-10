@@ -222,3 +222,24 @@ Why does number now contain 99? Because ptr points to number. The expression *pt
 Here is the essential relationship:
 
 ![alt text](image-7.png)
+
+
+### Do not confuse the two uses of *
+Look at these lines:
+```
+int *ptr = &number;
+*ptr = 99;
+```
+The symbol * has two related but distinct uses.
+
+- In a declaration, int *ptr says that ptr is a pointer to int.
+- In an expression, *ptr dereferences the pointer.
+
+That difference depends on the context in which the symbol appears.
+
+Also remember: a pointer must contain a valid address before you dereference it. For example:
+```
+int *ptr;
+*ptr = 99;   // Wrong: ptr was not initialized
+```
+Here, ptr has an indeterminate value. Dereferencing it is not valid. A pointer is not automatically initialized to point to a useful object.

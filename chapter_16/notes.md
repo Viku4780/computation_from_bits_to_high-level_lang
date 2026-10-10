@@ -668,3 +668,77 @@ This says that grid is a pointer to an array of four integers.
 Notice the parentheses in int (*grid)[4]. They matter because the declaration means something different from int *grid[4], which declares an array of four pointers to int.
 
 Do not worry if that distinction feels difficult at first. The main thing to remember is that the structure of a multidimensional array affects the type of its pointer and how indexing works.
+
+
+## Common pointer and array mistakes
+
+### Mistake: confusing an address with a value
+```
+int number = 42;
+int *ptr = &number;
+```
+
+Here:
+
+- number is the integer object.
+- &number is its address.
+- ptr stores that address.
+- *ptr accesses the integer object.
+
+If you remember only one thing, remember this distinction between an address and the value stored at that address.
+
+### Mistake: dereferencing an invalid pointer
+```
+int *ptr = NULL;
+
+printf("%d\n", *ptr);  // Undefined behavior
+```
+NULL represents a null pointer value. It does not point to a valid integer object that you can access.
+
+You can test a pointer before dereferencing it:
+```
+if (ptr != NULL) {
+    printf("%d\n", *ptr);
+}
+```
+This check prevents dereferencing a null pointer, but it does not prove that every non-null pointer is valid. A dangling pointer or an invalid non-null address can still be unsafe to dereference.
+
+### Mistake: returning a pointer to a local array
+Consider:
+```
+int *createNumbers(void)
+{
+    int numbers[3] = {10, 20, 30};
+    return numbers;  // Wrong
+}
+```
+The array numbers is a local object whose lifetime ends when the function returns. Returning a pointer to its first element does not extend the array's lifetime.
+
+Using that returned pointer to access the old array would be invalid.
+
+This connects directly to what you learned about local variables, stack frames, and object lifetime in earlier chapters.
+
+The key rule is:
+
+    A pointer can remain stored after the object it points to has ceased to exist. The pointer's continued existence does not keep that object alive.
+
+
+### Mistake: assuming a function can discover the original array length
+```
+void process(int values[])
+{
+    printf("%zu\n", sizeof(values));
+}
+```
+Inside this function, values is a pointer parameter. The sizeof expression gives the size of the pointer, not the total size of the caller's array.
+
+Instead, pass the length explicitly:
+```
+void process(int values[], size_t count)
+{
+    for (size_t i = 0; i < count; i++) {
+        /* Process values[i]. */
+    }
+}
+```
+This is a common and important C API design pattern: pass a pointer to the data and separately pass its element count.

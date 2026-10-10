@@ -36,3 +36,22 @@ printf("%d\n", marks[0]);   // 75
 printf("%d\n", marks[2]);   // 91
 printf("%d\n", marks[4]);   // 88
 ```
+
+### Why does indexing start at zero?
+For an array containing five elements, the valid indices are:
+
+![alt text](image-2.png)
+
+The last index is not 5. it is 4.
+
+the general rule is:
+
+    last valid index = array length - 1
+
+for an array of length n, valid indices are from 0 through n - 1.
+
+Why zero? Because indexing can be understood as an offset from the beginning of an array.
+
+- marks[0]: move zero elements from the beginning.
+- marks[1]: move one element from the beginning.
+- marks[2]: move two elements from the beginning.

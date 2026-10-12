@@ -65,3 +65,39 @@ The header generally does not contain the complete machine-code implementation o
 Mental model: a header tells your source code how to call a function; it is not, by itself, the functions complete implementation.
 
 This is the same distinction you learned earlier between declaring something and providing its implementation.
+
+
+### I/O streams: think of data as a flow
+the book's central abstraction is the stream. Rather than forcing a program to communicate directly with the physical keyboard or display every time, the I/O system presents a sequence of data that can be read or written.
+
+imagine  a stream as a queue of characters:
+
+![alt text](image-2.png)
+
+The producer put data into a stream; the consumer reads it. The two sides can work at different rates, which is one reason the abstraction is useful.
+
+for example, a user may type several characters faster than you program processes them likewise, your program may generate output faster than a display can show it.
+
+#### The three standard streams
+C provides three familiar standard streams
+
+![alt text](image-3.png)
+
+the book focuses primaarily on stdin and stdout, then extends the same stream idea to files. stderr is also part of standard C and is useful to know in practical programs.
+
+Here is a small example:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    printf("Normal output\n);
+    fprintf(stderr, "Diagnostic message\n");
+
+    return 0;
+}
+```
+
+printf() writes to stdout. fprintf(stderr, ...) writes to stderr.
+
+the terminal may display both messages together, but they are logically separate streams. this becomes useful when output is redirected to a file while errors remain visible in the terminal.

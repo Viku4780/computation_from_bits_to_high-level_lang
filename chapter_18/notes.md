@@ -211,3 +211,28 @@ A useful mental model is:
 5. The newline may remain for the next read.
 
 Do not assume that every environment uses exactly the same buffering behavior. Interactive terminals, redirected input, IDE consoles, and other environments can behave differently. The key idea is that the function reads from a stream; it does not necessarily communicate with a physical keypress directly.
+
+
+#### 4.4 Output buffering: why output might appear later
+Output can also be buffered. A program can write characters to an output stream, and the runtime may collect them before sending them to the destination. the timing depends on the stream and environment. The book illustrates this with output that appears only after a newline flushes the buffer.
+
+For example:
+```
+printf("Working ...");
+```
+The absence of a newline means you should not assume that the text will immediately become visible in every environment.
+
+if you need to request that buffered output be delivered, C provides:
+```
+fflush(stdout);
+```
+
+for example:
+```
+printf("working ...");
+fflush(stdout);
+```
+
+This is especially useful for prompts that should appear before the program waits for input. Be careful: fflush(stdin) is not a portable way to discard keyboard input in standard C.
+
+The distinction is between writing data to a stream and the data becoming visible at the final destination. Buffering helps the system operate efficiently, but it can make timing less obvious.

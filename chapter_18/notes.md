@@ -165,3 +165,49 @@ int main(void)
 The program reads one charater and writes it back, provided the read did not return EOF.
 
 Connect to LC-3: the book relates getchar() and putchar() to the LC-3 IN and OUT trap routines. In both cases, the program uses a higher-level interface to read or output character data; the C library hides the lower-level mechanics
+
+
+#### 4.3 why does getchar() sometimes appear to wait for Enter?
+try this program:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int first;
+    int second;
+
+    printf("Input character 1:\n");
+    first = getchar();
+
+    printf("Input character 2:\n");
+    second = getchar();
+
+    printf("First: %c\n", first);
+    printf("Second: %c\n", second);
+
+    return 0;
+}
+```
+
+Suppose you type A and press Enter.
+
+on a typical terminal with line-buffered keyboard input, the input stream can receive both the A and the newline character. The first getchar() reads A; the second can read the newline left behind by pressing Enter.
+
+So the second call may not wait for another keypress at all.
+
+![alt text](image-4.png)
+
+This behavior is related to buffering.
+
+The terminal or runtime commonly collects typed characters in an input buffer until a line is submitted. This lets a user correct a typo before the program consumes the line. Once the input is made available, character-reading functions consume characters from that stream in order.
+
+A useful mental model is:
+
+1. You type characters.
+2. The terminal/input layer collects them.
+3. Pressing Enter commonly makes the line available to the program.
+4. each getchar() reads the next available character.
+5. The newline may remain for the next read.
+
+Do not assume that every environment uses exactly the same buffering behavior. Interactive terminals, redirected input, IDE consoles, and other environments can behave differently. The key idea is that the function reads from a stream; it does not necessarily communicate with a physical keypress directly.

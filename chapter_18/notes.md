@@ -101,3 +101,37 @@ int main(void)
 printf() writes to stdout. fprintf(stderr, ...) writes to stderr.
 
 the terminal may display both messages together, but they are logically separate streams. this becomes useful when output is redirected to a file while errors remain visible in the terminal.
+
+### Character I/O: putchar() and getchar()
+
+#### 4.1 putchar() - output one character
+```
+putchar('A');
+```
+This sends the character A to standard output.
+
+Compara these cells:
+```
+putchar('A');
+putchar(65);
+putchar('B');
+```
+
+on an ASCII-compatible system, the first two calls output the same character because the ASCII code for A is 65. the third outputs B.
+
+The important distinction is that putchar() does not  format an integer as a decimal number. it treats its argument as a character value and writes that character to the output stream.
+
+compare:
+```
+printf("%d\n", 65);
+putchar(65);
+```
+
+The first outputs the two characters 6 and 5, followed by a newline. The second outputs the single character A on an ASCII-compatible system.
+
+Why? Because the two functions have different jobs:
+
+- printf(%d", 65) converts the number 65 into the textual representation "65".
+- putchar(65) writes the character represented by character code 65.
+
+this is the difference between formatting a numeric value and outputting a character.

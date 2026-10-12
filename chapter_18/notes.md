@@ -135,3 +135,33 @@ Why? Because the two functions have different jobs:
 - putchar(65) writes the character represented by character code 65.
 
 this is the difference between formatting a numeric value and outputting a character.
+
+#### 4.2 getchar() - read one character
+```
+int ch = getchar();
+```
+
+getchar() reads the next character from stdin and returns its value. it returns an int, not a char, because it must also be able to represent the special value EOF(end-of-file or input failure indication).
+
+For a beginner, the important lesson is to store its result in an int when you need to detect EOF reliably.
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int ch;
+
+    ch = getchar();
+
+    if(ch != EOF){
+        putchar(ch);
+        putchar('\n');
+    }
+
+    return  0;
+}
+```
+
+The program reads one charater and writes it back, provided the read did not return EOF.
+
+Connect to LC-3: the book relates getchar() and putchar() to the LC-3 IN and OUT trap routines. In both cases, the program uses a higher-level interface to read or output character data; the C library hides the lower-level mechanics

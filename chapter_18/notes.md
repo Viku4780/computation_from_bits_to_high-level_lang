@@ -283,3 +283,12 @@ Age: 20, temperature: 26.5
 ```
 
 The format string controls how the arguments are interpreted and displayed
+
+
+### 5.2 Common conversion specifiers
+
+![alt text](image-5.png)
+
+The book also discusses converting integers into hexadecimal and character output, as well as outputting strings stored in consecutive memory locations.
+
+A note about standards: the book mentions %b when discussing binary output, but %b is not a portable conversion specifier in C18, the C version identified by the book. Support depends on the C standard and compiler/library implementation. For code intended to work broadly with C18, do not assume that printf("%b", value) will print binary.

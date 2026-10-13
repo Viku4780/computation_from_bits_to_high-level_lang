@@ -678,3 +678,32 @@ This difference is a classic source of bugs, so keep the two families separate i
 ![alt text](image-7.png)
 
 For each mode, consult the C library documentation for the exact behavior and constraints. The critical habit is to check whether fopen() succeeded and to close streams when you are finished.
+
+```
+#include <stdio.h>
+
+int main(void)
+{
+    char name[30];
+    int score;
+
+    printf("Enter a one-word name: ");
+
+    if (scanf("%29s", name) != 1) {
+        fprintf(stderr, "Could not read the name.\n");
+        return 1;
+    }
+
+    printf("Enter a score: ");
+
+    if (scanf("%d", &score) != 1) {
+        fprintf(stderr, "Could not read the score as an integer.\n");
+        return 1;
+    }
+
+    printf("Student: %s\n", name);
+    printf("Score: %d\n", score);
+
+    return 0;
+}
+```

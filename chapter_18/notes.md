@@ -347,3 +347,46 @@ The cast is not required here.
 This connects to the memory and type model you learned earlier: the same sequence of bits cannot safely be interpreted as any type we happen to request. The function call has to obey the type requirements associated with its format string.
 
 Rule: every conversion specifier must match the type of the corresponding argument, subject to the standard's specified argument promotions.
+
+
+## scanf(): formatted input is not the reverse of printing
+it is tempting to think that scanf() simply reverses printf(). the two functions are related, but input introduces a separate problem: the characters in the stream may not represent the value your program expects.
+
+Consider:
+```
+int age;
+
+scanf("%d", &age);
+```
+
+The %d tells scanf() to read a sequence of characters representing a decimal integer convert that sequence into an integer value, and store it at the location supplied by &age.
+
+
+### 6.1 Why does scanf() need &age?
+You learned about pointers in Chapter 16.
+
+Let's recall:
+```
+int age;
+```
+age is an integer object. Its value is not the same thing as its address.
+
+When we write:
+```
+scanf("%d", &age);
+```
+we pass the address of age to scanf(). That gives the function a location where it can store the converted value.
+
+If you instead wrote:
+
+scanf("%d", age);  // Incorrect
+
+you would pass the integer value of age where scanf() expects a pointer to an integer. This is a type mismatch and can cause undefined behavior.
+
+The memory-level sequence is:
+
+![alt text](image-6.png)
+
+The & is not a special scanf() operator. It is the ordinary C address-of operator you already know. scanf() needs the address because its job includes writing into your variable.
+
+One exception worth remembering: when you pass a character array as a %s destination, the array expression normally converts to a pointer to its first element, so you write scanf("%s", name), not scanf("%s", &name).

@@ -292,3 +292,31 @@ The format string controls how the arguments are interpreted and displayed
 The book also discusses converting integers into hexadecimal and character output, as well as outputting strings stored in consecutive memory locations.
 
 A note about standards: the book mentions %b when discussing binary output, but %b is not a portable conversion specifier in C18, the C version identified by the book. Support depends on the C standard and compiler/library implementation. For code intended to work broadly with C18, do not assume that printf("%b", value) will print binary.
+
+
+### 5.3 Formatting width and precision
+Conversion specifiers can contain extra formatting instructions.
+
+```
+int number = 42;
+double price = 7.5;
+
+printf("%5d\n", number);
+printf("%.2f\n", price);
+printf("%8.2f\n", price);
+```
+
+Conceptually:
+
+- %5d uses a minimum field width of five characters.
+- %.2f prints two digits after the decimal point.
+- %8.2f combines a minimum width of eight characters with two digits after the decimal point.
+
+Typical output:
+```
+   42
+7.50
+    7.50
+```
+
+width does not automatically truncate a value that is too large for the field. It specifies a minimum width.

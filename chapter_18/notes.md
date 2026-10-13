@@ -425,4 +425,250 @@ if the stream begins with spaces followed by 123, the leading whitespace is skip
 But %c behaves differently:
 ```
 char ch;
-scanf("%c", )
+scanf("%c", &ch);
+```
+The %c conversion reads the next character, including whitespace. If a newline remains in the input stream, ch may become '\n'.
+
+If you want to skip leading whitespace before reading a character, you can use a space before %c:
+```
+scanf(" %c", &ch);
+```
+
+The space in the format string tells scanf() to consume any amount of whitespace before attempting the character conversion.
+
+Be precise about the difference: the whitespace directive skips whitespace, not arbitrary non-whitespace characters.
+
+### 6.4 %s and the end of a string
+The book explains that %s reads a sequence of non-whitespace characters and appends a null character ('\0') to terminate the resulting C string.
+
+For example:
+```
+char name[20];
+
+scanf("%19s", name);
+```
+
+if the input is:
+```
+Vikrant Kumar
+```
+then the first %s conversion reads Vikrant and stops at the space. Kumar remains in the input stream for a later read.
+
+why use %19s instead of %s?
+
+The array contains 20 bytes. A C string needs space for its characters and the terminating null character. Limiting the conversion to 19 input characters leaves room for '\0'.
+
+Without a width limit, an excessively long input word can overflow the array and overwrite memory outside the object.
+
+This is where Chapter 18 connects directly to Chapter 16: a C string is a character array with a null terminator, and a pointer does not tell scanf() how much memory is available. The programmer must provide an appropriate bound.
+
+
+### 6.5 Always check what scanf() returns
+This is one of the most important practical lessons in the chapter.
+```
+int age;
+
+if (scanf("%d", &age) == 1) {
+    printf("Age: %d\n", age);
+} else {
+    printf("The input was not a valid integer.\n");
+}
+```
+
+scanf() returns the number of input items successfully matched and assigned. If the conversion fails before any assignment, it can return 0; if input ends before the first conversion can complete, it can return EOF. 
+
+
+Suppose the input is:
+```
+twenty
+```
+scanf("%d", &age) cannot convert the initial characters to a decimal integer. It does not magically turn the word into the number 20.
+
+Checking the return value lets the program detect that the expected input was not obtained.
+
+A failed conversion can also leave the offending characters in the stream. If your program simply repeats the same scanf() without consuming or otherwise handling that input, it may fail repeatedly. Robust input handling must account for both the return value and what remains in the stream.
+
+
+## The hidden mechanism behind printf() and scanf(): variable argument lists
+
+You already know how ordinary functions receive arguments:
+```
+int add(int a, int b)
+{
+    return a + b;
+}
+```
+This function expects two integer arguments. But consider:
+```
+printf("%d %d %d\n", x, y, z);
+```
+Now consider:
+```
+printf("%d\n", x);
+```
+And:
+```
+printf("%d %d %d %d %d\n", a, b, c, d, e);
+```
+The number of arguments after the format string varies.
+
+How can one function accept a variable number of arguments?
+
+### 7.1 Variadic functions
+C supports functions with a variable number of arguments, called variadic functions. Their declarations use ... .
+
+A simplified declaration for printf() looks like this:
+```
+int printf(const char *format, ...);
+```
+The first parameter is the format string. The ... indicates that additional arguments may follow.
+
+You do not need to implement your own variadic function yet. The important thing is to understand how the idea works:
+
+1. printf() receives the format string.
+2. it examines that string.
+3. it encounters a conversion specifier such as %d.
+4. it obtains the corresponding argument and interprets it according to the required type.
+5. it converts the value into output characters.
+6. it continues until the format string has been processed.
+
+the format string tells the function how to interpret the additional arguments.
+
+There is an important limitation: a variadic function cannot automatically determine the types of its additional arguments from the arguments alone. With printf(), the format string supplies that information. If the format string and the actual arguments disagree, the behavior can be undefined.
+
+
+### 7.2 Connect this to the runtime stack and LC-3
+In your earlier chapters, you learned that a function call involves passing arguments and preserving information needed to return to the caller.
+
+The book uses printf() and scanf() to demonstrate how variable argument lists relate to the LC-3 runtime stack. Its discussion explains why the order in which arguments are placed on the stack can make it easier for a function to locate the format string regardless of how many additional arguments follow. 
+
+
+The underlying concept is the same one you have already learned:
+
+- A function needs access to its arguments.
+- A function needs to know how to interpret those arguments.
+- A calling convention determines how arguments are passed.
+- The function uses the supplied information to carry out its work.
+
+This is a useful bridge between high-level C and the machine-level mechanics you studied earlier. C hides many calling details, but the compiler and runtime still have to implement them.
+
+
+## File I/O: streams are not limited to the keyboard and display
+So far, our examples have used the terminal. But imagine writing a program that analyzes a large text file.
+
+You could ask the user to type thousands of lines manually, but that would be impractical. A more useful approach is to read the data from a file and write the results to another file.
+
+The book's key observation is that standard I/O treats streams as the common abstraction, whether they are connected to a keyboard, a display, or a file.
+
+### 8.1 printf() versus fprintf()
+You already know:
+```
+printf("Total: %d\n", total);
+```
+This writes formatted output to stdout.
+
+The more general function is fprintf():
+```
+fprintf(file_pointer, "Total: %d\n", total);
+```
+It takes a stream argument, followed by the format string and any additional values.
+
+Likewise:
+
+- scanf() reads formatted input from stdin.
+- fscanf() reads formatted input from a specified stream.
+
+That is the main conceptual difference: fprintf() and fscanf() let you specify the stream instead of always using the standard input or output stream.
+
+### 8.2 OPening a file with fopen()
+In C, fopen() associates a stream with a file
+
+Here is  a small example that writes a line to a text file:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    FILE *file = fopen("output.txt", "w");
+
+    if (file == NULL) {
+        fprintf(stderr, "Could not open the file.\n");
+        return 1;
+    }
+
+    fprintf(file, "Hello from C!\n");
+
+    if (fclose(file) == EOF) {
+        fprintf(stderr, "An error occurred while closing the file.\n");
+        return 1;
+    }
+
+    return 0;
+}
+```
+
+Let's understand the important pieces.
+
+FILE *file
+
+FILE is a type provided by the standard I/O library. The pointer represents a stream managed by the library. It is not simply a pointer to the file's raw bytes in memory.
+
+fopen("output.txt", "w")
+
+This asks the library to open a file for writing. The mode "w" creates a new file or truncates an existing file of that name, if opening succeeds.
+
+file == NULL
+
+Opening can fail. For example, the program may lack permission, or the destination path may be invalid. The program must not use the returned stream pointer as though opening had succeeded.
+
+fprintf(file, ...)
+
+The output goes to the file stream rather than the terminal's standard output stream.
+
+fclose(file)
+
+The program closes the stream when finished. Closing also allows buffered output to be finalized, and it can report an error. In real programs, check important I/O results rather than assuming every operation succeeds.
+
+The book introduces fopen() as the way to bind a file pointer to a physical file and fprintf()/fscanf() as the more general formatted I/O operations. 
+
+### 8.3 Reading formatted values from a file
+Suppose a file named input.txt contains:
+```
+42 3.14
+```
+
+you can read the two values like this:
+```
+#include <stdio.h>
+
+int main(void)
+{
+    int count;
+    double measurement;
+
+    FILE *file = fopen("input.txt", "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "Could not open input.txt\n");
+        return 1;
+    }
+
+    if (fscanf(file, "%d %lf", &count, &measurement) == 2) {
+        printf("Count: %d\n", count);
+        printf("Measurement: %.2f\n", measurement);
+    } else {
+        fprintf(stderr, "Input did not match the expected format.\n");
+        fclose(file);
+        return 1;
+    }
+
+    fclose(file);
+    return 0;
+}
+```
+
+Notice that fscanf() uses %lf for a double * destination. In scanf()-family functions, %f expects a float *, while %lf expects a double *.
+
+That is different from printf(), where a float argument is promoted to double, and %f is used to print a floating-point value.
+
+This difference is a classic source of bugs, so keep the two families separate in your mind.

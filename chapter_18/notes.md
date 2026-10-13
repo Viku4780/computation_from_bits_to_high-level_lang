@@ -236,3 +236,50 @@ fflush(stdout);
 This is especially useful for prompts that should appear before the program waits for input. Be careful: fflush(stdin) is not a portable way to discard keyboard input in standard C.
 
 The distinction is between writing data to a stream and the data becoming visible at the final destination. Buffering helps the system operate efficiently, but it can make timing less obvious.
+
+
+## Formatted output with printf()
+Consider:
+```
+int age = 20;
+printf("Age = %d\n", age);
+```
+
+The function receives two things:
+
+1. The format string: "Age = %d\n"
+2. The additional argument: age, whose value is 20
+
+the %d tells printf() how to convert the corresponding argument into text. The \n represents a newline.
+
+The output is:
+```
+Age = 20
+```
+
+the program stores age as an interger. The output stream, however, receives characters representing the number. That conversion is part of printf()'s job.
+
+
+### 5.1 The format string is a set of instructions
+Look at this example:
+```
+int age = 20;
+float temperature = 26.5f;
+
+printf("Age: %d, temperature: %.1f\n", age, temperature);
+```
+
+Read the format string from left to right:
+
+- Age: is ordinary text.
+- %d says to format the next argument as a decimal integer.
+- , temperature: is ordinary text.
+- %.1f says to format the next argument as a floating-point number with one digit after the decimal point.
+- \n adds a newline.
+
+the output is:
+```
+Age: 20, temperature: 26.5
+```
+
+The format string controls how the arguments are interpreted and displayed

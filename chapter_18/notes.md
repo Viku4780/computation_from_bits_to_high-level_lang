@@ -672,3 +672,9 @@ Notice that fscanf() uses %lf for a double * destination. In scanf()-family func
 That is different from printf(), where a float argument is promoted to double, and %f is used to print a floating-point value.
 
 This difference is a classic source of bugs, so keep the two families separate in your mind.
+
+### 8.4 File modes at a glance
+
+![alt text](image-7.png)
+
+For each mode, consult the C library documentation for the exact behavior and constraints. The critical habit is to check whether fopen() succeeded and to close streams when you are finished.

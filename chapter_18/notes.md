@@ -390,3 +390,22 @@ The memory-level sequence is:
 The & is not a special scanf() operator. It is the ordinary C address-of operator you already know. scanf() needs the address because its job includes writing into your variable.
 
 One exception worth remembering: when you pass a character array as a %s destination, the array expression normally converts to a pointer to its first element, so you write scanf("%s", name), not scanf("%s", &name).
+
+### 6.2 scanf() with multiple values
+
+```
+int day, month, year;
+
+scanf("%d/%d/%d", &day, &month, &year);
+```
+
+if the input is:
+```
+12/10/2026
+```
+
+the conversion specifications read the three decimal numbers. The literal / characters in the format string tell scanf() to match slash characters in the input stream.
+
+This is an important point: characters in a scanf() format string are not all conversion instructions. Some are literal characters that the input must match.
+
+The book demonstrates this behavior with a format string containing %d/%d/%d and explains how the numbers are assigned to the locations provided as arguments.

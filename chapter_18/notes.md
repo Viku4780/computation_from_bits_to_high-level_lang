@@ -320,3 +320,30 @@ Typical output:
 ```
 
 width does not automatically truncate a value that is too large for the field. It specifies a minimum width.
+
+
+### 5.4 The dangerous mistake: the format and argument disagree
+Consider:
+```
+float x = 192.27163f;
+
+printf("%d\n", x);   // Incorrect
+```
+
+This is not a valid way to print a floating-point value. %d tells printf() to retrieve an int argument, but the expression x is passed as a floating-point argument. The format and argument types do not match, which causes undefined behavior.
+
+The correct call is:
+```
+printf("%f\n", (double)x);
+```
+
+In a variadic function such as printf(), a float argument is promoted to double, so you could also write:
+```
+printf("%f\n", x);
+```
+
+The cast is not required here.
+
+This connects to the memory and type model you learned earlier: the same sequence of bits cannot safely be interpreted as any type we happen to request. The function call has to obey the type requirements associated with its format string.
+
+Rule: every conversion specifier must match the type of the corresponding argument, subject to the standard's specified argument promotions.

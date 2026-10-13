@@ -409,3 +409,20 @@ the conversion specifications read the three decimal numbers. The literal / char
 This is an important point: characters in a scanf() format string are not all conversion instructions. Some are literal characters that the input must match.
 
 The book demonstrates this behavior with a format string containing %d/%d/%d and explains how the numbers are assigned to the locations provided as arguments.
+
+
+### 6.3 Whitespace: why spaces and newlines can behave unexpectedly
+
+Most whitespace in a scanf() format string—including spaces, tabs, and newlines—directs the function to skip any amount of input whitespace. Many conversions, including %d and %s, also skip leading whitespace automatically.
+
+for example:
+```
+int x;
+scanf("%d", &x);
+```
+if the stream begins with spaces followed by 123, the leading whitespace is skipped and x becomes 123.
+
+But %c behaves differently:
+```
+char ch;
+scanf("%c", )

@@ -127,3 +127,20 @@ plane2.altitude = 12000;
 Both objects have a member called altitude, but they store separate values
 
 ![alt text](image.png)
+
+
+### How does a structure occupy memory?
+A structure's members occupy a region of memory allocated for that structure object. The compiler knows the member layout and generates instructions to access the appropriate member.
+
+Conceptually, the memory could look like this:
+
+![alt text](image-1.png)
+
+This is a conceptual diagram, not a guarantee of exact byte offsets. Real C implementations may insert padding bytes between members to satisfy alignment requirements. Therefore, do not assume a structure's size is always the simple sum of the sizes you expect.
+
+To find the actual size on the system compiling your program, use:
+```
+printf("%zu\n", sizeof(struct Flight));
+```
+
+The sizeof operator returns the size in bytes of the type or object on that implementation. The textbook highlights this portability issue when discussing memory allocation.

@@ -508,3 +508,54 @@ The two nodes form a list because one node points to the other.
 Notice what we did not do: we did not place the second node physically inside the first node. Each is a separate allocated object, and the first merely stores the address needed to reach the second.
 
 This distinction between data and the pointer that connects the data is the mental model to retain.
+
+
+## Traversing a linked list
+An array traversal often uses a for loop because its size or bounds are known:
+```
+for (int i = 0; i < count; i++) {
+    printf("%d\n", array[i]);
+}
+```
+
+For a linked list, we often don't have a separate array index or a fixed element count. We follow the pointers until we reach the end.
+
+```
+Node *current = head;
+
+while (current != NULL) {
+    printf("%d\n", current->data);
+    current = current->next;
+}
+```
+
+Let's execute this loop slowly, assuming our list contains 10, then 20, then 30.
+
+![alt text](image-7.png)
+
+The line that makes traversal work is:
+```
+current = current->next;
+```
+
+It does not copy the next node into current. It copies the pointer value stored in the current node's next member into the variable current.
+
+This is the same pointer-and-address reasoning you learned earlier, now used to navigate a data structure.
+
+### A critical safety rule
+Always ensure the pointer is not NULL before dereferencing it.
+
+This is safe:
+```
+while (current != NULL) {
+    printf("%d\n", current->data);
+    current = current->next;
+}
+```
+
+This can be unsafe:
+```
+printf("%d\n", current->data);
+```
+
+If current is NULL, the member access attempts to use an object that does not exist at that pointer.

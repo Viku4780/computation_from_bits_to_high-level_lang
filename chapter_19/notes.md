@@ -325,3 +325,25 @@ number = NULL;
 ```
 
 This is a useful habit for a pointer variable that is no longer supposed to point to that object. It prevents this particular variable from retaining the old address. It does not clear any other copies of the pointer.
+
+### Why use sizeof instead of hardcoded sizes?
+Consider an array of n integers. The amount of memory required is:
+```
+n * sizeof(int)
+```
+
+For a dynamically allocated array of structures, the corresponding pattern is:
+```
+Flight *planes = malloc(n * sizeof *planes);
+```
+
+This expression requests enough bytes for n objects of the type pointed to by planes. It adapts to the actual type size on the target system.
+
+For real production code, also check that the multiplication cannot overflow if n comes from untrusted or unrestricted input.
+
+
+### The four memory mistakes you must recognize
+
+![alt text](image-4.png)
+
+These are not minor syntax errors. They are errors in the relationship between pointers, objects, and memory lifetime.

@@ -386,3 +386,28 @@ The last node uses NULL to indicate that there is no next node.
 That gives us a rule:
 
     To move through a linked list, start at the head and follow the next pointer until it is NULL.
+
+### Defining a linked-list node in C
+```
+typedef struct Node Node;
+
+struct Node {
+    int data;
+    Node *next;
+};
+```
+
+Let's unpack the unusual-looking part:
+```
+Node *next;
+```
+
+it means next is a pointer to another Node.
+
+So each node contains an integer and an address that can lead to another node.
+
+You might ask: how can a structure contain a pointer to its own type when that type is still being declared?
+
+Because the member is a pointer, not a complete Node object nested inside itself. A pointer has a fixed size on a given implementation, so the compiler can represent the member without needing to place an entire second node inside the first.
+
+if we instead tried to define a structure that directly contained a complete instance of itself, it would require more storage without end. A pointer avoids that problem.

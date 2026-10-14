@@ -144,3 +144,49 @@ printf("%zu\n", sizeof(struct Flight));
 ```
 
 The sizeof operator returns the size in bytes of the type or object on that implementation. The textbook highlights this portability issue when discussing memory allocation.
+
+### typedef: giving a type a shorter name
+you may have seen this:
+```
+typedef struct Flight Flight;
+```
+
+The purpose of typedef is to create a type alias. it does not create a new object or change the underlying structure layout.
+
+After that declaration, you can write:
+```
+Flight plane;
+```
+
+instead of:
+```
+struct Flight plane;
+```
+
+The textbook uses this technique to make its aircraft type easier to use throughout the program.
+
+here is the complete example:
+```
+#include <stdio.h>
+
+typedef struct {
+    int id;
+    double salary;
+} Employee;
+
+int main(void)
+{
+    Employee worker;
+
+    worker.id = 101;
+    worker.salary = 45000.0;
+
+    printf("ID: %d\n", worker.id);
+    printf("Salary: %.2f\n", worker.salary);
+
+    return 0;
+}
+```
+employee is now the type name we use to declare employee objects.
+
+Checkpoints: a struct groups different members into one object; . selects a member; typedef gives a type a convenient alias.

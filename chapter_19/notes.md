@@ -622,3 +622,50 @@ head = newNode;
 First, the new node points to the old first node. Then head is updated to point to the new first node.
 
 If the list was empty, head was NULL, so the new node's next becomes NULL. The same two assignments still work.
+
+
+## Deleting a node: unlinking is not the same as freeing
+Let's say our list is:
+```
+10 → 20 → 30 → NULL
+```
+We want to remove 20.
+
+If we have pointers to the nodes containing 10 and 20, the essential link change is:
+```
+first->next = second->next;
+```
+
+The first node now points directly to the node containing 30. The node containing 20 is no longer connected to the list.
+
+But an important distinction remains:
+
+#### Removing a node from the list does not automatically release its heap memory.
+
+If that node was dynamically allocated and we no longer need it, we must also release it:
+```
+first->next = second->next;
+free(second);
+second = NULL;
+```
+
+This is only a simplified example; a complete deletion function must handle the head node, an empty list, a node that was not found, and the possibility that pointers alias the same object.
+
+
+### Deleting the head node
+If the node to remove is the first node, the head pointer must change:
+```
+Node *oldHead = head;
+head = head->next;
+free(oldHead);
+oldHead = NULL;
+```
+
+The order matters. We save the old head pointer, move head to the successor, and then free the old node.
+
+If you free the old head before reading oldHead->next, you would be trying to access the node after its lifetime has ended.
+
+The three-step deletion model
+1. Locate the node to remove and the link that leads to it.
+2. Unlink it by changing the appropriate pointer.
+3. Free it if the node is dynamically allocated and no longer needed.

@@ -190,3 +190,41 @@ int main(void)
 employee is now the type name we use to declare employee objects.
 
 Checkpoints: a struct groups different members into one object; . selects a member; typedef gives a type a convenient alias.
+
+
+## Arrays of structures: storing many objects
+Now we can represent one aircraft neatly. But our application needs to track many aircraft.
+C allows us to create an array whose elements are entire structures:
+```
+Flight planes[100];
+```
+
+This declares an array of 100 Flight objects.
+
+The important difference from our earlier separate arrays is that each array element contains all the fields belonging to one aircraft.
+
+![alt text](image-2.png)
+
+you can access a member of a particular element by combining the array index and dot operator:
+```
+planes[0].altitude = 10000;
+planes[1].altitude = 12000;
+```
+
+Read planes[1].altitude as:
+
+1. Select array element 1.
+2. Within that structures, select its altitude member.
+
+### The design problem with fixed-size arrays
+Suppose the application is tracking aircraft, but you do not know how many will be in the region at a given time.
+
+if you declare:
+```
+Flight planes[100];
+```
+you have space for 100 elements. What if there are 130 aircraft? Your declared array does not magically grow to accommodate them.
+
+What if there are only three? The fixed capacity may be wasteful, depending on how the storage is allocated and used.
+
+There is another issue: deleting an element from the middle of an array while keeping the remaining elements packed together requires moving subsequent elements. Inserting an element in the middle can require similar movement.

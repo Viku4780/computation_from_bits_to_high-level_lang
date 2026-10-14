@@ -77,3 +77,24 @@ Let's understand every part
 
 Notice that we have described a type, not yet created an actual aircraft variable.
 
+
+### Type description versus actual object
+compare these two lines:
+```
+struct Flight {
+    int altitude;
+    double airSpeed;
+};
+
+struct Flight plane;
+```
+
+The first tells the compiler what a struct Flight contains.
+
+the second creates a real variable called plane that has that structure type.
+
+A useful analogy is a blueprint and a building:
+- the structure declaration is the blueprint.
+- plane is an actual object created using blueprint.
+
+The blueprint itself is not the aircraft data. The variable is where the actual member values are stored.

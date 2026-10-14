@@ -669,3 +669,166 @@ The three-step deletion model
 1. Locate the node to remove and the link that leads to it.
 2. Unlink it by changing the appropriate pointer.
 3. Free it if the node is dynamically allocated and no longer needed.
+
+```
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node Node;
+
+struct Node {
+    int data;
+    Node *next;
+};
+
+Node *createNode(int value)
+{
+    Node *node = malloc(sizeof *node);
+
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->data = value;
+    node->next = NULL;
+
+    return node;
+}
+
+int pushFront(Node **head, int value)
+{
+    Node *node = createNode(value);
+
+    if (node == NULL) {
+        return 0;
+    }
+
+    node->next = *head;
+    *head = node;
+
+    return 1;
+}
+
+void printList(const Node *current)
+{
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+
+    printf("NULL\n");
+}
+
+void freeList(Node **head)
+{
+    Node *current = *head;
+
+    while (current != NULL) {
+        Node *next = current->next;
+
+        free(current);
+        current = next;
+    }
+
+    *head = NULL;
+}
+
+int main(void)
+{
+    Node *head = NULL;
+
+    if (!pushFront(&head, 30) ||
+        !pushFront(&head, 20) ||
+        !pushFront(&head, 10)) {
+        freeList(&head);
+        printf("Could not allocate memory.\n");
+        return 1;
+    }
+
+    printList(head);
+
+    freeList(&head);
+
+    return 0;
+}
+```
+
+expected output:
+```
+10 -> 20 -> 30 -> NULL
+```
+
+Let's examine the most important parts.
+
+#### Why does pushFront accept Node **head?
+This connects directly to what you learned about pointers and C function arguments.
+
+Suppose main contains:
+```
+Node *head = NULL;
+```
+
+The variable head itself is a pointer variable. It stores an address, initially the null pointer.
+
+When a function receives an ordinary pointer parameter, C passes the pointer's value. Assigning a new value to that parameter does not change the caller's pointer variable.
+
+But pushFront must be able to change the original head when it adds the first node. Therefore, we pass the address of the pointer variable:
+```
+pushFront(&head, 10);
+```
+
+The parameter has type:
+```
+Node **head
+```
+
+Read this from right to left conceptually: head is a pointer to a pointer to a Node.
+
+Inside the function:
+- head points to the caller's pointer variable.
+- *head accesses the caller's pointer variable.
+- *head = node updates the caller's pointer to point to the new node.
+
+This is not a special linked-list rule. It is a direct application of C's pointer and pass-by-value rules.
+
+#### Why does freeList save next before calling free?
+```
+Node *next = current->next;
+
+free(current);
+current = next;
+```
+
+The program first saves the successor's address. Only then does it free the current node.
+If we instead did this:
+```
+free(current);
+current = current->next;  // WRONG
+```
+
+we would access current->next after the object it points to has been freed. That is undefined behavior.
+
+This is a good example of how understanding memory lifetime is necessary to write correct pointer code.
+
+#### Trace the three insertions
+initially:
+```
+head -> NULL
+```
+
+After pushFront(&head, 30):
+```
+head -> 30 -> NULL
+```
+
+After pushFront(&head, 20):
+```
+head -> 20 -> 30 -> NULL
+```
+
+After pushFront(&head, 10):
+```
+head -> 10 -> 20 -> 30 -> NULL
+```
+
+Each insertion places the new node at the beginning, so the order is reversed relative to the order of insertion.

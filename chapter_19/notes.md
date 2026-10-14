@@ -482,3 +482,29 @@ head->next = NULL;
 ```
 
 This explicitly says the node has no successor yet. It is a one-node linked list, and that node is also the last node.
+
+### Connecting two nodes
+Now let's make two nodes.
+```
+Node *head = malloc(sizeof *head);
+Node *second = malloc(sizeof *second);
+```
+
+In a real program, you must check both allocations before dereferencing either pointer. For clarity, imagine both allocations succeeded.
+```
+head->data = 10;
+head->next = second;
+
+second->data = 20;
+second->next = NULL;
+```
+
+The first node stores the address of the second node in head->next.
+
+![alt text](image-6.png)
+
+The two nodes form a list because one node points to the other.
+
+Notice what we did not do: we did not place the second node physically inside the first node. Each is a separate allocated object, and the first merely stores the address needed to reach the second.
+
+This distinction between data and the pointer that connects the data is the mental model to retain.

@@ -347,3 +347,42 @@ For real production code, also check that the multiplication cannot overflow if 
 ![alt text](image-4.png)
 
 These are not minor syntax errors. They are errors in the relationship between pointers, objects, and memory lifetime.
+
+
+## Linked lists
+We now have the ingredients:
+- A struct can group the information belonging to one aircraft.
+- A pointer can hold the address of an object.
+- malloc can create an object whose memory is requested while the program is running.
+- free can release that allocation.
+
+The next step is to connect several such objects together.
+That is the core idea behind a linked list.
+
+### Why not simply keep using an array?
+An array is a collection of elements stored contiguously. That makes indexed access convenient:
+```
+planes[0]
+planes[1]
+planes[2]
+```
+
+If you know the index, you can access the corresponding element directly.
+
+A linked list takes a different approach. Each element, called a node, contains:
+1. The data for that element.
+2. A pointer that tells us where to find the next element.
+
+The nodes do not have to sit next to each other in memory. The pointers connect them logically.
+
+imagine that the aircraft are stored at unrelated locations:
+
+![alt text](image-5.png)
+
+The first node is called the head of the list. if we know where the head is, we can follow the pointers to reach every later node.
+
+The last node uses NULL to indicate that there is no next node.
+
+That gives us a rule:
+
+    To move through a linked list, start at the head and follow the next pointer until it is NULL.

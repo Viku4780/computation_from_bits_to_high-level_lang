@@ -559,3 +559,66 @@ printf("%d\n", current->data);
 ```
 
 If current is NULL, the member access attempts to use an object that does not exist at that pointer.
+
+
+## Inserting a node into a linked list
+One of the most useful properties of a linked list is that we can add a node by changing links rather than moving every later element.
+
+Suppose the list is:
+```
+10 → 30 → NULL
+```
+
+We want to insert 20 between 10 and 30.
+
+First, create a new node and fill its data:
+```
+Node *newNode = malloc(sizeof *newNode);
+
+if (newNode == NULL) {
+    /* Handle allocation failure. */
+} else {
+    newNode->data = 20;
+}
+```
+
+Assume allocation succeeded. Let head point to the node containing 10. The insertion requires two pointer assignments, in this order:
+```
+newNode->next = head->next;
+head->next = newNode;
+```
+
+Why that order?
+
+### First assignment:
+```
+newNode->next = head->next;
+```
+
+Before the insertion, head->next points to the node containing 30. We make the new node point to that same node.
+
+### Second assignment:
+```
+head->next = newNode;
+```
+
+Now we make the first node point to the new node.
+
+The result is:
+
+![alt text](image-8.png)
+
+If you reverse the two assignments, you can lose the only link to the old successor. Once you overwrite head->next with newNode, the original address of the 30 node is no longer available through that link unless you saved it elsewhere.
+
+This illustrates a major lesson about pointer manipulation: preserve the links you still need before overwriting them.
+
+### What about inserting at the head?
+Insertion at the beginning is even simpler:
+```
+newNode->next = head;
+head = newNode;
+```
+
+First, the new node points to the old first node. Then head is updated to point to the new first node.
+
+If the list was empty, head was NULL, so the new node's next becomes NULL. The same two assignments still work.

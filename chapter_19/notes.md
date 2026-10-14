@@ -228,3 +228,11 @@ you have space for 100 elements. What if there are 130 aircraft? Your declared a
 What if there are only three? The fixed capacity may be wasteful, depending on how the storage is allocated and used.
 
 There is another issue: deleting an element from the middle of an array while keeping the remaining elements packed together requires moving subsequent elements. Inserting an element in the middle can require similar movement.
+
+## Dynamic memory allocation: asking for memory while the program runs
+
+### Stack memory versus heap memory
+
+![alt text](image-3.png)
+
+The key distinction is not that heap memory is automatically better. it is that the programmer controls when dynamically allocated storage is requested and released. The textbook explains that this enables objects to persist across multiple function calls and across longer portions of program execution.

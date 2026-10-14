@@ -236,3 +236,92 @@ There is another issue: deleting an element from the middle of an array while ke
 ![alt text](image-3.png)
 
 The key distinction is not that heap memory is automatically better. it is that the programmer controls when dynamically allocated storage is requested and released. The textbook explains that this enables objects to persist across multiple function calls and across longer portions of program execution.
+
+### What does malloc actually do?
+malloc is a C standard library function declared in <stdlib.h>.
+
+You ask it for a number of bytes:
+```
+malloc(number_of_bytes);
+```
+
+Conceptually, the allocator:
+1. Receives the requested size.
+2. Looks for a suitable block in the heap.
+3. Reserves that block if allocation succeeds.
+4. Returns a pointer to the block's beginning.
+5. Returns NULL if the allocation fails.
+
+That pointer is how your program finds the allocated memory. You do not need to know the physical address in advance.
+
+```
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+    int *number = malloc(sizeof *number);
+
+    if (number == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    *number = 42;
+
+    printf("%d\n", *number);
+
+    free(number);
+    number = NULL;
+
+    return 0;
+}
+```
+
+#### Step 1 — Declare a pointer and request memory
+```
+int *number = malloc(sizeof *number);
+```
+
+sizeof *number calculates the size of the object that number points to, which is an int. This is a convenient way to request the correct amount of memory without hardcoding a byte count.
+
+malloc returns a pointer to the allocated block, or NULL if it cannot satisfy the request.
+
+#### Step 2 — Check the result
+```
+if (number == NULL) {
+    printf("Memory allocation failed.\n");
+    return 1;
+}
+```
+
+Never assume a memory request must succeed. If malloc returns NULL, you must not dereference that pointer.
+
+
+#### Step 3 — Store a value in the allocated object
+```
+*number = 42;
+```
+
+Remember your earlier pointer lesson:
+- number holds an address.
+- *number accesses the int object at that address.
+
+The allocated memory now stores 42.
+
+#### Step 4 — Release the memory
+```
+free(number);
+```
+
+This tells the allocator that the block is no longer needed and can be reused. It does not mean the block is erased or that every pointer to it automatically becomes safe.
+
+After free(number), using *number to access that released object is undefined behavior.
+
+
+#### Step 5 — Clear the pointer
+```
+number = NULL;
+```
+
+This is a useful habit for a pointer variable that is no longer supposed to point to that object. It prevents this particular variable from retaining the old address. It does not clear any other copies of the pointer.

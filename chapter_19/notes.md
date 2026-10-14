@@ -411,3 +411,74 @@ You might ask: how can a structure contain a pointer to its own type when that t
 Because the member is a pointer, not a complete Node object nested inside itself. A pointer has a fixed size on a given implementation, so the compiler can represent the member without needing to place an entire second node inside the first.
 
 if we instead tried to define a structure that directly contained a complete instance of itself, it would require more storage without end. A pointer avoids that problem.
+
+
+### Building a linked list with malloc
+Let's create a single node:
+```
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node Node;
+
+struct Node {
+    int data;
+    Node *next;
+};
+
+int main(void)
+{
+    Node *head = malloc(sizeof *head);
+
+    if (head == NULL) {
+        return 1;
+    }
+
+    head->data = 10;
+    head->next = NULL;
+
+    printf("%d\n", head->data);
+
+    free(head);
+    head = NULL;
+
+    return 0;
+}
+```
+
+There are two pointer-related expressions worth examining.
+
+First:
+```
+head->data = 10;
+```
+The -> operator accesses a member through a pointer to a structure.
+
+it is equivalent to:
+```
+(*head).data = 10;
+```
+
+why? Because *head means "the structure object pointed to by head," and .data selects that object's data member.
+
+in other words:
+- Use . when you have a structure object.
+- Use -> when you have a pointer to a structure object.
+
+Compare:
+```
+Node localNode;
+Node *nodePointer = &localNode;
+
+localNode.data = 10;
+nodePointer->data = 20;
+```
+
+Both expressions access a structure member, but through different forms of refernce.
+
+Second:
+```
+head->next = NULL;
+```
+
+This explicitly says the node has no successor yet. It is a one-node linked list, and that node is also the last node.

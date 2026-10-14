@@ -98,3 +98,32 @@ A useful analogy is a blueprint and a building:
 - plane is an actual object created using blueprint.
 
 The blueprint itself is not the aircraft data. The variable is where the actual member values are stored.
+
+### Accessing structure members with .
+Once we have a structure variable, we access an individual member using the dot operator.
+
+```
+struct Flight plane;
+
+plane.altitude = 10000;
+plane.airSpeed = 800.0;
+```
+
+Read the first assignment as:
+
+    Access the altitude member belonging to the structure variable plane, then store 10000 in that member.
+
+The dot does not mean multiplication, and it does not access a separate global variable. it selects a field inside a particular structure object.
+
+For example:
+```
+struct Flight plane1;
+struct Flight plane2;
+
+plane1.altitude = 10000;
+plane2.altitude = 12000;
+```
+
+Both objects have a member called altitude, but they store separate values
+
+![alt text](image.png)

@@ -832,3 +832,5 @@ head -> 10 -> 20 -> 30 -> NULL
 ```
 
 Each insertion places the new node at the beginning, so the order is reversed relative to the order of insertion.
+
+![alt text](image-9.png)

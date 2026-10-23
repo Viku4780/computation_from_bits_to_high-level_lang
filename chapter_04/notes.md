@@ -565,7 +565,7 @@ For example:
 
 or:
 
-    ADD
+    AND
 
 or:
 
